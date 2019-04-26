@@ -1,0 +1,52 @@
+{
+  "student": [
+    {
+      "groupName": "选课管理",
+      "items": [
+        {
+          "name": "courseTable",
+          "icon": "icon-calendar",
+          "title": "课表查询"
+        },
+        {
+          "name": "courseQuery",
+          "icon": "icon-monitor",
+          "title": "课程查询"
+        }
+      ]
+    },
+    {
+      "groupName": "成绩管理",
+      "items": [
+        {
+          "name": "scoreQuery",
+          "icon": "icon-project",
+          "title": "学期成绩"
+        },
+        {
+          "name": "scoreSummary",
+          "icon": "icon-filedone",
+          "title": "成绩大表"
+        },
+        {
+          "name": "scoreTrend",
+          "icon": "icon-linechart",
+          "title": "绩点走势"
+        },
+        {
+          "name": "scoreCollege",
+          "icon": "icon-pointmap",
+          "title": "成绩排名"
+        }
+      ]
+    },
+    {
+      "groupName": "个人信息",
+      "items": [{
+        "name": "profile",
+        "icon": "icon-solution",
+        "title": "个人信息"
+      }]
+    }
+  ]
+}

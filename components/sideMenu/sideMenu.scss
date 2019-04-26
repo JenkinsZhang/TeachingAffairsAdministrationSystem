@@ -1,0 +1,71 @@
+.ivu-menu-item {
+  display: flex;
+  i {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.ivu-layout-sider {
+  $--side-color: #1F2126;
+  user-select: none;
+  background: $--side-color;
+  .ivu-menu-custom {
+    background: $--side-color;
+    color: #9ba3af;
+    .ivu-menu-item:hover {
+      color: #bec6d2;
+    }
+    .ivu-menu-item-active {
+      background: #31333A;
+    }
+  }
+}
+
+.menu-list {
+  overflow-y: auto;
+  height: calc(100% - 60px + 3px); //layout-logo-height+margin=70px
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  #menu-more {
+    text-align: center;
+    height: 30px;
+    bottom: 0;
+    z-index: 901;
+    pointer-events: none; //鼠标穿透
+  }
+}
+
+.menu-icon {
+  transition: all .3s;
+}
+
+.menu-item span {
+  display: inline-block;
+  overflow: hidden;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  transition: width .2s ease .2s;
+}
+
+.menu-item i {
+  transform: translateX(0px);
+  transition: font-size .2s ease, transform .2s ease;
+  vertical-align: middle;
+  font-size: 16px;
+}
+
+.collapsed-menu span {
+  width: 0;
+  transition: width .2s ease;
+}
+
+.collapsed-menu i {
+  transform: translateX(5px);
+  transition: font-size .2s ease .2s, transform .2s ease .2s;
+  vertical-align: middle;
+  font-size: 22px;
+}

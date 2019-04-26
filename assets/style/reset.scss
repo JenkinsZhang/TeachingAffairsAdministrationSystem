@@ -1,0 +1,41 @@
+@import url("//at.alicdn.com/t/font_1164860_4m6rul4blvf.css");
+
+.page-enter-active, .page-leave-active {
+  transition: opacity .5s;
+}
+
+.page-enter, .page-leave-active {
+  opacity: 0;
+}
+
+html, body, #__nuxt, #__layout {
+  height: 100%;
+  box-sizing: border-box;
+  //*::-webkit-scrollbar {
+  //  display: none;
+  //}
+}
+
+#__layout {
+  overflow: hidden;
+}
+
+.ivu-input-group {
+  top: 0 !important;
+}
+
+li {
+  text-decoration: none;
+  list-style: none;
+}
+
+//.ivu-btn-icon-only.ivu-btn-circle>.ivu-icon{
+//  vertical-align: middle !important;
+//}
+.ivu-input[disabled], fieldset[disabled] .ivu-input {
+  color: #777 !important;
+}
+
+.noModalFooter .ivu-modal-footer {
+  display: none;
+}
