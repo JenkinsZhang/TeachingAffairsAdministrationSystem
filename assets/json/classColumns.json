@@ -1,42 +1,42 @@
 [
   {
     "title": "课号",
-    "key": "ID",
+    "key": "kh",
     "align": "center",
     "width": 100,
     "sortable": true
   },
   {
     "title": "课名",
-    "key": "name",
+    "key": "km",
     "align": "center",
     "minWidth": 100,
     "sortable": true
   },
   {
     "title": "学分",
-    "key": "field_count",
+    "key": "xf",
     "align": "center",
     "sortable": true,
     "minWidth": 100
   },
   {
     "title": "学时",
-    "key": "creator",
+    "key": "xs",
     "align": "center",
     "minWidth": 100,
     "sortable": true
   },
   {
     "title": "院系号",
-    "key": "create_at",
+    "key": "yxh",
     "align": "center",
     "sortable": true,
     "minWidth": 150
   },
   {
     "title": "上课时间",
-    "key": "update_at",
+    "key": "sksj",
     "align": "center",
     "sortable": true,
     "minWidth": 150

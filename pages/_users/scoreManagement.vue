@@ -86,7 +86,7 @@
         },
         {
           'title': '操作',
-          'key': 'Action',
+          'key': 'action',
           'fixed': 'right',
           'width': 200,
           'align': 'center',

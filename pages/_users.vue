@@ -84,7 +84,7 @@
             </li>
           </ul>
         </div>
-        <Content :style="{margin: '20px', background: '#fff', minHeight: 'calc(100% - 64px - 40px)'}">
+        <Content :style="{margin: '20px', background: '#fff'}">
           <div style="position: relative">
             <nuxt-child></nuxt-child>
             <!--            <Spin-->

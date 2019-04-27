@@ -87,7 +87,9 @@
         this.MenuActiveName = activeName || this.$route.path
         setTimeout(() => {
           const e = document.querySelector('.ivu-menu-item-selected')
-          e && this.$emit('input', e.innerHTML)
+          if (e) {
+            this.$emit('input', e.innerHTML)
+          }
         }, 20)
       },
       handleSelectItem(name) {

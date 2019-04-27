@@ -18,6 +18,7 @@
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/pwa": "^2.6.0",
     "cross-env": "^5.2.0",
+    "echarts": "^4.2.1",
     "iview": "3.4.1",
     "js-base64": "^2.5.1",
     "koa": "^2.6.2",
@@ -28,7 +29,8 @@
     "postcss-nested": "^4.1.2",
     "postcss-responsive-type": "^1.0.0",
     "sass-loader": "^7.1.0",
-    "stickybits": "^3.6.5"
+    "stickybits": "^3.6.5",
+    "v-charts": "^1.19.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.4.3",

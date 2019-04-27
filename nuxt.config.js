@@ -34,14 +34,15 @@ module.exports = {
     'iview/dist/styles/iview.css',
     'normalize.css',
     { src: '~assets/style/reset.scss', lang: 'scss' },
-    { src: '~assets/style/common.scss', lang: 'scss' }
+    { src: '~assets/style/main.scss', lang: 'scss' }
   ],
 
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/iview'
+    '@/plugins/iview',
+    '@/plugins/vcharts.client'
   ],
 
   /*
