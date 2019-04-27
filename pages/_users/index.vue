@@ -6,7 +6,10 @@
 
 <script>
   export default {
-    name: 'index'
+    name: 'index',
+    validate({ params, redirect }) {
+      redirect(`/${params.users}/profile`)
+    }
   }
 </script>
 

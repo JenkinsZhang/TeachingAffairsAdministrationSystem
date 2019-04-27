@@ -33,8 +33,8 @@
           <div
             class="layout-header-title"
             id="layout-header-title"
-          >{{sidebarSelectedTitle}}
-          </div>
+            v-html="sidebarSelectedTitle"
+          ></div>
           <div
             class="userBox"
             @click="showUserPopTip = !showUserPopTip;$event.stopPropagation()"
@@ -59,7 +59,7 @@
           v-show="showUserPopTip"
         >
           <ul>
-            <li @click="$router.push('/organization')">
+            <li @click="$router.push('profile')">
               <Icon
                 type="md-checkmark"
                 size="20"
@@ -68,12 +68,12 @@
               <span class="right-align" style="margin-right:10px">{{profile.role}}</span>
             </li>
             <li class="divider"></li>
-            <li @click="$router.push('/organization')">
+            <li @click="$router.push('profile')">
               <Icon
                 type="ios-person"
                 size="20"
               ></Icon>
-              用户中心
+              个人信息
             </li>
             <li @click="logout">
               <Icon
@@ -84,7 +84,7 @@
             </li>
           </ul>
         </div>
-        <Content :style="{margin: '20px', background: '#fff', minHeight: 'calc(100% - 64px - 40px)', display:'table'}">
+        <Content :style="{margin: '20px', background: '#fff', minHeight: 'calc(100% - 64px - 40px)'}">
           <div style="position: relative">
             <nuxt-child></nuxt-child>
             <!--            <Spin-->
@@ -104,24 +104,23 @@
   import SideMenu from '~/components/sideMenu/sideMenu'
   import stickybits from 'stickybits'
   import menuJson from '~/assets/json/menu.json'
-
-  const identityMap = {
-    'student': '学生',
-    'teacher': '教师',
-    'admin': '管理员',
-    'superAdmin': '系统管理员'
-  }
+  import identityMap from '~/assets/json/identity.json'
 
   export default {
     name: 'users',
     components: { SideMenu },
     validate({ params }) {
-      console.log(params.users)
-      return !!identityMap[params.users]
+      console.log('validate', process.server, params.users)
+      return !!identityMap[params.users] && !!menuJson[params.users]
+    },
+    head() {
+      return {
+        title: this.profile.role + '端'
+      }
     },
     data() {
       return {
-        isCollapsed: false,
+        isCollapsed: true,
         showUserPopTip: false,
         profile: {
           id: '',
@@ -136,24 +135,21 @@
       }
     },
     asyncData({ params }) {
-      if (process.server) {
-        let menu = menuJson[params.users]
-        console.log(menu)
-        menu.forEach((g) => {
-          g.items.forEach((i) => {
-            i.name = `${params.users}/${i.name}`
-          })
+      let menu = menuJson[params.users]
+      menu.forEach((g) => {
+        g.items.forEach((i) => {
+          i.name = `/${params.users}/${i.name}`
         })
-        let profile = {
-          id: '10001',
-          name: '莫之章',
-          pass: '',
-          group_id: '',
-          role: identityMap[params.users],
-          email: ''
-        }
-        return { menu, profile }
+      })
+      let profile = {
+        id: '10001',
+        name: '莫之章',
+        pass: '',
+        group_id: '',
+        role: identityMap[params.users],
+        email: ''
       }
+      return { menu, profile }
     },
     mounted() {
       document.addEventListener('click', () => {
@@ -176,23 +172,25 @@
           path: '/login'
         })
         localStorage.removeItem('token')
-        localStorage.removeItem('area')
       },
       //获取用户信息
       initInfoProfile() {
-        this.$axios({
-          url: apiRoot + '/profile'
-        }).then(res => {
-          return res.data.data
-        }).catch(() => {
-          return null
-        }).then(data => {
-          if (data && data instanceof Array) {
-            this.profile = data[0]
-          } else if (data) {
-            this.profile = data
-          }
-        })
+        // this.$axios({
+        //   url: apiRoot + '/user/info/16122131',
+        //   headers: {
+        //     Authorization: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjEyMjEzMSIsImV4cCI6MTg1NjM3MDkzMSwidXNlck5hbWUiOiLpg63lrZ_nhLYiLCJpYXQiOjE1NDUzMzA5MzF9.xmeHnjdFMj6sTDl9qJoJnRwUu-I1iUX2VXznQal9DL6kAw8CyGWoKsNDgIAejqPriOksy9Faee96tZkCeZ5W5w'
+        //   }
+        // }).then(res => {
+        //   return res.data.data
+        // }).catch(() => {
+        //   return null
+        // }).then(data => {
+        //   if (data && data instanceof Array) {
+        //     this.profile = data[0]
+        //   } else if (data) {
+        //     this.profile = data
+        //   }
+        // })
       }
     }
   }
@@ -213,5 +211,9 @@
 
   .layout-header-title > i {
     font-size: 30px;
+  }
+
+  .ivu-layout-sider-collapsed .layout-logo-left {
+    font-size: 9px;
   }
 </style>

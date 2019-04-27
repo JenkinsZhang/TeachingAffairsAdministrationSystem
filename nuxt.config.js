@@ -8,7 +8,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: pkg.name,
+    titleTemplate: chunk => chunk ? `${chunk} | 教学事务管理系统` : '教学事务管理系统',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -22,7 +22,10 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+  loading: {
+    color: '#359bff',
+    height: '3px'
+  },
 
   /*
   ** Global CSS
@@ -30,7 +33,8 @@ module.exports = {
   css: [
     'iview/dist/styles/iview.css',
     'normalize.css',
-    { src: '~assets/style/reset.scss', lang: 'scss' }
+    { src: '~assets/style/reset.scss', lang: 'scss' },
+    { src: '~assets/style/common.scss', lang: 'scss' }
   ],
 
   /*
@@ -73,9 +77,9 @@ module.exports = {
         }))
       }
     },
-    babel: {
-      babelrc: true,
-    },
+    // babel: {
+    //   babelrc: true,
+    // },
     postcss: {
       // 添加插件名称作为键，参数作为值
       // 使用npm或yarn安装它们

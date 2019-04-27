@@ -1,4 +1,4 @@
-# normalTransactionSystem
+# TeachingAffairsAdministrationSystem
 
 > My tiptop Nuxt.js project
 

@@ -1,7 +1,12 @@
 <template>
   <div class="menu-list" id="menu-list" ref="menuList">
-    <CustomMenu :active-name="MenuActiveName" theme="custom" width="auto" :class="menuitemClasses"
-                @on-select="handleSelectItem">
+    <CustomMenu
+      :active-name="MenuActiveName"
+      theme="custom"
+      width="auto"
+      :class="menuitemClasses"
+      @on-select="handleSelectItem"
+    >
       <MenuGroup
         v-for="group of menu"
         :key="group.groupName"
@@ -44,7 +49,7 @@
       menuitemClasses() {
         return [
           'menu-item',
-          this.isCollapsed ? 'collapsed-menu' : ''
+          this.collapse ? 'collapsed-menu' : ''
         ]
       }
     },
@@ -53,9 +58,7 @@
         this.isCollapsed = val
       },
       '$route'() {
-        this.$nextTick(() => {
-          this.initMenuActive()
-        })
+        this.initMenuActive()
       }
     },
     mounted() {
@@ -70,9 +73,9 @@
       this.$nextTick(() => {
         //初始化menu-more的显示
         this.menuListScrollHandler(this.$refs.menuList)
-        //初始化menu现选项
-        this.initMenuActive()
       })
+      //初始化menu现选项
+      this.initMenuActive()
     },
     methods: {
       menuListScrollHandler(event) {
@@ -81,7 +84,7 @@
         //  30是menu-more的高度
       },
       initMenuActive(activeName) {
-        this.MenuActiveName = activeName || this.$route.matched[this.$route.matched.length - 1].components.default.name
+        this.MenuActiveName = activeName || this.$route.path
         setTimeout(() => {
           const e = document.querySelector('.ivu-menu-item-selected')
           e && this.$emit('input', e.innerHTML)
@@ -90,7 +93,9 @@
       handleSelectItem(name) {
         const that = this
         this.$nextTick(() => {
-          that.$router.push(name)
+          that.$router.push({
+            path: name
+          })
         })
       }
     }

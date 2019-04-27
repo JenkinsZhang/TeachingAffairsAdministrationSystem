@@ -1,10 +1,20 @@
 {
   "student": [
     {
+      "groupName": "个人信息",
+      "items": [
+        {
+          "name": "profile",
+          "icon": "icon-solution",
+          "title": "个人信息"
+        }
+      ]
+    },
+    {
       "groupName": "选课管理",
       "items": [
         {
-          "name": "courseTable",
+          "name": "courseCalendar",
           "icon": "icon-calendar",
           "title": "课表查询"
         },
@@ -39,14 +49,100 @@
           "title": "成绩排名"
         }
       ]
-    },
+    }
+  ],
+  "teacher": [
     {
       "groupName": "个人信息",
-      "items": [{
-        "name": "profile",
-        "icon": "icon-solution",
-        "title": "个人信息"
-      }]
+      "items": [
+        {
+          "name": "profile",
+          "icon": "icon-solution",
+          "title": "个人信息"
+        }
+      ]
+    },
+    {
+      "groupName": "成绩管理",
+      "items": [
+        {
+          "name": "scoreManagement",
+          "icon": "icon-project",
+          "title": "成绩管理"
+        },
+        {
+          "name": "scoreSummary",
+          "icon": "icon-pointmap",
+          "title": "成绩统计"
+        }
+      ]
+    },
+    {
+      "groupName": "课程管理",
+      "items": [
+        {
+          "name": "courseCalendar",
+          "icon": "icon-calendar",
+          "title": "课表查询"
+        },
+        {
+          "name": "courseTable",
+          "icon": "icon-team",
+          "title": "班级信息"
+        }
+      ]
+    }
+  ],
+  "admin": [
+    {
+      "groupName": "个人信息",
+      "items": [
+        {
+          "name": "profile",
+          "icon": "icon-solution",
+          "title": "个人信息"
+        }
+      ]
+    },
+    {
+      "groupName": "师生信息管理",
+      "items": [
+        {
+          "name": "teacherManagement",
+          "icon": "icon-teacher",
+          "title": "教师信息管理"
+        },
+        {
+          "name": "studentManagement",
+          "icon": "icon-team",
+          "title": "学生信息管理"
+        }
+      ]
+    },
+    {
+      "groupName": "课程信息管理",
+      "items": [
+        {
+          "name": "courseManagement",
+          "icon": "icon-filedone",
+          "title": "课程信息管理"
+        },
+        {
+          "name": "courseAnalysis",
+          "icon": "icon-pointmap",
+          "title": "课程报表分析"
+        }
+      ]
+    },
+    {
+      "groupName": "系统管理",
+      "items": [
+        {
+          "name": "termManagement",
+          "icon": "icon-Batchfolding",
+          "title": "学期管理"
+        }
+      ]
     }
   ]
 }
