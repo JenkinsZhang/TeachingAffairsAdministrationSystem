@@ -1,19 +1,16 @@
 <template>
   <div class="wrapper">
-    <no-ssr placeholder="Loading...">
-      <p class="operation">
+    <Form class="operation">
+      <FormItem label="学期">
         <Select
           v-model="selectedClassId"
-          style="width:400px"
-          placeholder="请选择课程"
+          style="width:200px"
+          placeholder="请选择学期"
         >
-          <OptionGroup :label="term.name" v-for="term of terms" :key="term.name">
-            <Option v-for="cla of term.classes" :value="cla.kh" :key="cla.kh">{{ cla.km }} | {{cla.kh}} | {{cla.sksj}}
-            </Option>
-          </OptionGroup>
+          <Option v-for="term of terms" :value="term.name" :key="term.name">{{term.name}}</Option>
         </Select>
-      </p>
-    </no-ssr>
+      </FormItem>
+    </Form>
     <Table
       class="operation"
       stripe
@@ -184,8 +181,8 @@
               }
               this.nodeMatrix[i][j].style.background = this.matrix[i][j].color
               this.nodeMatrix[i][j].firstChild.innerHTML = `
-              <p>${this.matrix[i][j].kh}</p>
-              <p>${this.matrix[i][j].km}</p>
+              <p style="font-weight:bold">${this.matrix[i][j].kh}</p>
+              <p style="font-weight:bold">${this.matrix[i][j].km}</p>
               `
               this.nodeMatrix[i][j].style.color = 'white'
             }

@@ -29,7 +29,7 @@
       "groupName": "成绩管理",
       "items": [
         {
-          "name": "scoreQuery",
+          "name": "scoreTable",
           "icon": "icon-project",
           "title": "学期成绩"
         },
@@ -41,7 +41,7 @@
         {
           "name": "scoreTrend",
           "icon": "icon-linechart",
-          "title": "绩点走势"
+          "title": "成绩走势"
         },
         {
           "name": "scoreCollege",
@@ -71,7 +71,7 @@
           "title": "成绩管理"
         },
         {
-          "name": "scoreSummary",
+          "name": "scoreAnalysis",
           "icon": "icon-pointmap",
           "title": "成绩统计"
         }

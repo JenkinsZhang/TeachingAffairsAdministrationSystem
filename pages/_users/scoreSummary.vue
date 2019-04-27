@@ -1,60 +1,79 @@
 <template>
   <div class="wrapper">
-    <no-ssr placeholder="Loading...">
-      <p class="operation">
-        <Select
-          v-model="selectedClassId"
-          style="width:400px"
-          placeholder="请选择课程"
-        >
-          <OptionGroup :label="term.name" v-for="term of terms" :key="term.name">
-            <Option v-for="cla of term.classes" :value="cla.kh" :key="cla.kh">{{ cla.km }} | {{cla.kh}} | {{cla.sksj}}
-            </Option>
-          </OptionGroup>
-        </Select>
-      </p>
-      <Row type="flex" class="operation">
-        <Col span="12">
-          <ve-histogram :data="chartData" :settings="chartSettings" class="operation"></ve-histogram>
+    <div class="operation">
+      <Row
+        type="flex"
+        justify="space-around"
+        class="header"
+      >
+        <Col>
+          <p>院系：{{profile.dep}}</p>
+          <p>姓名：{{profile.name}}</p>
         </Col>
-        <Col span="12">
-          <ve-pie :data="chartData" style="position: relative; top:25px;"></ve-pie>
+        <Col>
+          <p>学号：{{profile.id}}</p>
+          <p>性别：{{profile.xb}}</p>
         </Col>
       </Row>
-
-    </no-ssr>
+    </div>
+    <Table class="operation" stripe border :columns="columns" :data="data1" size="small"></Table>
+    <p class="tail">获得学分：{{sumxf}}，平均成绩：{{avecj}}</p>
   </div>
 </template>
 
 <script>
-  import mock from './scoreManagementMock'
-
   export default {
     name: 'scoreSummary',
-    mixins: [mock],
     data() {
-      this.chartSettings = {
-        labelMap: {
-          'val': '人数'
-        }
-      }
       return {
-        chartData: {
-          columns: ['date', 'val'],
-          rows: [
-            { 'date': '0~59', 'val': 2 },
-            { 'date': '60~69', 'val': 15 },
-            { 'date': '70~79', 'val': 21 },
-            { 'date': '80~89', 'val': 12 },
-            { 'date': '90~100', 'val': 6 }
-          ]
+        profile: {
+          name: '莫之章',
+          id: '16121663',
+          xb: '男',
+          dep: '计算机工程与科学学院',
+          type: '本科生'
         },
-        selectedClassId: ''
+        columns: [{
+          'title': '课程号',
+          'key': 'kh',
+          'align': 'center'
+        }, {
+          'title': '课程名',
+          'key': 'km',
+          'align': 'center'
+        }, {
+          'title': '学分',
+          'key': 'xf',
+          'align': 'center'
+        }, {
+          'title': '成绩',
+          'key': 'cj',
+          'align': 'center'
+        }, {
+          'title': '学期',
+          'key': 'xq',
+          'align': 'center'
+        }, {
+          'title': '备注',
+          'key': 'bz',
+          'align': 'center'
+        }],
+        data1: [],
+        avecj: 92,
+        sumxf: 117
       }
     }
   }
 </script>
 
 <style scoped>
+  .header {
+    padding: 0 20%;
+    font-size: 14px;
+  }
 
+  .tail {
+    margin: 3px 0 0 32.5px;
+    font-size: 13px
+  }
 </style>
