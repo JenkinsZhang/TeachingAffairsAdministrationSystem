@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-    <Layout style="height:100%">
+    <Layout style="height: 100vh;">
       <Sider
         ref="side1"
         hide-trigger
@@ -87,12 +87,6 @@
         <Content :style="{margin: '20px', background: '#fff'}">
           <div style="position: relative">
             <nuxt-child></nuxt-child>
-            <!--            <Spin-->
-            <!--              size="large"-->
-            <!--              fix-->
-            <!--              v-if="showLoading"-->
-            <!--              style="min-height: calc(100vh - 100px)"-->
-            <!--            >加载中...</Spin>-->
           </div>
         </Content>
       </Layout>
@@ -201,10 +195,6 @@
 </style>
 
 <style lang="scss">
-  .ivu-layout-content {
-    width: calc(100% - 40px);
-  }
-
   .layout-header-title > * {
     vertical-align: middle;
   }

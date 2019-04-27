@@ -1,5 +1,3 @@
-@import url("https://at.alicdn.com/t/font_1164860_8vr2y50xuyd.css");
-
 .page-enter-active, .page-leave-active {
   transition: opacity .15s;
 }
@@ -11,13 +9,21 @@
 html, body, #__nuxt, #__layout {
   height: 100%;
   box-sizing: border-box;
-  //*::-webkit-scrollbar {
-  //  display: none;
-  //}
+  *::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 #__layout {
   overflow: hidden;
+}
+
+.ivu-layout-sider {
+  height: 100vh;
+}
+.ivu-layout{
+  width: available;
+  width: -webkit-fill-available;
 }
 
 .ivu-input-group {
