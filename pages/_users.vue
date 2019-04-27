@@ -130,9 +130,14 @@
     },
     asyncData({ params }) {
       let menu = menuJson[params.users]
+      console.log('asyncData', process.server)
       menu.forEach((g) => {
         g.items.forEach((i) => {
+          if (i.done) {
+            return
+          }
           i.name = `/${params.users}/${i.name}`
+          i.done = true
         })
       })
       let profile = {

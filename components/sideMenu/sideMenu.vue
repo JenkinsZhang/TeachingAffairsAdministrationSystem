@@ -30,12 +30,13 @@
 
 <script>
   import CustomMenu from './customMenu/customMenu'
+  import MenuItem from './customMenu/menu-item'
   import stickybits from 'stickybits'
 
 
   export default {
     name: 'SideMenu',
-    components: { CustomMenu },
+    components: { CustomMenu, MenuItem },
     props: {
       collapse: Boolean,
       menu: Array
