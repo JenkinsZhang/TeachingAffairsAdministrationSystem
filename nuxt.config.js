@@ -83,7 +83,11 @@ module.exports = {
       }
     },
     // babel: {
-    //   babelrc: true,
+      // babelrc:true,
+      // 'plugins': [['import', {
+      //   'libraryName': 'iview',
+      //   'libraryDirectory': 'src/components'
+      // }]]
     // },
     postcss: {
       // 添加插件名称作为键，参数作为值

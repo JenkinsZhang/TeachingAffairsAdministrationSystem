@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import mock from './scoreManagementMock'
+  import mock from '~/assets/js/scoreManagementMock'
 
   export default {
     name: 'scoreSummary',

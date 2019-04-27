@@ -38,7 +38,7 @@
 
 <script>
   // import columns from '~/assets/json/classColumns.json'
-  import mock from './scoreManagementMock'
+  import mock from '~/assets/js/scoreManagementMock'
 
   let that
 
@@ -88,17 +88,27 @@
           'title': '操作',
           'key': 'action',
           'fixed': 'right',
-          'width': 200,
+          'width': 150,
           'align': 'center',
-          render: (h, params) => {
-            return (
-              <ButtonGroup size="default">
-                <Button type="info" icon="md-checkmark" onClick={() => {
-                  that.showModal = true
-                  that.thisRow = params.row
-                }}>修改成绩</Button>
-              </ButtonGroup>
-            )
+          render(h, params) {
+            return h('ButtonGroup', {
+              props: {
+                size: 'small'
+              }
+            }, [
+              h('Button', {
+                props: {
+                  type: 'info',
+                  icon: 'md-checkmark'
+                },
+                on: {
+                  click: () => {
+                    that.showModal = true
+                    that.thisRow = params.row
+                  }
+                }
+              }, '修改成绩')
+            ])
           }
         }
       ],
@@ -123,6 +133,16 @@
     }),
     mounted() {
       that = this
+    },
+    watch: {
+      showModal(val) {
+        if (val) {
+          setTimeout(() => {
+            const e = document.querySelector('.ivu-input[autofocus=autofocus]')
+            e && e.focus()
+          }, 20)
+        }
+      }
     },
     methods: {
       editScore(score) {

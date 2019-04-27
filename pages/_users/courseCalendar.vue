@@ -31,8 +31,8 @@
 </template>
 
 <script>
-  import mock from './scoreManagementMock'
-  import calendarColumnsMock from './calendarColumnsMock.js'
+  import mock from '~/assets/js/scoreManagementMock'
+  import calendarColumnsMock from '~/assets/js/calendarColumnsMock'
 
   let that
 
