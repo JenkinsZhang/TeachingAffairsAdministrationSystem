@@ -41,7 +41,7 @@
           >
             <div
               class="userBox-avatar"
-              :style="{backgroundImage: 'url(https://cdn-daoweb-prod.daocloud.io/objects/avatar/04148988-d6c8-4e8b-9081-ebe1f9e78a2f.jpg)'}"
+              :style="{backgroundImage: 'url(http://ww1.sinaimg.cn/thumbnail/006P5HMAly1g2icle6yjlj30f50ecguy.jpg)'}"
             ></div>
             <div class="userBox-content">
               <p class="userBox-content-name">{{profile.name}}</p>

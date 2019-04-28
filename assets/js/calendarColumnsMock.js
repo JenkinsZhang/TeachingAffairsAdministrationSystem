@@ -5,6 +5,7 @@ export default {
         {
           'title': ' ',
           'key': 'time',
+          'width': 50,
           'align': 'center'
         },
         {
