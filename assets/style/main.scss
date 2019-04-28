@@ -8,9 +8,20 @@
 }
 
 .calendar {
-  td {
-    border: none
+  table {
+    height: 100%;
+
+    tr {
+      td:not(:first-child) {
+        border: none
+      }
+
+      &:last-child td {
+        border-bottom: 1px solid #e8eaec
+      }
+    }
   }
+
 
   .node {
     position: absolute;

@@ -53,11 +53,6 @@
           'sortable': true
         },
         {
-          'title': '类型',
-          'key': 'type',
-          'align': 'center'
-        },
-        {
           'title': '姓名',
           'key': 'name',
           'align': 'center'

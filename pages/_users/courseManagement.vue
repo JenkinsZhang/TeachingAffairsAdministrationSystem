@@ -52,6 +52,7 @@
           <Table
             class="calendar"
             disabled-hover
+            border
             :columns="calendarColumns"
             :data="calendar"
             ref="calendar"

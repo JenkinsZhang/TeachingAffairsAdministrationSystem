@@ -110,12 +110,12 @@
         {
           "name": "teacherManagement",
           "icon": "icon-teacher",
-          "title": "教师信息管理"
+          "title": "教师管理"
         },
         {
           "name": "studentManagement",
           "icon": "icon-team",
-          "title": "学生信息管理"
+          "title": "学生管理"
         }
       ]
     },
@@ -125,12 +125,12 @@
         {
           "name": "courseManagement",
           "icon": "icon-filedone",
-          "title": "课程信息管理"
+          "title": "课程管理"
         },
         {
           "name": "courseAnalysis",
           "icon": "icon-pointmap",
-          "title": "课程报表分析"
+          "title": "课程报表"
         }
       ]
     },

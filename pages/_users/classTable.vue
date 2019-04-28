@@ -90,12 +90,16 @@
         type: '本科生',
         name: '莫之章',
         gender: '男',
+        jg: '四川',
+        sjhm: '189xxxx9181',
         dep: '计算机工程与科学学院'
       }, {
         id: '16121670',
         type: '本科生',
         name: 'ybmj',
         gender: '男',
+        jg: '河北',
+        sjhm: '166xxxx0694',
         dep: '计算机工程与科学学院'
       }],
       selectedClassId: '',

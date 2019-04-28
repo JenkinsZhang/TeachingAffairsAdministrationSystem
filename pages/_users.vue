@@ -41,7 +41,7 @@
           >
             <div
               class="userBox-avatar"
-              :style="{backgroundImage: 'url(http://ww1.sinaimg.cn/thumbnail/006P5HMAly1g2icle6yjlj30f50ecguy.jpg)'}"
+              :style="{backgroundImage: 'url(http://ww1.sinaimg.cn/large/006P5HMAly1g2icle6yjlj30f50ecguy.jpg)'}"
             ></div>
             <div class="userBox-content">
               <p class="userBox-content-name">{{profile.name}}</p>
@@ -128,7 +128,7 @@
         menu: []
       }
     },
-    asyncData({ params }) {
+    asyncData({ params }) {//tip: 在客户端可能会多次触发，例如从404页面回退时
       let menu = menuJson[params.users]
       console.log('asyncData', process.server)
       menu.forEach((g) => {
