@@ -29,11 +29,14 @@
 
     <Drawer
       class="courseManagementDrawer"
-      title="课程安排"
       v-model="showModal"
       width="100"
       :mask-closable="false"
     >
+      <div slot="header" style="overflow: unset;" class="ivu-drawer-header-inner">
+        开课安排
+        <Button size="small" type="dashed" icon="md-add"></Button>
+      </div>
       <Row>
         <Col span="12">
           <Table
@@ -193,6 +196,46 @@
             'title': '上课时间',
             'key': 'sksj',
             'align': 'center'
+          },
+          {
+            'title': '操作',
+            'key': 'action',
+            'fixed': 'right',
+            'width': 160,
+            'align': 'center',
+            render(h, params) {
+              return h('ButtonGroup', {
+                props: {
+                  size: 'small',
+                  shape: 'circle'
+                }
+              }, [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    icon: 'md-create'
+                  },
+                  on: {
+                    click: () => {
+                      that.showModal = true
+                      that.thisRow = params.row
+                    }
+                  }
+                }, '修改'),
+                h('Button', {
+                  props: {
+                    type: 'warning',
+                    icon: 'md-trash'
+                  },
+                  on: {
+                    click: () => {
+                      that.showModal = true
+                      that.thisRow = params.row
+                    }
+                  }
+                }, '删除')
+              ])
+            }
           }
         ],
         data1: [{
@@ -276,7 +319,7 @@
             color = 'rgba(0,0,0,.2)'//灰色
           }
           matrix[begin - 1][day - 1] = {
-            ...x,
+            ...obj,
             color,
             _length: end - begin + 1
           }
@@ -307,8 +350,9 @@
                 background-color: ${matrix[i][j].color};
               ">
                 <div>
-                  <p style="font-weight:bold">${matrix[i][j].kh}</p>
                   <p style="font-weight:bold">${matrix[i][j].km}</p>
+                  <p style="font-weight:bold">${matrix[i][j].xm}</p>
+                  <p style="font-weight:bold">${matrix[i][j].sksj}</p>
                 </div>
               </div>
               `
@@ -317,15 +361,15 @@
         }
       },
       mouseEnterTr(line) {
-        this.renderCalendar({ hoverKh: this.$refs.calendarRaw.data[line].kh })
+        this.renderCalendar({ raw: [this.$refs.calendarRaw.data[line]], hoverKh: this.$refs.calendarRaw.data[line].kh })
       },
       mouseLeaveTbody() {
-        this.renderCalendar()
+        this.renderCalendar({ raw: [] })
       }
     },
     mounted() {
       that = this
-      this.renderCalendar()
+      this.renderCalendar({ raw: [] })
     }
   }
 </script>

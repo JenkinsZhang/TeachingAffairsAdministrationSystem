@@ -172,7 +172,7 @@
             color = 'rgba(0,0,0,.2)'//灰色
           }
           matrix[begin - 1][day - 1] = {
-            ...x,
+            ...obj,
             color,
             _length: end - begin + 1
           }
