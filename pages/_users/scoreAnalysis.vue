@@ -1,18 +1,17 @@
 <template>
   <div class="wrapper">
     <no-ssr placeholder="Loading...">
-      <p class="operation">
-        <Select
-          v-model="selectedClassId"
-          style="width:400px"
-          placeholder="请选择课程"
-        >
-          <OptionGroup :label="term.name" v-for="term of terms" :key="term.name">
-            <Option v-for="cla of term.classes" :value="cla.kh" :key="cla.kh">{{ cla.km }} | {{cla.kh}} | {{cla.sksj}}
-            </Option>
-          </OptionGroup>
-        </Select>
-      </p>
+      <Select
+        v-model="selectedClassId"
+        style="width:400px"
+        placeholder="请选择课程"
+        class="operation"
+      >
+        <OptionGroup :label="term.name" v-for="term of terms" :key="term.name">
+          <Option v-for="cla of term.classes" :value="cla.kh" :key="cla.kh">{{ cla.km }} | {{cla.kh}} | {{cla.sksj}}
+          </Option>
+        </OptionGroup>
+      </Select>
       <Row type="flex" class="operation">
         <Col span="12">
           <ve-histogram :data="chartData" :settings="chartSettings" class="operation"></ve-histogram>

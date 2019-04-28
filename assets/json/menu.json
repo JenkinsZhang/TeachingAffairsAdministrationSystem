@@ -86,7 +86,7 @@
           "title": "课表查询"
         },
         {
-          "name": "courseTable",
+          "name": "classTable",
           "icon": "icon-team",
           "title": "班级信息"
         }

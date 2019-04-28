@@ -42,7 +42,7 @@
   let that
 
   export default {
-    name: 'scoreManagement',
+    name: 'courseTable',
     mixins: [mock],
     data: () => ({
       columns: [
@@ -63,52 +63,25 @@
           'align': 'center'
         },
         {
+          'title': '性别',
+          'key': 'gender',
+          'align': 'center'
+        },
+        {
+          'title': '籍贯',
+          'key': 'jg',
+          'align': 'center'
+        },
+        {
+          'title': '手机号码',
+          'key': 'sjhm',
+          'align': 'center'
+        },
+        {
           'title': '院系',
           'key': 'dep',
           'align': 'center',
           'sortable': true
-        },
-        {
-          'title': '成绩',
-          'key': 'score',
-          'align': 'center',
-          'sortable': true,
-          filters: [{
-            label: '未登分',
-            value: 1
-          }],
-          filterMethod(value, row) {
-            if (value === 1) {
-              return !row.score
-            }
-          }
-        },
-        {
-          'title': '操作',
-          'key': 'action',
-          'fixed': 'right',
-          'width': 150,
-          'align': 'center',
-          render(h, params) {
-            return h('ButtonGroup', {
-              props: {
-                size: 'small'
-              }
-            }, [
-              h('Button', {
-                props: {
-                  type: 'info',
-                  icon: 'md-checkmark'
-                },
-                on: {
-                  click: () => {
-                    that.showModal = true
-                    that.thisRow = params.row
-                  }
-                }
-              }, '修改成绩')
-            ])
-          }
         }
       ],
       loading: false,
@@ -116,14 +89,14 @@
         id: '16121663',
         type: '本科生',
         name: '莫之章',
-        dep: '计算机工程与科学学院',
-        score: 100
+        gender: '男',
+        dep: '计算机工程与科学学院'
       }, {
         id: '16121670',
         type: '本科生',
         name: 'ybmj',
-        dep: '计算机工程与科学学院',
-        score: null
+        gender: '男',
+        dep: '计算机工程与科学学院'
       }],
       selectedClassId: '',
       scoreValue: '',
