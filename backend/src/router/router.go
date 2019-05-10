@@ -24,7 +24,7 @@ func sayhelloName(w http.ResponseWriter, r *http.Request) {
 }
 
 func Build() {
-	http.HandleFunc("/api/", sayhelloName) //设置访问的路由
+	//http.HandleFunc("/api/", sayhelloName) //设置访问的路由
 	http.HandleFunc("/api/login", login.Login)
 	http.HandleFunc("/api/student/profile", student.Profile)
 	http.HandleFunc("/api/student/courseCalendar", student.CourseCalendar)

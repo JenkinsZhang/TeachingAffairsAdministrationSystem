@@ -104,32 +104,11 @@
   export default {
     name: 'users',
     components: { SideMenu },
-    validate({ params, req, error,app }) {
-      let token = null
-      if (process.server) {
-        let cookies = {}
-        req.headers.cookie && req.headers.cookie.split(';').forEach(function(Cookie) {
-          var parts = Cookie.split('=')
-          cookies[parts[0].trim()] = (parts[1] || '').trim()
-        })
-        token = cookies.token
-      } else {
-        token = app.$cookies.get('token')
-      }
-      if (!token) {
-        return false
-      }
-      const info = getUserInfoFromToken(token)
-
-      // console.log('validate', process.server, params.users, info.identity === params.users)
-      if (!identityMap[params.users] || !menuJson[params.users] || info.identity !== params.users) {
-        error({
-          statusCode: 403,
-          message: '你没有权限浏览该页面'
-        })
-        return false
-      }
-      return true
+    middleware: 'authenticated',
+    validate({ params, req, error, app }) {
+      const info = getUserInfoFromToken(null, req)
+      console.log('validate', process.server, params.users, info.identity === params.users)
+      return !!info && !!identityMap[params.users] && !!menuJson[params.users] && info.identity === params.users
     },
     head() {
       return {
@@ -140,19 +119,20 @@
       return {
         isCollapsed: true,
         showUserPopTip: false,
-        profile: {
-          id: '',
-          name: '',
-          pass: '',
-          group_id: '',
-          role: '',
-          email: ''
+        profile: {//TODO: 用store将其持久化
+          birthplace: '河北',
+          dname: '计算机学院',
+          gender: '男',
+          grade: '大三',
+          id: '16121674',
+          name: '苗伟华',
+          phone: '16601700694'
         },
         sidebarSelectedTitle: '',
         menu: []
       }
     },
-    asyncData({ params }) {//tip: 在客户端可能会多次触发，例如从404页面回退时
+    async asyncData({ params, app }) {//tip: 在客户端可能会多次触发，例如从404页面回退时
       let menu = menuJson[params.users]
       console.log('asyncData', process.server)
       menu.forEach((g) => {
@@ -164,14 +144,13 @@
           i.done = true
         })
       })
-      let profile = {
-        id: '10001',
-        name: '莫之章',
-        pass: '',
-        group_id: '',
-        role: identityMap[params.users],
-        email: ''
-      }
+      let profile = {}
+      await app.$axios({
+        url: apiRoot + `/${params.users}/profile`
+      }).then((res) => {
+        console.log(res.data)
+        profile = { ...res.data, role: identityMap[params.users] }
+      })
       return { menu, profile }
     },
     mounted() {

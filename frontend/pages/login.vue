@@ -28,6 +28,7 @@
 
   export default {
     name: 'login',
+    middleware: 'checkAuth',
     data: () => ({
       host: '',
       datalist: {},
@@ -35,23 +36,6 @@
       username: '',
       password: ''
     }),
-    fetch({ redirect, req, app }) {
-      let token = null
-      if (process.server) {
-        let cookies = {}
-        req.headers.cookie && req.headers.cookie.split(';').forEach(function(Cookie) {
-          var parts = Cookie.split('=')
-          cookies[parts[0].trim()] = (parts[1] || '').trim()
-        })
-        token = cookies.token
-      } else {
-        token = app.$cookies.get('token')
-      }
-      if (token) {
-        const info = getUserInfoFromToken(token)
-        redirect('/' + info.identity)
-      }
-    },
     head() {
       return {
         title: '登录'
@@ -68,7 +52,8 @@
           }
         }).then((res) => {
           if (res.data.message === 'ok') {
-            this.$cookies.set('token', res.data.token, { expires: 1 })
+            this.$store.commit('setToken', res.data.token) // 存储在vuex中用来进行客户端渲染
+            this.$cookies.set('token', res.data.token, { expires: 1 }) // 在cookie中保存token用来进行服务器端渲染
             this.$router.push('/')
           } else {
             this.$Notice.warning({
