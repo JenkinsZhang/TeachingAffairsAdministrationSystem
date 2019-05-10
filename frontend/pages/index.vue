@@ -3,10 +3,9 @@
 
 <script>
   import { getUserInfoFromToken } from '~/assets/js/tokenTools'
-  import Cookies from 'js-cookie'
 
   export default {
-    fetch({ redirect, req }) {
+    fetch({ redirect, req, app }) {
       let token = null
       if (process.server) {
         let cookies = {}
@@ -16,7 +15,7 @@
         })
         token = cookies.token
       } else {
-        token = Cookies.get('token')
+        token = app.$cookies.get('token')
       }
       if (token) {
         const info = getUserInfoFromToken(token)

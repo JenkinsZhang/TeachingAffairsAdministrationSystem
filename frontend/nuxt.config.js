@@ -47,7 +47,8 @@ module.exports = {
   */
   plugins: [
     '@/plugins/iview',
-    '@/plugins/vcharts.client'
+    '@/plugins/vcharts.client',
+    '@/plugins/cookies.client'
   ],
 
   /*

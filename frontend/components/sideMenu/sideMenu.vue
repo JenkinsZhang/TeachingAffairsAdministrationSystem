@@ -86,7 +86,7 @@
       },
       initMenuActive(activeName) {
         this.MenuActiveName = activeName || this.$route.path
-        console.log(this.MenuActiveName)
+        // console.log(this.MenuActiveName)
         setTimeout(() => {
           const e = document.querySelector('.ivu-menu-item-selected')
           if (e) {

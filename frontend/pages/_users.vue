@@ -100,12 +100,11 @@
   import menuJson from '~/assets/json/menu.json'
   import identityMap from '~/assets/json/identity.json'
   import { getUserInfoFromToken } from '~/assets/js/tokenTools'
-  import Cookies from 'js-cookie'
 
   export default {
     name: 'users',
     components: { SideMenu },
-    validate({ params, req, error }) {
+    validate({ params, req, error,app }) {
       let token = null
       if (process.server) {
         let cookies = {}
@@ -115,14 +114,14 @@
         })
         token = cookies.token
       } else {
-        token = Cookies.get('token')
+        token = app.$cookies.get('token')
       }
       if (!token) {
         return false
       }
       const info = getUserInfoFromToken(token)
 
-      console.log('validate', process.server, params.users, info.identity === params.users)
+      // console.log('validate', process.server, params.users, info.identity === params.users)
       if (!identityMap[params.users] || !menuJson[params.users] || info.identity !== params.users) {
         error({
           statusCode: 403,
@@ -192,7 +191,7 @@
         this.$refs.side1.toggleCollapse()
       },
       logout() {
-        Cookies.remove('token')
+        this.$cookies.remove('token')
         this.$router.push({
           path: '/login'
         })
