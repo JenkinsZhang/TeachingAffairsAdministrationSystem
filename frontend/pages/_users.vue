@@ -107,7 +107,7 @@
     middleware: 'authenticated',
     validate({ params, req, error, app }) {
       const info = getUserInfoFromToken(null, req)
-      console.log('validate', process.server, params.users, info.identity === params.users)
+      console.log('validate', !!info, !!identityMap[params.users], !!menuJson[params.users], info.identity === params.users)
       return !!info && !!identityMap[params.users] && !!menuJson[params.users] && info.identity === params.users
     },
     head() {
@@ -132,7 +132,11 @@
         menu: []
       }
     },
-    async asyncData({ params, app }) {//tip: 在客户端可能会多次触发，例如从404页面回退时
+    async asyncData({ params, app, route, redirect }) {//tip: 在客户端可能会多次触发，例如从404页面回退时
+      //特判
+      if (route.path.substr(-params.users.length) === params.users) {
+        return
+      }
       let menu = menuJson[params.users]
       console.log('asyncData', process.server)
       menu.forEach((g) => {
@@ -171,6 +175,7 @@
       },
       logout() {
         this.$cookies.remove('token')
+        this.$store.commit('setToken', null)
         this.$router.push({
           path: '/login'
         })

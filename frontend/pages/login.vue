@@ -28,7 +28,7 @@
 
   export default {
     name: 'login',
-    middleware: 'checkAuth',
+    middleware: 'anonymous',
     data: () => ({
       host: '',
       datalist: {},
