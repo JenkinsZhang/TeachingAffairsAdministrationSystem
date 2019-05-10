@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"utils"
+	"taas/utils"
 )
 
 func ScoreTrend(w http.ResponseWriter, r *http.Request) {

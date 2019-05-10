@@ -3,9 +3,9 @@ package utils
 import (
 	"fmt"
 	"log"
-	"models"
 	"os"
 	"strings"
+	"taas/models"
 )
 
 func CheckId(id string) string {

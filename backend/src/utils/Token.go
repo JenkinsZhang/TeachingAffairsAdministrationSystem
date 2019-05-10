@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"models"
 	"os"
+	"taas/models"
 
 	"github.com/dgrijalva/jwt-go"
 )

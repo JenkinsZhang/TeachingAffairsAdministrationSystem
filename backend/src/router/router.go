@@ -2,12 +2,12 @@ package router
 
 import (
 	"fmt"
-	"func/admin"
-	"func/login"
-	"func/student"
-	"func/teacher"
 	"net/http"
 	"strings"
+	"taas/func/admin"
+	"taas/func/login"
+	"taas/func/student"
+	"taas/func/teacher"
 )
 
 func sayhelloName(w http.ResponseWriter, r *http.Request) {
@@ -42,5 +42,5 @@ func Build() {
 
 	http.HandleFunc("/admin/profile", admin.Profile)
 	http.HandleFunc("/admin/teacherManagement", admin.TeacherManagement)
-	http.HandleFunc("/admin/studenManagement", admint.StudentManagement)
+	http.HandleFunc("/admin/studenManagement", admin.StudentManagement)
 }

@@ -2,7 +2,7 @@ package admin
 
 import (
 	"net/http"
-	"utils"
+	"taas/utils"
 )
 
 func Profile(w http.ResponseWriter, r *http.Request) {

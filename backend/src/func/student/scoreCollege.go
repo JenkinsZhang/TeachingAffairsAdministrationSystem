@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"utils"
+	"taas/utils"
 )
 
 func ScoreCollege(w http.ResponseWriter, r *http.Request) {

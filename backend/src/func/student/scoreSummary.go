@@ -2,7 +2,7 @@ package student
 
 import (
 	"net/http"
-	"utils"
+	"taas/utils"
 )
 
 func ScoreSummary(w http.ResponseWriter, r *http.Request) {
