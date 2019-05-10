@@ -99,13 +99,38 @@
   import stickybits from 'stickybits'
   import menuJson from '~/assets/json/menu.json'
   import identityMap from '~/assets/json/identity.json'
+  import { getUserInfoFromToken } from '~/assets/js/tokenTools'
+  import Cookies from 'js-cookie'
 
   export default {
     name: 'users',
     components: { SideMenu },
-    validate({ params }) {
-      console.log('validate', process.server, params.users)
-      return !!identityMap[params.users] && !!menuJson[params.users]
+    validate({ params, req, error }) {
+      let token = null
+      if (process.server) {
+        let cookies = {}
+        req.headers.cookie && req.headers.cookie.split(';').forEach(function(Cookie) {
+          var parts = Cookie.split('=')
+          cookies[parts[0].trim()] = (parts[1] || '').trim()
+        })
+        token = cookies.token
+      } else {
+        token = Cookies.get('token')
+      }
+      if (!token) {
+        return false
+      }
+      const info = getUserInfoFromToken(token)
+
+      console.log('validate', process.server, params.users, info.identity === params.users)
+      if (!identityMap[params.users] || !menuJson[params.users] || info.identity !== params.users) {
+        error({
+          statusCode: 403,
+          message: '你没有权限浏览该页面'
+        })
+        return false
+      }
+      return true
     },
     head() {
       return {
@@ -167,10 +192,10 @@
         this.$refs.side1.toggleCollapse()
       },
       logout() {
+        Cookies.remove('token')
         this.$router.push({
           path: '/login'
         })
-        localStorage.removeItem('token')
       },
       //获取用户信息
       initInfoProfile() {

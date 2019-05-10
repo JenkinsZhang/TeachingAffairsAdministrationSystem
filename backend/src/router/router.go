@@ -24,23 +24,23 @@ func sayhelloName(w http.ResponseWriter, r *http.Request) {
 }
 
 func Build() {
-	http.HandleFunc("/", sayhelloName) //设置访问的路由
-	http.HandleFunc("/login", login.Login)
-	http.HandleFunc("/student/profile", student.Profile)
-	http.HandleFunc("/student/courseCalendar", student.CourseCalendar)
-	http.HandleFunc("/student/courseQuery", student.CourseQuery)
-	http.HandleFunc("/student/scoreTable", student.ScoreTable)
-	http.HandleFunc("/student/scoreSummary", student.ScoreSummary)
-	http.HandleFunc("/student/scoreTrend", student.ScoreTrend)
-	http.HandleFunc("/student/scoreCollege", student.ScoreCollege)
+	http.HandleFunc("/api/", sayhelloName) //设置访问的路由
+	http.HandleFunc("/api/login", login.Login)
+	http.HandleFunc("/api/student/profile", student.Profile)
+	http.HandleFunc("/api/student/courseCalendar", student.CourseCalendar)
+	http.HandleFunc("/api/student/courseQuery", student.CourseQuery)
+	http.HandleFunc("/api/student/scoreTable", student.ScoreTable)
+	http.HandleFunc("/api/student/scoreSummary", student.ScoreSummary)
+	http.HandleFunc("/api/student/scoreTrend", student.ScoreTrend)
+	http.HandleFunc("/api/student/scoreCollege", student.ScoreCollege)
 
-	http.HandleFunc("/teacher/profile", teacher.Profile)
-	http.HandleFunc("/teacher/scoreManagement", teacher.ScoreManagement)
-	http.HandleFunc("/teacher/scoreAnalysis", teacher.ScoreAnalysis)
-	http.HandleFunc("/teacher/courseCalendar", teacher.CourseCalendar)
-	http.HandleFunc("/teacher/classTable", teacher.ClassTable)
+	http.HandleFunc("/api/teacher/profile", teacher.Profile)
+	http.HandleFunc("/api/teacher/scoreManagement", teacher.ScoreManagement)
+	http.HandleFunc("/api/teacher/scoreAnalysis", teacher.ScoreAnalysis)
+	http.HandleFunc("/api/teacher/courseCalendar", teacher.CourseCalendar)
+	http.HandleFunc("/api/teacher/classTable", teacher.ClassTable)
 
-	http.HandleFunc("/admin/profile", admin.Profile)
-	http.HandleFunc("/admin/teacherManagement", admin.TeacherManagement)
-	http.HandleFunc("/admin/studenManagement", admin.StudentManagement)
+	http.HandleFunc("/api/admin/profile", admin.Profile)
+	http.HandleFunc("/api/admin/teacherManagement", admin.TeacherManagement)
+	http.HandleFunc("/api/admin/studenManagement", admin.StudentManagement)
 }

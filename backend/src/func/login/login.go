@@ -33,13 +33,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(os.Stderr, "readall: %v\n", err)
 		os.Exit(-1)
 	}
-	var user User
-	err = json.Unmarshal(arr, &user)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "unmarshal: %v\n", err)
-		os.Exit(-1)
-	}
 	if r.Method == "POST" {
+		var user User
+		err = json.Unmarshal(arr, &user)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "unmarshal: %v\n", err)
+			os.Exit(-1)
+		}
 		msg, identity := utils.CheckUser(user.Id, user.Password)
 		payload := jwt.MapClaims{
 			"id":       user.Id,
@@ -56,8 +56,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			tmp["message"] = "fail"
 		}
 		w.Write(jtmp)
-		w.WriteHeader(http.StatusOK)
 	}
+	w.WriteHeader(http.StatusOK)
 }
 
 /*

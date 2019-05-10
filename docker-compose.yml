@@ -7,6 +7,6 @@ services:
     build: frontend/
   backend:
     ports:
-      - 30004:8090
+      - 30004:9090
     restart: always
     build: backend/src/

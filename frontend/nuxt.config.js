@@ -63,6 +63,7 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
+    baseURL: undefined
   },
 
   /*
@@ -75,7 +76,7 @@ module.exports = {
     extend(config, ctx) {
       if (ctx.isDev) {
         config.plugins.push(new webpack.DefinePlugin({
-          'apiRoot': '\'http://localhost:30004/api\''
+          'apiRoot': '\'/api\''
         }))
       } else {
         config.plugins.push(new webpack.DefinePlugin({
@@ -84,11 +85,11 @@ module.exports = {
       }
     },
     // babel: {
-      // babelrc:true,
-      // 'plugins': [['import', {
-      //   'libraryName': 'iview',
-      //   'libraryDirectory': 'src/components'
-      // }]]
+    // babelrc:true,
+    // 'plugins': [['import', {
+    //   'libraryName': 'iview',
+    //   'libraryDirectory': 'src/components'
+    // }]]
     // },
     postcss: {
       // 添加插件名称作为键，参数作为值
