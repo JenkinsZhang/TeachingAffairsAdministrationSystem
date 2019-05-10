@@ -75,7 +75,7 @@ module.exports = {
     extend(config, ctx) {
       if (ctx.isDev) {
         config.plugins.push(new webpack.DefinePlugin({
-          'apiRoot': '\'https://www.shumsg.cn/api\''
+          'apiRoot': '\'http://localhost:30004/api\''
         }))
       } else {
         config.plugins.push(new webpack.DefinePlugin({
