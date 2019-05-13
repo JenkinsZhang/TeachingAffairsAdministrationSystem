@@ -27,7 +27,7 @@ func ClassTable(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(os.Stderr, "unmarshal: %v\n", err)
 		os.Exit(-1)
 	}
-	if r.Method != "POST" || len(r.Header["Authorization"]) == 0 {
+	if len(r.Header["Authorization"]) == 0 {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
@@ -42,10 +42,19 @@ func ClassTable(w http.ResponseWriter, r *http.Request) {
 		utils.Response(ret, w)
 		return
 	}
-	// ----
-	c := utils.QueryCourseStuInfo(tid, info.Cid, info.Term)
-	for key, val := range c {
-		ret[key] = val
+	if r.Method == "GET" {
+		tid := claims["id"].(string)
+		c := utils.QueryCourseWithTid(tid)
+		ret["term"] = c["term"]
+		ret["cid"] = c["cid"]
+		ret["cname"] = c["cname"]
+		utils.Response(ret, w)
+	} else if r.Method == "POST"{
+		// ----
+		c := utils.QueryCourseStuInfo(tid, info.Cid, info.Term)
+		for key, val := range c {
+			ret[key] = val
+		}
 	}
 	utils.Response(ret, w)
 }

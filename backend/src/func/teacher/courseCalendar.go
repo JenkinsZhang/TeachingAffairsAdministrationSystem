@@ -26,25 +26,30 @@ func CourseCalendar(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(os.Stderr, "unmarshal: %v\n", err)
 		os.Exit(-1)
 	}
-	if r.Method != "POST" || len(r.Header["Authorization"]) == 0 {
+	if len(r.Header["Authorization"]) == 0 {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
 
 	ret := make(map[string]interface{})
 	ret["message"] = "ok"
-	token := r.Header["Authorization"][0]
-	claims, err := utils.CheckToken(token)
-	tid := claims["id"].(string)
-	if err != nil {
-		ret["message"] = "invalid token"
-		utils.Response(ret, w)
-		return
-	}
-	// ----
-	c := utils.QueryTeaCourse(tid, info.Term)
-	for key, val := range c {
-		ret[key] = val
+	if r.Method == "GET"{
+		ret["term"] = utils.QueryTerm()
+	} else if r.Method == "POST"{
+
+		token := r.Header["Authorization"][0]
+		claims, err := utils.CheckToken(token)
+		tid := claims["id"].(string)
+		if err != nil {
+			ret["message"] = "invalid token"
+			utils.Response(ret, w)
+			return
+		}
+		// ----
+		c := utils.QueryTeaCourse(tid, info.Term)
+		for key, val := range c {
+			ret[key] = val
+		}
 	}
 	utils.Response(ret, w)
 }
