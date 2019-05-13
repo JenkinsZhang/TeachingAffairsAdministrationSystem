@@ -7,40 +7,61 @@
         {{profile.id}}
       </p>
       <p slot="content">
-        <Tag color="green">类　型</Tag>
-        {{profile.type}}
-      </p>
-      <p slot="content">
         <Tag color="orange">姓　名</Tag>
         {{profile.name}}
       </p>
       <p slot="content">
+        <Tag color="green">性　别</Tag>
+        {{profile.gender}}
+      </p>
+      <p slot="content">
         <Tag color="cyan">院　系</Tag>
-        {{profile.dep}}
+        {{profile.dname}}
+      </p>
+      <p slot="content">
+        <Tag color="geekblue">年　级</Tag>
+        {{profile.grade}}
+      </p>
+      <p slot="content">
+        <Tag color="magenta">籍　贯</Tag>
+        {{profile.birthplace}}
+      </p>
+      <p slot="content">
+        <Tag color="purple">手机号</Tag>
+        {{profile.phone}}
       </p>
     </Panel>
   </Collapse>
 </template>
 
 <script>
-
   export default {
     name: 'profile',
-    asyncData({ params }) {
+    async asyncData({ params, app }) {
+      let idLabel = ''
+      let ret = {}
       if (params.users === 'student') {
-        return { idLabel: '学　号' }
+        idLabel = '学　号'
       } else {
-        return { idLabel: '工　号' }
+        idLabel = '工　号'
       }
+      ret.idLabel = idLabel
+      await app.$axios({
+        url: apiRoot + `/${params.users}/profile`
+      }).then((res) => {
+        console.log(res.data)
+        ret.profile = { ...res.data }
+      })
+      return ret
     },
     data: () => ({
       whichCollapse: '1',
       idLabel: '学　号',
       profile: {
-        name: '莫之章',
-        id: '16121663',
-        dep: '计算机工程与科学学院',
-        type: '本科生'
+        name: '',
+        id: '',
+        dep: '',
+        type: ''
       }
     })
   }

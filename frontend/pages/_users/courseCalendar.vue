@@ -53,6 +53,7 @@
     '七': 7,
     '日': 7
   }
+  const colorArray = ['#d50000', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#FF5722', '#795548', '#607D8B']
   export default {
     name: 'courseCalender',
     mixins: [mock, calendarColumnsMock],
@@ -155,6 +156,13 @@
           matrix[i] = new Array(7)
         }
         //计算，并赋予颜色
+        let colorArrayBak = Object.assign([], colorArray)
+
+        function swap(arr, i, j) {
+          [arr[i], arr[j]] = [arr[j], arr[i]]
+        }
+
+        let cnt = 0
         raw.forEach((obj, index) => {
           const x = Object.assign({}, obj)
           if (x.sksj.indexOf('星期') === 0) {
@@ -167,7 +175,8 @@
           //给课程初始化一个颜色
           let color
           if (hoverKh === undefined || obj.kh === hoverKh) {//没有hover的元素，或hover的就是这个课程
-            raw[index]._color = color = raw[index]._color || `rgb(${(Math.random() * 195 + 30).toFixed(0)},${(Math.random() * 195 + 30).toFixed(0)},${(Math.random() * 195 + 30).toFixed(0)})`
+            swap(colorArrayBak, cnt, Math.floor(Math.random() * (colorArrayBak.length - cnt) + cnt))
+            raw[index]._color = color = raw[index]._color || colorArrayBak[cnt++]
           } else {
             color = 'rgba(0,0,0,.2)'//灰色
           }

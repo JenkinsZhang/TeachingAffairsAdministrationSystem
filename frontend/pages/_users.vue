@@ -65,7 +65,7 @@
                 size="20"
               ></Icon>
               {{profile.name}}
-              <span class="right-align" style="margin-right:10px">{{profile.role}}</span>
+              <span class="right-align" style="margin-right:10px">{{profile.identity|identityMap}}</span>
             </li>
             <li class="divider"></li>
             <li @click="$router.push('profile')">
@@ -112,14 +112,19 @@
     },
     head() {
       return {
-        title: this.profile.role + '端'
+        title: identityMap[this.profile.identity] + '端'
+      }
+    },
+    filters: {
+      identityMap(k) {
+        return identityMap[k]
       }
     },
     data() {
       return {
         isCollapsed: true,
         showUserPopTip: false,
-        profile: {//TODO: 用store将其持久化
+        profile: {
           birthplace: '河北',
           dname: '计算机学院',
           gender: '男',
@@ -132,7 +137,7 @@
         menu: []
       }
     },
-    async asyncData({ params, app, route, redirect }) {//tip: 在客户端可能会多次触发，例如从404页面回退时
+    asyncData({ params, app, route, redirect, req }) {//tip: 在客户端可能会多次触发，例如从404页面回退时
       //特判
       if (route.path.substr(-params.users.length) === params.users) {
         return
@@ -149,12 +154,8 @@
         })
       })
       let profile = {}
-      await app.$axios({
-        url: apiRoot + `/${params.users}/profile`
-      }).then((res) => {
-        console.log(res.data)
-        profile = { ...res.data, role: identityMap[params.users] }
-      })
+      profile = getUserInfoFromToken(null, req)
+      console.log(profile)
       return { menu, profile }
     },
     mounted() {
