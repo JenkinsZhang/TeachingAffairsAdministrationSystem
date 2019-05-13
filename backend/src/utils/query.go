@@ -1,47 +1,21 @@
 package utils
 
 import (
-	"fmt"
 	"log"
-	"os"
-	"taas/models"
 )
 
-func QueryDepartmentName(did string) string {
-	var dname string
-	err := Db.QueryRow("select dname from Department where did = ?", did).Scan(&dname)
-	if err != nil {
-		if err.Error() == models.NoRows {
-			return models.NoRows
-		}
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
-	}
-	return dname
-}
-func QueryStuDepartmentId(id string) string {
-	var did string
-	err := Db.QueryRow("select did from Student where id = ? ", id).Scan(&did)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return did
-}
-func QueryCourseWithCid(cid string) map[string][]string {
+func QueryCourseWithCid(cid string) (map[string][]string, error) {
 	ret := make(map[string][]string)
 	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Course.cid = ?", cid)
-
-	if err != nil {
-		log.Fatal(err)
-		return nil
-	}
 	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
 	var tid, tname, cname, classTime, credit string
 	for rows.Next() {
 		err := rows.Scan(&cid, &cname, &tid, &tname, &credit, &classTime)
 		if err != nil {
-			log.Fatal(err)
-			return nil
+			return nil, err
 		}
 		ret["cid"] = append(ret["cid"], cid)
 		ret["tid"] = append(ret["tid"], tid)
@@ -50,23 +24,44 @@ func QueryCourseWithCid(cid string) map[string][]string {
 		ret["classTime"] = append(ret["classTime"], classTime)
 		ret["credit"] = append(ret["credit"], credit)
 	}
-	return ret
+	return ret, nil
 }
-func QueryCourseWithTid(tid string) map[string][]string {
+
+func QueryCourseWithCname(cname string) (map[string][]string, error) {
+	ret := make(map[string][]string)
+	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Course.cname = ?", cname)
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	var cid, tid, tname, classTime, credit string
+	for rows.Next() {
+		err := rows.Scan(&cid, &cname, &tid, &tname, &credit, &classTime)
+		if err != nil {
+			return nil, err
+		}
+		ret["cid"] = append(ret["cid"], cid)
+		ret["tid"] = append(ret["tid"], tid)
+		ret["tname"] = append(ret["tname"], tname)
+		ret["cname"] = append(ret["cname"], cname)
+		ret["classTime"] = append(ret["classTime"], classTime)
+		ret["credit"] = append(ret["credit"], credit)
+	}
+	return ret, nil
+}
+
+func QueryCourseWithTid(tid string) (map[string][]string, error) {
 	ret := make(map[string][]string)
 	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime,term from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Teacher.tid = ?", tid)
-
-	if err != nil {
-		log.Fatal(err)
-		return nil
-	}
 	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
 	var cid, tname, cname, classTime, credit, term string
 	for rows.Next() {
 		err := rows.Scan(&cid, &cname, &tid, &tname, &credit, &classTime, &term)
 		if err != nil {
-			log.Fatal(err)
-			return nil
+			return nil, err
 		}
 		ret["cid"] = append(ret["cid"], cid)
 		ret["tid"] = append(ret["tid"], tid)
@@ -76,48 +71,21 @@ func QueryCourseWithTid(tid string) map[string][]string {
 		ret["credit"] = append(ret["credit"], credit)
 		ret["term"] = append(ret["term"], term)
 	}
-	return ret
+	return ret, nil
 }
-func QueryCourseWithCname(cname string) map[string][]string {
-	ret := make(map[string][]string)
-	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Course.cname = ?", cname)
-
-	if err != nil {
-		log.Fatal(err)
-		return nil
-	}
-	defer rows.Close()
-	var cid, tid, tname, classTime, credit string
-	for rows.Next() {
-		err := rows.Scan(&cid, &cname, &tid, &tname, &credit, &classTime)
-		if err != nil {
-			log.Fatal(err)
-			return nil
-		}
-		ret["cid"] = append(ret["cid"], cid)
-		ret["tid"] = append(ret["tid"], tid)
-		ret["tname"] = append(ret["tname"], tname)
-		ret["cname"] = append(ret["cname"], cname)
-		ret["classTime"] = append(ret["classTime"], classTime)
-		ret["credit"] = append(ret["credit"], credit)
-	}
-	return ret
-}
-func QueryCourseWithTname(tname string) map[string][]string {
+func QueryCourseWithTname(tname string) (map[string][]string, error) {
 	ret := make(map[string][]string)
 	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Teacher.tname = ?", tname)
+	defer rows.Close()
 
 	if err != nil {
-		log.Fatal(err)
-		return nil
+		return nil, err
 	}
-	defer rows.Close()
 	var tid, cid, cname, classTime, credit string
 	for rows.Next() {
 		err := rows.Scan(&cid, &cname, &tid, &tname, &credit, &classTime)
 		if err != nil {
-			log.Fatal(err)
-			return nil
+			return nil, err
 		}
 		ret["cid"] = append(ret["cid"], cid)
 		ret["tid"] = append(ret["tid"], tid)
@@ -126,58 +94,82 @@ func QueryCourseWithTname(tname string) map[string][]string {
 		ret["classTime"] = append(ret["classTime"], classTime)
 		ret["credit"] = append(ret["credit"], credit)
 	}
-	return ret
+	return ret, nil
 }
-func QueryCourseName(cid string) string {
-	var cname string
-	err := Db.QueryRow("select cname from Course where cid = ?", cid).Scan(&cname)
+func QueryAllCourses() (map[string][]string, error) {
+	ret := make(map[string][]string)
+	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid")
+	defer rows.Close()
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	return cname
-}
-func QueryCourseCredit(cid string) string {
-	var credit string
-	err := Db.QueryRow("select credit from Course where cid = ?", cid).Scan(&credit)
-	if err != nil {
-		log.Fatal(err)
+	var tid, tname, cid, cname, classTime, credit string
+	for rows.Next() {
+		err := rows.Scan(&cid, &cname, &tid, &tname, &credit, &classTime)
+		if err != nil {
+			return nil, err
+		}
+		ret["cid"] = append(ret["cid"], cid)
+		ret["tid"] = append(ret["tid"], tid)
+		ret["tname"] = append(ret["tname"], tname)
+		ret["cname"] = append(ret["cname"], cname)
+		ret["classTime"] = append(ret["classTime"], classTime)
+		ret["credit"] = append(ret["credit"], credit)
 	}
-	return credit
+	return ret, nil
 }
 
-func QueryTerm() []string {
-	rows, err := Db.Query("select distinct(term) from CourseSchedule")
+func QueryDepartmentName(did string) (string, error) {
+	var dname string
+	err := Db.QueryRow("select dname from Department where did = ?", did).Scan(&dname)
 	if err != nil {
-		log.Fatal(err)
-		return nil
+		return "", err
 	}
+	return dname, nil
+}
+
+func QueryCourseName(cid string) (string, error) {
+	var cname string
+	err := Db.QueryRow("select cname from Course where cid = ?", cid).Scan(&cname)
+	return cname, err
+}
+func QueryCourseCredit(cid string) (string, error) {
+	var credit string
+	err := Db.QueryRow("select credit from Course where cid = ?", cid).Scan(&credit)
+	return credit, err
+}
+
+
+func QueryTerm() ([]string, error) {
+	rows, err := Db.Query("select distinct(term) from CourseSchedule")
 	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
 	term := make([]string, 0)
 	var tmp string
 	for rows.Next() {
 		err = rows.Scan(&tmp)
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
 		term = append(term, tmp)
 	}
-	return term
+	return term, nil
 }
 
-func QueryCourseWithTerm(term string) map[string][]string {
+func QueryCourseWithTerm(term string) (map[string][]string,error) {
 	ret := make(map[string][]string)
+	defer rows.Close()
 	rows, err := Db.Query("select Course.cid,cname,credit,tid,did,classTime from Course, CourseSchedule where Course.cid = CourseSchedule.cid and term = ?", term)
 	if err != nil {
-		log.Fatal(err)
-		return nil
+		return nil, err
 	}
-	defer rows.Close()
 	var cid, tid, did, cname, classTime, credit string
 	for rows.Next() {
 		err := rows.Scan(&cid, &cname, &credit, &tid, &did, &classTime)
 		if err != nil {
-			log.Fatal(err)
-			return nil
+			return nil, err
 		}
 		ret["cid"] = append(ret["cid"], cid)
 		ret["tid"] = append(ret["tid"], tid)
@@ -188,5 +180,7 @@ func QueryCourseWithTerm(term string) map[string][]string {
 		ret["classTime"] = append(ret["classTime"], classTime)
 		ret["credit"] = append(ret["credit"], credit)
 	}
-	return ret
+	return ret,nil
 }
+
+// -----------------------------------------

@@ -4,20 +4,18 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"os"
 	"taas/models"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-func NewToken(payload jwt.MapClaims) string {
+func NewToken(payload jwt.MapClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
 	tokenString, err := token.SignedString([]byte(models.SECRET))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Signed String: %v\n", err)
-		os.Exit(-1)
+		return "", err
 	}
-	return tokenString
+	return tokenString, nil
 }
 
 func CheckToken(tokenString string) (jwt.MapClaims, error) {

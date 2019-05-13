@@ -2,9 +2,7 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
 	"reflect"
 )
 
@@ -20,11 +18,11 @@ func Struct2Map(obj interface{}) map[string]string {
 	return data
 }
 
-func Response(ret map[string]interface{}, w http.ResponseWriter) {
+func Response(ret map[string]interface{}, w http.ResponseWriter, msg string) {
+	ret["message"] = msg
 	jtmp, err := json.Marshal(ret)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "marshal: %v\n", err)
-		os.Exit(-1)
+		ret["message"] = err.Error()
 	}
 	w.Write(jtmp)
 	w.WriteHeader(http.StatusOK)

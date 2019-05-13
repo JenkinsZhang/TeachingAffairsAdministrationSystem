@@ -2,10 +2,8 @@ package login
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"taas/utils"
 
 	"github.com/dgrijalva/jwt-go"
@@ -27,44 +25,50 @@ func needToken(handleFunc func(w http.ResponseWriter, r *http.Request)) func(w h
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	arr, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "readall: %v\n", err)
-		os.Exit(-1)
-	}
+	ret := make(map[string]interface{})
+	ret["message"] = "ok"
 	if r.Method == "POST" {
+		arr, err := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
+		if err != nil {
+			ret["message"] = err.Error()
+			utils.Response(ret, w)
+			return
+		}
 		var user User
 		err = json.Unmarshal(arr, &user)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "unmarshal: %v\n", err)
-			os.Exit(-1)
+			ret["message"] = err.Error()
+			utils.Response(ret, w)
+			return
 		}
 		msg, identity := utils.CheckUser(user.Id, user.Password)
 		name := "admin"
-		if identity == "student"{
-			name = utils.QueryStuName(user.Id)
-		} else if identity == "teacher"{
-			name = utils.QueryTeaName(user.Id)
+		if identity == "student" {
+			name, err = utils.QueryStuName(user.Id)
+		} else if identity == "teacher" {
+			name, err = utils.QueryTeaName(user.Id)
+		}
+		if err != nil {
+			ret["message"] = err.Error()
+			utils.Response(ret, w)
+			return
 		}
 		payload := jwt.MapClaims{
-			"name":		name,
+			"name":     name,
 			"id":       user.Id,
 			"identity": identity,
 		}
-		tmp := map[string]interface{}{
-			"message":  msg,
-			"identity": identity,
-			"token":    utils.NewToken(payload),
-		}
-		jtmp, err := json.Marshal(tmp)
+		ret["message"] = msg
+		ret["identity"] = identity
+		ret["token"], err = utils.NewToken(payload)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "marshal: %v\n", err)
-			tmp["message"] = "fail"
+			ret["message"] = err.Error()
+			utils.Response(ret, w)
+			return
 		}
-		w.Write(jtmp)
 	}
-	w.WriteHeader(http.StatusOK)
+	utils.Response(ret, w)
 }
 
 /*

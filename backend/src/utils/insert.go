@@ -4,19 +4,20 @@ import (
 	"log"
 )
 
-func InsertCourse(info map[string]string) string {
+func InsertCourse(info map[string]string) ( error) {
 	// isCourseCollision()
 	stmt, err := Db.Prepare("insert into CourseCalendar(id,cid,tid,term,classTime) values(id = ?, cid = ?,tid = ?, term = ?, classTime=?")
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 	_, err = stmt.Exec(info["Id"], info["Cid"], info["Tid"], info["Term"], info["ClassTime"])
 	if err != nil {
-		log.Println(err)
+		return err
 	}
-	return "ok"
+	return nil
 }
 
+// ----------------------------------------------------
 func InsertUser(id, identity, password string) {
 	stmt, err := Db.Prepare("insert into User(id,password,identity) values(?,?,?)")
 	if err != nil {

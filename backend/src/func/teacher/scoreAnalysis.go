@@ -2,66 +2,54 @@ package teacher
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"taas/utils"
 )
 
 func ScoreAnalysis(w http.ResponseWriter, r *http.Request) {
-	type Info struct {
-		Term string `json:"term"`
-		Cid  string `json:"cid"`
-	}
-	r.ParseForm()
-	arr, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "readall: %v\n", err)
-		os.Exit(-1)
-	}
-	var info Info
-	err = json.Unmarshal(arr, &info)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "unmarshal: %v\n", err)
-		os.Exit(-1)
-	}
-	if len(r.Header["Authorization"]) == 0 {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-	
 	ret := make(map[string]interface{})
-	token := r.Header["Authorization"][0]
-	claims, err := utils.CheckToken(token)
+
+	// --- token 检查
+	claims, err := utils.PreCheck(r)
 	if err != nil {
-		ret["message"] = "invalid token"
-		utils.Response(ret, w)
+		utils.Response(&ret, &w, err.Error())
 		return
 	}
-	
-	ret["message"] = "ok"
+	tid := claims["id"].(string)
+
 	if r.Method == "GET" {
-		tid := claims["id"].(string)
-		c := utils.QueryCourseWithTid(tid)
+		c, err := utils.QueryCourseWithTid(tid)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
 		ret["term"] = c["term"]
 		ret["cid"] = c["cid"]
 		ret["cname"] = c["cname"]
-		utils.Response(ret, w)
-	} else if r.Method == "POST"{
-		token := r.Header["Authorization"][0]
-		claims, err := utils.CheckToken(token)
-		tid := claims["id"].(string)
+	} else if r.Method == "POST" {
+		type Info struct {
+			Term string `json:"term"`
+			Cid  string `json:"cid"`
+		}
+		arr, err := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
 		if err != nil {
-			ret["message"] = "invalid token"
-			utils.Response(ret, w)
+			utils.Response(&ret, &w, err.Error())
 			return
 		}
-		// ----
-		
-		ret["score"] = utils.QueryCourseScore(tid, info.Cid, info.Term)
+		var info Info
+		err = json.Unmarshal(arr, &info)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
+		// --- get json
+		ret["score"], err = utils.QueryCourseScore(tid, info.Cid, info.Term)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
 	}
-		utils.Response(ret, w)
-	}
-	
+	utils.Response(ret, w)
+}

@@ -2,74 +2,79 @@ package student
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"taas/utils"
 )
 
 func CourseQuery(w http.ResponseWriter, r *http.Request) {
-	type Info struct {
-		Cid       string `json:"cid"`
-		Tid       string `json:"tid"`
-		Cname     string `json:"cname"`
-		Tname     string `json:"tname"`
-		Term      string `json:"term"`
-		ClassTime string `json:"ClassTime"`
-		Op        string `json:"op"`
-	}
-	r.ParseForm()
-	arr, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "readall: %v\n", err)
-		os.Exit(-1)
-	}
-	var info Info
-	err = json.Unmarshal(arr, &info)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "unmarshal: %v\n", err)
-		os.Exit(-1)
-	}
-	if r.Method != "POST" || len(r.Header["Authorization"]) == 0 {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
 	ret := make(map[string]interface{})
-	ret["message"] = "ok"
-	token := r.Header["Authorization"][0]
-	claims, err := utils.CheckToken(token)
+
+	// --- token 检查
+	claims, err := utils.PreCheck(r)
+	if err != nil{
+		utils.Response(&ret, &w, err.Error())
+		return 
+	}
 	id := claims["id"].(string)
-	if err != nil {
-		ret["message"] = "invalid token"
-		utils.Response(ret, w)
-		return
-	}
-	// ----
-	c := make(map[string][]string)
+	
+	// ---
 
-	if info.Op == "query" {
-		if info.Cid != "" {
-			c = utils.QueryCourseWithCid(info.Cid)
-		} else if info.Cname != "" {
-			c = utils.QueryCourseWithCname(info.Cname)
-		} else if info.Tid != "" {
-			c = utils.QueryCourseWithTid(info.Tid)
-		} else if info.Tname != "" {
-			c = utils.QueryCourseWithTname(info.Tname)
-		} else {
-			c = utils.QueryAllCourses()
+	if e.Method == "POST" {
+		type Info struct {
+			Cid       string `json:"cid"`
+			Tid       string `json:"tid"`
+			Cname     string `json:"cname"`
+			Tname     string `json:"tname"`
+			Term      string `json:"term"`
+			ClassTime string `json:"ClassTime"`
+			Op        string `json:"op"`
 		}
-		for key, val := range c {
-			ret[key] = val
+		arr, err := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
 		}
-	} else if info.Op == "select" {
-		tmp := utils.Struct2Map(info)
-		tmp["Id"] = id
-		utils.InsertCourse(tmp)
-	}
+		var info Info
+		err = json.Unmarshal(arr, &info)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
+		// --- get json
 
-	utils.Response(ret, w)
+
+		c := make(map[string][]string)
+
+		if info.Op == "query" {
+			if info.Cid != "" {
+				c,err = utils.QueryCourseWithCid(info.Cid)
+			} else if info.Cname != "" {
+				c,err = utils.QueryCourseWithCname(info.Cname)
+			} else if info.Tid != "" {
+				c,err = utils.QueryCourseWithTid(info.Tid)
+			} else if info.Tname != "" {
+				c,err = utils.QueryCourseWithTname(info.Tname)
+			} else {
+				c,err = utils.QueryAllCourses()
+			}
+			if err != nil{
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+			for key, val := range c {
+				ret[key] = val
+			}
+		} else if info.Op == "select" {
+			tmp := utils.Struct2Map(info)
+			tmp["Id"] = id
+			err = utils.InsertCourse(tmp)
+			if err != nil{
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+		}
+	}
+	utils.Response(&ret, &w, "ok")
 }

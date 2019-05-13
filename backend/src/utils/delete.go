@@ -2,17 +2,20 @@ package utils
 
 import "log"
 
-func DeleteCourse(id, cid, term string) {
+// delete course with id, cid and term
+func DeleteCourse(id, cid, term string) error {
 	stmt, err := Db.Prepare("delete from CourseCalendar where id = ? and cid = ? and  term = ?")
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 	_, err = stmt.Exec(id, cid, term)
 	if err != nil {
-		log.Println(err)
+		return err
 	}
+	return nil
 }
 
+// ------------------------------------------------
 func DeleteUser(id string) {
 	stmt, err := Db.Prepare("delete from User where id = ?")
 	if err != nil {
@@ -44,4 +47,5 @@ func DeleteStudent(id string) {
 		log.Println(err)
 	}
 	DeleteUser(id)
+}
 }

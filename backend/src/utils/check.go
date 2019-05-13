@@ -1,12 +1,45 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 	"taas/models"
+
+	"github.com/dgrijalva/jwt-go"
 )
+
+func PreCheck(r *http.Request) (jwt.MapClaims, error) {
+	r.ParseForm()
+	if len(r.Header["Authorization"]) == 0 {
+		return nil, errors.New("need token")
+	}
+	token := r.Header["Authorization"][0]
+	claims, err := CheckToken(token)
+	if err != nil {
+		return nil, errors.New("invalid token")
+	}
+	return claims, nil
+}
+// ----------------------------
+
+/*
+func GetJson(r *http.Request, info interface{}) interface{}, error) {
+	arr, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(arr, &info)
+	if err != nil {
+		return nil, err
+	}
+	return info, nil
+}
+*/
 
 func CheckId(id string) string {
 	err := Db.QueryRow("select id from User where id = ?", id).Scan(&id)

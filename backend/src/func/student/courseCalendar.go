@@ -2,60 +2,62 @@ package student
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"taas/utils"
 )
 
 func CourseCalendar(w http.ResponseWriter, r *http.Request) {
-	type Info struct {
-		Term string `json:"term"`
-		Cid  string `json:"cid"`
-		Op   string `json:"op"`
-	}
-	r.ParseForm()
-	arr, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
+	ret := make(map[string]interface{})
+
+	// --- token 检查
+	claims, err := utils.PreCheck(r)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "readall: %v\n", err)
-		os.Exit(-1)
-	}
-	var info Info
-	err = json.Unmarshal(arr, &info)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "unmarshal: %v\n", err)
-		os.Exit(-1)
-	}
-	if len(r.Header["Authorization"]) == 0 {
-		w.WriteHeader(http.StatusOK)
+		utils.Response(&ret, &w, err.Error())
 		return
 	}
-	// ----
-	c := make(map[string][]string)
-	ret := make(map[string]interface{})
-	tmp := make(map[string][]string)
-	ret["message"] = "ok"
-	if r.Method == "GET"{
-		ret["term"] = utils.QueryTerm()
-	} else if r.Method == "POST"{
-		token := r.Header["Authorization"][0]
-		claims, err := utils.CheckToken(token)
-		id := claims["id"].(string)
+	id := claims["id"].(string)
+
+	// ---
+	if r.Method == "GET" {
+		ret["term"], err = utils.QueryTerm()
 		if err != nil {
-			ret["message"] = "invalid token"
-			utils.Response(ret, w)
+			utils.Response(&ret, &w, err.Error())
 			return
 		}
+	} else if r.Method == "POST" {
+		type Info struct {
+			Term string `json:"term"`
+			Cid  string `json:"cid"`
+			Op   string `json:"op"`
+		}
+		arr, err := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
+		var info Info
+		err = json.Unmarshal(arr, &info)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
+		// --- get json
+
+		c := make(map[string][]string)
+		tmp := make(map[string][]string)
 		// 先删后查
 		if info.Op == "delete" {
-			utils.DeleteCourse(id, info.Cid, info.Term)
+			err = utils.DeleteCourse(id, info.Cid, info.Term)
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
 		}
-		tmp = utils.QueryStuCourses(id, info.Term)
-		if tmp == nil {
-			ret["message"] = "invalid token"
-			utils.Response(ret, w)
+		tmp, err = utils.QueryStuCourses(id, info.Term)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
 			return
 		}
 		for key, val := range tmp {
@@ -67,7 +69,6 @@ func CourseCalendar(w http.ResponseWriter, r *http.Request) {
 			ret[key] = val
 		}
 	}
-	utils.Response(ret, w)
-		
+	utils.Response(&ret, &w, "ok")
 }
-	
+}

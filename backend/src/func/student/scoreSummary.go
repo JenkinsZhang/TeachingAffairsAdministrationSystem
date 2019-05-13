@@ -6,27 +6,26 @@ import (
 )
 
 func ScoreSummary(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	if r.Method != "GET" || len(r.Header["Authorization"]) == 0 {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
 	ret := make(map[string]interface{})
-	ret["message"] = "ok"
-	token := r.Header["Authorization"][0]
-	claims, err := utils.CheckToken(token)
-	id := claims["id"].(string)
+
+	// --- token 检查
+	claims, err := utils.PreCheck(r)
 	if err != nil {
-		ret["message"] = "invalid token"
-		utils.Response(ret, w)
+		utils.Response(&ret, &w, err.Error())
 		return
 	}
-	// ----
-	c := utils.QueryStuAllCourseScore(id)
-	for key, val := range c {
-		ret[key] = val
-	}
+	id := claims["id"].(string)
 
-	utils.Response(ret, w)
+	// ----
+	if r.Method == "GET" {
+		c, err := utils.QueryStuAllCourseScore(id)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
+		for key, val := range c {
+			ret[key] = val
+		}
+	}
+	utils.Response(&ret, &w, "ok")
 }

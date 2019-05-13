@@ -2,53 +2,56 @@ package student
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"taas/utils"
 )
 
 func ScoreTable(w http.ResponseWriter, r *http.Request) {
-	type Info struct {
-		Term string `json:"term"`
-	}
-	r.ParseForm()
-	arr, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
+	ret := make(map[string]interface{})
+
+	// --- token 检查
+	claims, err := utils.PreCheck(r)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "readall: %v\n", err)
-		os.Exit(-1)
-	}
-	var info Info
-	err = json.Unmarshal(arr, &info)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "unmarshal: %v\n", err)
-		os.Exit(-1)
-	}
-	if  len(r.Header["Authorization"]) == 0 {
-		w.WriteHeader(http.StatusOK)
+		utils.Response(&ret, &w, err.Error())
 		return
 	}
+	id := claims["id"].(string)
 
-	ret := make(map[string]interface{})
-	ret["message"] = "ok"
-	if r.Method == "GET"{
-		ret["term"] = utils.QueryTerm()
-	} else if r.Method == "POST"{
-		token := r.Header["Authorization"][0]
-		claims, err := utils.CheckToken(token)
-		id := claims["id"].(string)
+	// ---
+	if r.Method == "GET" {
+		ret["term"],err = utils.QueryTerm()
 		if err != nil {
-			ret["message"] = "invalid token"
-			utils.Response(ret, w)
+			utils.Response(&ret, &w, err.Error())
 			return
 		}
+	} else if r.Method == "POST" {
+		type Info struct {
+			Term string `json:"term"`
+		}
+		arr, err := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
+		var info Info
+		err = json.Unmarshal(arr, &info)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
+		// --- get json
+
 		// ----
-		c := utils.QueryStuCourseScore(id, info.Term)
+		c,err := utils.QueryStuCourseScore(id, info.Term)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
 		for key, val := range c {
 			ret[key] = val
 		}
 	}
-	utils.Response(ret, w)
+	utils.Response(&ret, &w, "ok")
 }

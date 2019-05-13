@@ -2,59 +2,58 @@ package teacher
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"taas/utils"
 )
 
 func ClassTable(w http.ResponseWriter, r *http.Request) {
-	type Info struct {
-		Term string `json:"term"`
-		Cid  string `json:"cid"`
-	}
-	r.ParseForm()
-	arr, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "readall: %v\n", err)
-		os.Exit(-1)
-	}
-	var info Info
-	err = json.Unmarshal(arr, &info)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "unmarshal: %v\n", err)
-		os.Exit(-1)
-	}
-	if len(r.Header["Authorization"]) == 0 {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
 	ret := make(map[string]interface{})
-	ret["message"] = "ok"
-	token := r.Header["Authorization"][0]
-	claims, err := utils.CheckToken(token)
-	tid := claims["id"].(string)
+
+	// --- token 检查
+	claims, err := utils.PreCheck(r)
 	if err != nil {
-		ret["message"] = "invalid token"
-		utils.Response(ret, w)
+		utils.Response(&ret, &w, err.Error())
 		return
 	}
+	tid := claims["id"].(string)
+
 	if r.Method == "GET" {
-		tid := claims["id"].(string)
-		c := utils.QueryCourseWithTid(tid)
+		c, err := utils.QueryCourseWithTid(tid)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
 		ret["term"] = c["term"]
 		ret["cid"] = c["cid"]
 		ret["cname"] = c["cname"]
-		utils.Response(ret, w)
-	} else if r.Method == "POST"{
-		// ----
-		c := utils.QueryCourseStuInfo(tid, info.Cid, info.Term)
+	} else if r.Method == "POST" {
+		type Info struct {
+			Term string `json:"term"`
+			Cid  string `json:"cid"`
+		}
+		arr, err := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
+		var info Info
+		err = json.Unmarshal(arr, &info)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
+		// --- get json
+
+		c, err := utils.QueryCourseStuInfo(tid, info.Cid, info.Term)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
 		for key, val := range c {
 			ret[key] = val
 		}
 	}
-	utils.Response(ret, w)
+	utils.Response(&ret, &w, "ok")
 }
