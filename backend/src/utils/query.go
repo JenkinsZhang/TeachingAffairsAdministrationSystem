@@ -164,14 +164,6 @@ func QueryTerm() []string {
 	return term
 }
 
-func QueryTeaName(tid string) string {
-	var tname string
-	err := Db.QueryRow("select tname from Teacher where tid = ?", tid).Scan(&tname)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return tname
-}
 func QueryCourseWithTerm(term string) map[string][]string {
 	ret := make(map[string][]string)
 	rows, err := Db.Query("select Course.cid,cname,credit,tid,did,classTime from Course, CourseSchedule where Course.cid = CourseSchedule.cid and term = ?", term)

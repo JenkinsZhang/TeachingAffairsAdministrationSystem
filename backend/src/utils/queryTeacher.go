@@ -118,3 +118,12 @@ func QueryCourseStuInfo(tid, cid, term string) map[string][]string {
 	}
 	return ret
 }
+
+func QueryTeaName(tid string) string {
+	var tname string
+	err := Db.QueryRow("select tname from Teacher where tid = ?", tid).Scan(&tname)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return tname
+}

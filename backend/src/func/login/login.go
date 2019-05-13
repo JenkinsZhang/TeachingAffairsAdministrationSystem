@@ -41,7 +41,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			os.Exit(-1)
 		}
 		msg, identity := utils.CheckUser(user.Id, user.Password)
+		name := "admin"
+		if identity == "student"{
+			name = utils.QueryStuName(user.Id)
+		} else if identity == "teacher"{
+			name = utils.QueryTeaName(user.Id)
+		}
 		payload := jwt.MapClaims{
+			"name":		name,
 			"id":       user.Id,
 			"identity": identity,
 		}
