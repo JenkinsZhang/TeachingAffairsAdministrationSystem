@@ -7,12 +7,12 @@
         class="header"
       >
         <Col>
-          <p>院系：{{profile.dep}}</p>
+          <p>院系：{{profile.dname}}</p>
           <p>姓名：{{profile.name}}</p>
         </Col>
         <Col>
           <p>学号：{{profile.id}}</p>
-          <p>性别：{{profile.xb}}</p>
+          <p>性别：{{profile.gender}}</p>
         </Col>
       </Row>
     </div>
@@ -24,15 +24,37 @@
 <script>
   export default {
     name: 'scoreSummary',
+    async asyncData({ app, params }) {
+      let data1 = [], sumxf = 0, avecj = 0, profile = null
+      const p1 = app.$axios({
+        url: apiRoot + `/${params.users}/profile`
+      }).then((res) => {
+        profile = res.data
+      })
+      const p2 = app.$axios({
+        url: apiRoot + '/student/scoreSummary'
+      }).then((res) => {
+        const { cid, cname, credit, score, tid, tname } = res.data
+        for (let i = 0; i < cid.length; i++) {
+          data1.push({
+            kh: cid[i],
+            km: cname[i],
+            xf: credit[i],
+            cj: score[i],
+            xq: '不知道什么学期',
+            bz: ''
+          })
+          sumxf += Number(credit[i])
+          avecj += score[i] * credit[i]
+        }
+        avecj = (avecj / sumxf).toFixed(2)
+      })
+      await Promise.all([p1, p2])
+      return { data1, sumxf, avecj, profile }
+    },
     data() {
       return {
-        profile: {
-          name: '莫之章',
-          id: '16121663',
-          xb: '男',
-          dep: '计算机工程与科学学院',
-          type: '本科生'
-        },
+        profile: {},
         columns: [{
           'title': '课程号',
           'key': 'kh',
@@ -59,8 +81,8 @@
           'align': 'center'
         }],
         data1: [],
-        avecj: 92,
-        sumxf: 117
+        avecj: 0,
+        sumxf: 0
       }
     }
   }

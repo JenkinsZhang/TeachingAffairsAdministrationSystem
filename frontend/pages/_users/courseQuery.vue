@@ -1,7 +1,16 @@
 <template>
   <div class="wrapper">
-    <div class="operation" style="width:400px">
-      <Input search enter-button placeholder="键入课程号、课程名、任课教师名或工号..." @on-search="handleSearch"/>
+    <div class="operation" style="width:600px">
+      <span class="label">课程号：</span><Input enter-button  style="width: 160px"/>
+      <span class="label">课程名：</span><Input enter-button  style="width: 160px"/>
+    </div>
+    <div class="operation" style="width:600px">
+      <span class="label">教师名：</span><Input enter-button  style="width: 160px"/>
+      <span class="label">教师号：</span><Input enter-button  style="width: 160px"/>
+    </div>
+    <div class="operation" style="width:600px">
+      <span class="label">上课时间：</span><Input enter-button  style="width: 160px"/>
+      <span class="label">学分数：</span><Input enter-button  style="width: 160px"/>
     </div>
     <Table class="operation" stripe border :columns="columns" :data="data1" size="large"></Table>
   </div>

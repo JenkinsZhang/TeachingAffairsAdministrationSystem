@@ -13,6 +13,24 @@
 <script>
   export default {
     name: 'scoreCollege',
+    async asyncData({ app }) {
+      let data1 = []
+      await app.$axios({
+        url: apiRoot + '/student/scoreCollege'
+      }).then((res) => {
+        const data = res.data
+        data1.push({
+          xh: data.id,
+          xm: data.name,
+          pjcj: Number(data.score).toFixed(2),
+          yx: data.did,
+          zs: data.totalStudents,
+          pm: data.rank,
+          bfb: (Number(data.percentage)*100).toFixed(1) + '%'
+        })
+      })
+      return { data1 }
+    },
     data() {
       return {
         selectedClassId: '',
@@ -43,7 +61,7 @@
           },
           {
             'title': '排名',
-            'key': 'xf',
+            'key': 'pm',
             'align': 'center'
           },
           {
