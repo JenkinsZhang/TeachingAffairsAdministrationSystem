@@ -2,6 +2,7 @@ package teacher
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"taas/utils"
@@ -17,11 +18,10 @@ func ScoreManagement(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tid := claims["id"].(string)
-
 	if r.Method == "GET" {
 		c, err := utils.QueryCourseWithTid(tid)
 		if err != nil {
-			utils.Response(&ret, &w, err.Error())
+			fmt.Println(err)
 			return
 		}
 		ret["term"] = c["term"]
@@ -69,6 +69,6 @@ func ScoreManagement(w http.ResponseWriter, r *http.Request) {
 			utils.Response(&ret, &w, "invalid op")
 			return
 		}
-		utils.Response(&ret, &w, "ok")
 	}
+	utils.Response(&ret, &w, "ok")
 }
