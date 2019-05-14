@@ -18,12 +18,12 @@ func Struct2Map(obj interface{}) map[string]string {
 	return data
 }
 
-func Response(ret map[string]interface{}, w http.ResponseWriter, msg string) {
-	ret["message"] = msg
+func Response(ret *map[string]interface{}, w *http.ResponseWriter, msg string) {
+	(*ret)["message"] = msg
 	jtmp, err := json.Marshal(ret)
 	if err != nil {
-		ret["message"] = err.Error()
+		(*ret)["message"] = err.Error()
 	}
-	w.Write(jtmp)
-	w.WriteHeader(http.StatusOK)
+	(*w).Write(jtmp)
+	(*w).WriteHeader(http.StatusOK)
 }

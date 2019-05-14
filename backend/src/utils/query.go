@@ -1,9 +1,5 @@
 package utils
 
-import (
-	"log"
-)
-
 func QueryCourseWithCid(cid string) (map[string][]string, error) {
 	ret := make(map[string][]string)
 	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Course.cid = ?", cid)
@@ -77,7 +73,6 @@ func QueryCourseWithTname(tname string) (map[string][]string, error) {
 	ret := make(map[string][]string)
 	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Teacher.tname = ?", tname)
 	defer rows.Close()
-
 	if err != nil {
 		return nil, err
 	}
@@ -122,10 +117,7 @@ func QueryAllCourses() (map[string][]string, error) {
 func QueryDepartmentName(did string) (string, error) {
 	var dname string
 	err := Db.QueryRow("select dname from Department where did = ?", did).Scan(&dname)
-	if err != nil {
-		return "", err
-	}
-	return dname, nil
+	return dname, err
 }
 
 func QueryCourseName(cid string) (string, error) {
@@ -138,7 +130,6 @@ func QueryCourseCredit(cid string) (string, error) {
 	err := Db.QueryRow("select credit from Course where cid = ?", cid).Scan(&credit)
 	return credit, err
 }
-
 
 func QueryTerm() ([]string, error) {
 	rows, err := Db.Query("select distinct(term) from CourseSchedule")
@@ -158,10 +149,10 @@ func QueryTerm() ([]string, error) {
 	return term, nil
 }
 
-func QueryCourseWithTerm(term string) (map[string][]string,error) {
+func QueryCourseWithTerm(term string) (map[string][]string, error) {
 	ret := make(map[string][]string)
-	defer rows.Close()
 	rows, err := Db.Query("select Course.cid,cname,credit,tid,did,classTime from Course, CourseSchedule where Course.cid = CourseSchedule.cid and term = ?", term)
+	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -174,13 +165,21 @@ func QueryCourseWithTerm(term string) (map[string][]string,error) {
 		ret["cid"] = append(ret["cid"], cid)
 		ret["tid"] = append(ret["tid"], tid)
 		ret["did"] = append(ret["did"], did)
-		ret["tname"] = append(ret["tname"], QueryTeaName(tid))
-		ret["dname"] = append(ret["dname"], QueryDepartmentName(did))
+		tname, err := QueryTeaName(tid)
+		if err != nil {
+			return nil, err
+		}
+		ret["tname"] = append(ret["tname"], tname)
+		dname, err := QueryDepartmentName(did)
+		if err != nil {
+			return nil, err
+		}
+		ret["dname"] = append(ret["dname"], dname)
 		ret["cname"] = append(ret["cname"], cname)
 		ret["classTime"] = append(ret["classTime"], classTime)
 		ret["credit"] = append(ret["credit"], credit)
 	}
-	return ret,nil
+	return ret, nil
 }
 
 // -----------------------------------------

@@ -2,53 +2,53 @@ package utils
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 )
 
-func UpdateStuScore(id, cid, score, term string) string {
+func UpdateStuScore(id, cid, score, term string) error {
 	stmt, err := Db.Prepare("update CourseCalendar set score = ? where id = ? and cid = ? and term = ?")
 	if err != nil {
-		log.Println(err)
-		return "fail"
+		return err
 	}
-	tmp, _ := strconv.ParseFloat(score, 32)
-	_, err = stmt.Exec(tmp, id, cid, term)
+	tmp, err := strconv.ParseFloat(score, 32)
 	if err != nil {
-		log.Println(err)
-		return "fail"
+		return err
 	}
-	return "ok"
+	_, err = stmt.Exec(tmp, id, cid, term)
+	return err
 }
 
-func UpdateInfo(id, itemName, itemVal, table, idName string) {
+func UpdateInfo(id, itemName, itemVal, table, idName string) error {
 	q := fmt.Sprintf("update %s set %s = ? where %s = ?", table, itemName, idName)
 	stmt, err := Db.Prepare(q)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	_, err = stmt.Exec(itemVal, id)
-	if err != nil {
-		log.Fatal(err)
-	}
+	return err
 }
-func Update(info map[string]string) string {
+func Update(info map[string]string) error {
 	if _, ok := info["Id"]; ok {
 		items := []string{"Name", "Gender", "Birthday", "Birthplace", "Phone", "Grade"}
 		id := info["Id"]
 		stu := "Student"
 		for _, itemName := range items {
 			if itemVal, ok := info[itemName]; ok && len(itemVal) != 0 {
-				UpdateInfo(id, strings.ToLower(itemName), itemVal, stu, "id")
+				err := UpdateInfo(id, strings.ToLower(itemName), itemVal, stu, "id")
+				if err != nil {
+					return err
+				}
 			}
 		}
 		if dname, ok := info["Dname"]; ok && len(dname) != 0 {
-			did := CheckDname(dname)
-			if did != "dname not found" {
-				UpdateInfo(id, "did", did, stu, "id")
-			} else {
-				return "fail"
+			did, err := CheckDname(dname)
+			if err != nil {
+				return err
+			}
+			err = UpdateInfo(id, "did", did, stu, "id")
+			if err != nil {
+				return err
 			}
 		}
 	} else if _, ok := info["Tid"]; ok {
@@ -57,17 +57,22 @@ func Update(info map[string]string) string {
 		tea := "Teacher"
 		for _, itemName := range items {
 			if itemVal, ok := info[itemName]; ok && len(itemVal) != 0 {
-				UpdateInfo(tid, strings.ToLower(itemName), itemVal, tea, "tid")
+				err := UpdateInfo(tid, strings.ToLower(itemName), itemVal, tea, "tid")
+				if err != nil {
+					return err
+				}
 			}
 		}
 		if dname, ok := info["Dname"]; ok && len(dname) != 0 {
-			did := CheckDname(dname)
-			if did != "dname not found" {
-				UpdateInfo(tid, "did", did, tea, "tid")
-			} else {
-				return "fail"
+			did, err := CheckDname(dname)
+			if err != nil {
+				return err
+			}
+			err = UpdateInfo(tid, "did", did, tea, "tid")
+			if err != nil {
+				return err
 			}
 		}
 	}
-	return "ok"
+	return nil
 }

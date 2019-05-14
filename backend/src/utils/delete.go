@@ -1,7 +1,5 @@
 package utils
 
-import "log"
-
 // delete course with id, cid and term
 func DeleteCourse(id, cid, term string) error {
 	stmt, err := Db.Prepare("delete from CourseCalendar where id = ? and cid = ? and  term = ?")
@@ -9,43 +7,38 @@ func DeleteCourse(id, cid, term string) error {
 		return err
 	}
 	_, err = stmt.Exec(id, cid, term)
+	return err
+}
+
+func DeleteUser(id string) error {
+	stmt, err := Db.Prepare("delete from User where id = ?")
 	if err != nil {
 		return err
 	}
-	return nil
-}
-
-// ------------------------------------------------
-func DeleteUser(id string) {
-	stmt, err := Db.Prepare("delete from User where id = ?")
-	if err != nil {
-		log.Println(err)
-	}
 	_, err = stmt.Exec(id)
-	if err != nil {
-		log.Println(err)
-	}
+	return err
 }
-func DeleteTeacher(tid string) {
+func DeleteTeacher(tid string) error {
 	stmt, err := Db.Prepare("delete from Teacher where tid = ?")
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 	_, err = stmt.Exec(tid)
 	if err != nil {
-		log.Println(err)
+		return err
 	}
-	DeleteUser(tid)
+	return DeleteUser(tid)
 }
-func DeleteStudent(id string) {
+func DeleteStudent(id string) error {
 	stmt, err := Db.Prepare("delete from Student where id = ?")
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 	_, err = stmt.Exec(id)
 	if err != nil {
-		log.Println(err)
+		return err
 	}
-	DeleteUser(id)
+	return DeleteUser(id)
 }
-}
+
+// ------------------------------------------------

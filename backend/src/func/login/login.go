@@ -26,23 +26,24 @@ func needToken(handleFunc func(w http.ResponseWriter, r *http.Request)) func(w h
 func Login(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	ret := make(map[string]interface{})
-	ret["message"] = "ok"
 	if r.Method == "POST" {
 		arr, err := ioutil.ReadAll(r.Body)
 		defer r.Body.Close()
 		if err != nil {
-			ret["message"] = err.Error()
-			utils.Response(ret, w)
+			utils.Response(&ret, &w, err.Error())
 			return
 		}
 		var user User
 		err = json.Unmarshal(arr, &user)
 		if err != nil {
-			ret["message"] = err.Error()
-			utils.Response(ret, w)
+			utils.Response(&ret, &w, err.Error())
 			return
 		}
-		msg, identity := utils.CheckUser(user.Id, user.Password)
+		identity, err := utils.CheckUser(user.Id, user.Password)
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
 		name := "admin"
 		if identity == "student" {
 			name, err = utils.QueryStuName(user.Id)
@@ -50,8 +51,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			name, err = utils.QueryTeaName(user.Id)
 		}
 		if err != nil {
-			ret["message"] = err.Error()
-			utils.Response(ret, w)
+			utils.Response(&ret, &w, err.Error())
 			return
 		}
 		payload := jwt.MapClaims{
@@ -59,16 +59,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			"id":       user.Id,
 			"identity": identity,
 		}
-		ret["message"] = msg
 		ret["identity"] = identity
 		ret["token"], err = utils.NewToken(payload)
 		if err != nil {
-			ret["message"] = err.Error()
-			utils.Response(ret, w)
+			utils.Response(&ret, &w, err.Error())
 			return
 		}
 	}
-	utils.Response(ret, w)
+	utils.Response(&ret, &w, "ok")
 }
 
 /*

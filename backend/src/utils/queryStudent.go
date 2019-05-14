@@ -8,10 +8,10 @@ import (
 func QueryStuCourses(id, term string) (map[string][]string, error) {
 	ret := make(map[string][]string)
 	rows, err := Db.Query("select CourseCalendar.cid, cname,CourseCalendar.tid,tname, credit, classTime from CourseCalendar, Course, Teacher where CourseCalendar.id = ? and CourseCalendar.cid = Course.cid and CourseCalendar.tid = Teacher.tid and term = ?", id, term)
+	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 	var cid, tid, tname, cname, classTime, credit string
 	for rows.Next() {
 		err := rows.Scan(&cid, &cname, &tid, &tname, &credit, &classTime)
@@ -35,7 +35,10 @@ func GetStudentProfile(id string) (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	dname = QueryDepartmentName(did)
+	dname, err = QueryDepartmentName(did)
+	if err != nil {
+		return nil, err
+	}
 	ret := map[string]string{
 		"name":       name,
 		"gender":     gender,
@@ -73,10 +76,7 @@ func QueryTotalStu(did string) (string, error) {
 func QueryStuName(id string) (string, error) {
 	var name string
 	err := Db.QueryRow("select name from Student where id = ?", id).Scan(&name)
-	if err != nil {
-		return "", err
-	}
-	return name, nil
+	return name, err
 }
 
 // -----------------------------------------------------

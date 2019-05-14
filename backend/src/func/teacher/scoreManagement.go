@@ -59,7 +59,8 @@ func ScoreManagement(w http.ResponseWriter, r *http.Request) {
 				ret[key] = val
 			}
 		} else if info.Op == "change" {
-			ret["message"], err = utils.UpdateStuScore(info.Id, info.Cid, info.Score, info.Term)
+
+			err = utils.UpdateStuScore(info.Id, info.Cid, info.Score, info.Term)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return

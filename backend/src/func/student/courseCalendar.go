@@ -71,4 +71,3 @@ func CourseCalendar(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.Response(&ret, &w, "ok")
 }
-}

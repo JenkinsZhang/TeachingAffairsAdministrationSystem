@@ -51,5 +51,5 @@ func ScoreAnalysis(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	utils.Response(ret, w)
+	utils.Response(&ret, &w, "ok")
 }

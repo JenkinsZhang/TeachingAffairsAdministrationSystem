@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"taas/models"
@@ -26,7 +25,7 @@ func CheckToken(tokenString string) (jwt.MapClaims, error) {
 		return []byte(models.SECRET), nil
 	})
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		if ok := UserExists(claims["id"].(string)); ok {
+		if err := UserExists(claims["id"].(string)); err == nil {
 			return claims, nil
 		}
 		return nil, errors.New("invalid token")
@@ -35,8 +34,8 @@ func CheckToken(tokenString string) (jwt.MapClaims, error) {
 
 }
 
-func UserExists(id string) bool {
+func UserExists(id string) error {
 	var identity string
 	err := Db.QueryRow("select identity from User where id = ?", id).Scan(&identity)
-	return err != sql.ErrNoRows
+	return err
 }

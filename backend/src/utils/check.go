@@ -2,12 +2,8 @@ package utils
 
 import (
 	"errors"
-	"fmt"
-	"log"
 	"net/http"
-	"os"
 	"strings"
-	"taas/models"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -24,6 +20,39 @@ func PreCheck(r *http.Request) (jwt.MapClaims, error) {
 	}
 	return claims, nil
 }
+func CheckId(id string) error {
+	err := Db.QueryRow("select id from User where id = ?", id).Scan(&id)
+	return err
+}
+func CheckDname(dname string) (string, error) {
+	var did string
+	err := Db.QueryRow("select did from Department where dname = ?", dname).Scan(&did)
+	return did, err
+}
+
+// true: 有联系
+func CheckConnection(tid string) (bool, error) {
+	var cnt int
+	err := Db.QueryRow("select count(id) from CourseCalendar where tid = ?", tid).Scan(&cnt)
+	if err != nil {
+		return false, err
+	}
+	return cnt != 0, nil
+}
+
+func CheckUser(id string, pwd string) (string, error) {
+	t := "invaild"
+	var retpwd string
+	err := Db.QueryRow("select password,identity from User where id = ? ", id).Scan(&retpwd, &t)
+	if err != nil {
+		return t, err
+	}
+	if strings.Compare(retpwd, pwd) != 0 {
+		return t, errors.New("wrong password")
+	}
+	return t, nil
+}
+
 // ----------------------------
 
 /*
@@ -40,50 +69,3 @@ func GetJson(r *http.Request, info interface{}) interface{}, error) {
 	return info, nil
 }
 */
-
-func CheckId(id string) string {
-	err := Db.QueryRow("select id from User where id = ?", id).Scan(&id)
-	if err != nil {
-		return "id not found"
-	}
-	return id
-}
-func CheckDname(dname string) string {
-	var did string
-	err := Db.QueryRow("select did from Department where dname = ?", dname).Scan(&did)
-	if err != nil {
-		return "dname not found"
-	}
-	return did
-}
-
-func CheckUser(id string, pwd string) (msg, t string) {
-	t = "invaild"
-	var retpwd string
-	err := Db.QueryRow("select password,identity from User where id = ? ", id).Scan(&retpwd, &t)
-	if err != nil {
-		if err.Error() == models.NoRows {
-			msg = "User not exits" // 用户不存在
-			return
-		}
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		msg = "fail"
-		return
-	}
-	if strings.Compare(retpwd, pwd) != 0 {
-		msg = "wrong password" // 密码错误
-		return
-	}
-	msg = "ok"
-	return
-}
-
-// true: 有联系
-func CheckConnection(tid string) bool {
-	var cnt int
-	err := Db.QueryRow("select count(id) from CourseCalendar where tid = ?", tid).Scan(&cnt)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return cnt != 0
-}

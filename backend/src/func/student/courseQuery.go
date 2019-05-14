@@ -12,15 +12,15 @@ func CourseQuery(w http.ResponseWriter, r *http.Request) {
 
 	// --- token 检查
 	claims, err := utils.PreCheck(r)
-	if err != nil{
+	if err != nil {
 		utils.Response(&ret, &w, err.Error())
-		return 
+		return
 	}
 	id := claims["id"].(string)
-	
+
 	// ---
 
-	if e.Method == "POST" {
+	if r.Method == "POST" {
 		type Info struct {
 			Cid       string `json:"cid"`
 			Tid       string `json:"tid"`
@@ -44,22 +44,21 @@ func CourseQuery(w http.ResponseWriter, r *http.Request) {
 		}
 		// --- get json
 
-
 		c := make(map[string][]string)
 
 		if info.Op == "query" {
 			if info.Cid != "" {
-				c,err = utils.QueryCourseWithCid(info.Cid)
+				c, err = utils.QueryCourseWithCid(info.Cid)
 			} else if info.Cname != "" {
-				c,err = utils.QueryCourseWithCname(info.Cname)
+				c, err = utils.QueryCourseWithCname(info.Cname)
 			} else if info.Tid != "" {
-				c,err = utils.QueryCourseWithTid(info.Tid)
+				c, err = utils.QueryCourseWithTid(info.Tid)
 			} else if info.Tname != "" {
-				c,err = utils.QueryCourseWithTname(info.Tname)
+				c, err = utils.QueryCourseWithTname(info.Tname)
 			} else {
-				c,err = utils.QueryAllCourses()
+				c, err = utils.QueryAllCourses()
 			}
-			if err != nil{
+			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
@@ -70,7 +69,7 @@ func CourseQuery(w http.ResponseWriter, r *http.Request) {
 			tmp := utils.Struct2Map(info)
 			tmp["Id"] = id
 			err = utils.InsertCourse(tmp)
-			if err != nil{
+			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
