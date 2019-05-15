@@ -1,19 +1,33 @@
 <template>
   <div class="wrapper">
-    <div class="operation" style="width:600px">
-      <span class="label">课程号：</span><Input enter-button style="width: 160px" v-model="cid" @on-enter="handleSearch"/>
-      <span class="label">课程名：</span><Input enter-button style="width: 160px" v-model="cname" @on-enter="handleSearch"/>
-    </div>
-    <div class="operation" style="width:600px">
-      <span class="label">教师名：</span><Input enter-button style="width: 160px" v-model="tname" @on-enter="handleSearch"/>
-      <span class="label">教师号：</span><Input enter-button style="width: 160px" v-model="tid" @on-enter="handleSearch"/>
-    </div>
-    <div class="operation" style="width:600px">
-      <span class="label">上课时间：</span><Input enter-button style="width: 160px" v-model="classTime"
-                                             @on-enter="handleSearch"/>
-      <span class="label">学分数：</span><Input enter-button style="width: 160px" v-model="credit"
-                                            @on-enter="handleSearch"/>
-    </div>
+    <Row>
+      <Col span="17">
+        <div class="operation" style="width:600px">
+          <span class="label">课程号：</span><Input enter-button style="width: 160px" v-model="cid" @on-enter="handleSearch"/>
+          <span class="label">课程名：</span><Input enter-button style="width: 160px" v-model="cname"
+                                                @on-enter="handleSearch"/>
+        </div>
+        <div class="operation" style="width:600px">
+          <span class="label">教师名：</span><Input enter-button style="width: 160px" v-model="tname"
+                                                @on-enter="handleSearch"/>
+          <span class="label">教师号：</span><Input enter-button style="width: 160px" v-model="tid" @on-enter="handleSearch"/>
+        </div>
+      </Col>
+      <Col span="7">
+        <Form class="operation">
+          <FormItem label="学期">
+            <Select
+              v-model="selectedClassId"
+              style="width:200px"
+              placeholder="请选择学期"
+              @on-change="handleSelectChange"
+            >
+              <Option v-for="term of terms" :value="term" :key="term">{{term}}</Option>
+            </Select>
+          </FormItem>
+        </Form>
+      </Col>
+    </Row>
     <Table class="operation" stripe border :columns="columns" :data="data1" size="large"></Table>
   </div>
 </template>
@@ -101,12 +115,10 @@
           }
         }],
         data1: [],
-        credit: '',
         cid: '',
         cname: '',
         tid: '',
-        tname: '',
-        classTime: ''
+        tname: ''
       }
     },
     mounted() {
@@ -120,11 +132,9 @@
           method: 'post',
           data: {
             cid: this.cid.trim(),
-            credit: this.credit.trim(),
             cname: this.cname.trim(),
             tid: this.tid.trim(),
             tname: this.tname.trim(),
-            classTime: this.classTime.trim(),
             op: 'query'
           }
         }).then((res) => {
