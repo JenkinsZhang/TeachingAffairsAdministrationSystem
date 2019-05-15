@@ -41,7 +41,7 @@
           >
             <div
               class="userBox-avatar"
-              :style="{backgroundImage: 'url(http://ww1.sinaimg.cn/large/006P5HMAly1g2icle6yjlj30f50ecguy.jpg)'}"
+              :style="{backgroundImage: 'url(http://mzzeast.shumsg.cn/FjSAoF6FqSXeDpu0aRI7eIOhGbM-)'}"
             ></div>
             <div class="userBox-content">
               <p class="userBox-content-name">{{profile.name}}</p>

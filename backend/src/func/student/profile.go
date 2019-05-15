@@ -17,7 +17,7 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 	id := claims["id"].(string)
 
 	if r.Method == "GET" {
-		ret := map[string]interface{}{
+		ret = map[string]interface{}{
 			"id":     "-1",
 			"name":   "-1",
 			"gender": "-1",
