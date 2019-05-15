@@ -6,8 +6,9 @@
           v-model="selectedClassId"
           style="width:200px"
           placeholder="请选择学期"
+          @on-change="handleSelectChange"
         >
-          <Option v-for="term of terms" :value="term.name" :key="term.name">{{term.name}}</Option>
+          <Option v-for="term of terms" :value="term" :key="term">{{term}}</Option>
         </Select>
       </FormItem>
     </Form>
@@ -22,11 +23,47 @@
 </template>
 
 <script>
-  import mock from '~/assets/js/scoreManagementMock'
 
   export default {
     name: 'scoreQuery',
-    mixins: [mock],
+    async asyncData({ app }) {
+      const data1 = []
+      let terms = null
+      let selectedClassId = ''
+      await app.$axios({
+        url: apiRoot + '/student/scoreTable'
+      }).then(async (res) => {
+        terms = res.data.term
+        selectedClassId = terms[0]
+        await app.$axios({
+          url: apiRoot + '/student/scoreTable',
+          method: 'post',
+          data: {
+            term: terms[0]
+          }
+        }).then((res) => {
+          const { cid, cname, credit, score, tid, tname } = res.data
+          if (!cid) {
+            return
+          }
+          for (let i = 0; i < cid.length; i++) {
+            data1.push({
+              kh: cid[i],
+              km: cname[i],
+              gh: tid[i],
+              xm: tname[i],
+              xf: credit[i],
+              cj: score[i]
+            })
+          }
+        })
+      })
+      return {
+        data1,
+        terms,
+        selectedClassId
+      }
+    },
     data() {
       return {
         selectedClassId: '',
@@ -60,8 +97,36 @@
             'key': 'cj',
             'align': 'center'
           }],
-        data1: []
+        data1: [],
+        terms: []
       }
+    },
+    methods:{
+      handleSelectChange(term) {
+        this.data1.length = 0
+        this.$axios({
+          url: apiRoot + '/student/scoreTable',
+          method: 'post',
+          data: {
+            term
+          }
+        }).then((res) => {
+          const { cid, cname, credit, score, tid, tname } = res.data
+          if (!cid) {
+            return
+          }
+          for (let i = 0; i < cid.length; i++) {
+            this.data1.push({
+              kh: cid[i],
+              km: cname[i],
+              gh: tid[i],
+              xm: tname[i],
+              xf: credit[i],
+              cj: score[i]
+            })
+          }
+        })
+      },
     }
   }
 </script>

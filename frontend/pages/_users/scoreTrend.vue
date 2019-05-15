@@ -12,26 +12,40 @@
   export default {
     name: 'scoreTrend',
     mixins: [mock],
+    async asyncData({ app }) {
+      const rows = []
+      await app.$axios({
+        url: apiRoot + '/student/scoreTrend'
+      }).then((res) => {
+        const { score, term } = res.data
+        if (!term) {
+          return
+        }
+        for (let i = 0; i < term.length; i++) {
+          rows.push({
+            date: term[i],
+            val: score[i]
+          })
+        }
+      })
+      return {
+        chartData: {
+          columns: ['date', 'val'],
+          rows
+        }
+      }
+    },
     data() {
       this.chartSettings = {
         labelMap: {
           'val': '平均分数'
-        },
+        }
       }
       return {
         chartData: {
           columns: ['date', 'val'],
-          rows: [
-            { 'date': '2017-2018冬', 'val': 87 },
-            { 'date': '2017-2018春', 'val': 89 },
-            { 'date': '2017-2018夏', 'val': 94 },
-            { 'date': '2018-2019秋', 'val': 92 },
-            { 'date': '2018-2019冬', 'val': 85 },
-            { 'date': '2018-2019春', 'val': 90 },
-            { 'date': '2018-2019夏', 'val': 91 }
-          ]
+          rows: []
         },
-        selectedClassId: ''
       }
     }
   }
