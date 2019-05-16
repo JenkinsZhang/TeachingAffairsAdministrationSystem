@@ -66,7 +66,7 @@ func TeacherManagement(w http.ResponseWriter, r *http.Request) {
 		} else if info.Op == "delete" {
 			ok, err := utils.CheckConnection(info.Tid)
 			if err != nil {
-				utils.Response(&ret, &w, err.Error())
+				utils.Response(&ret, &w, "still have lessons")
 				return
 			}
 			if ok {
