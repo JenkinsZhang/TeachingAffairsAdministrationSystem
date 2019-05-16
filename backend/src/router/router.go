@@ -6,8 +6,8 @@ import (
 	"taas/func/login"
 	"taas/func/student"
 	"taas/func/teacher"
+	"taas/func/tools"
 )
-
 
 func Build() {
 	//http.HandleFunc("/api/", sayhelloName) //设置访问的路由
@@ -29,4 +29,6 @@ func Build() {
 	http.HandleFunc("/api/admin/profile", admin.Profile)
 	http.HandleFunc("/api/admin/teacherManagement", admin.TeacherManagement)
 	http.HandleFunc("/api/admin/studentManagement", admin.StudentManagement)
+
+	http.HandleFunc("/api/getDepartment", tools.GetDepartment)
 }

@@ -182,4 +182,23 @@ func QueryCourseWithTerm(term string) (map[string][]string, error) {
 	return ret, nil
 }
 
+func GetDepartment() (map[string][]string, error) {
+	ret := make(map[string][]string)
+	rows, err := Db.Query("select did,dname from Department")
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	var did, dname string
+	for rows.Next() {
+		err = rows.Scan(&did, &dname)
+		if err != nil {
+			return nil, err
+		}
+		ret["did"] = append(ret["did"], did)
+		ret["dname"] = append(ret["dname"], dname)
+	}
+	return ret, nil
+}
+
 // -----------------------------------------
