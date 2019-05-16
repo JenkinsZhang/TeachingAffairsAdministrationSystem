@@ -5,6 +5,8 @@ services:
       - 30003:3000
     restart: always
     build: frontend/
+    environment:
+      API_URL: http://backend:9090
   backend:
     ports:
       - 30004:9090
