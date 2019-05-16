@@ -27,7 +27,7 @@
     async asyncData({ app, params }) {
       let data1 = [], sumxf = 0, avecj = 0, profile = null
       const p1 = app.$axios({
-        url: apiRoot + `/${params.users}/profile`
+        url: `/${params.users}/profile`
       }).then((res) => {
         profile = res.data
       })

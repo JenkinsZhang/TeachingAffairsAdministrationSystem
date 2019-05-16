@@ -6,7 +6,8 @@ services:
     restart: always
     build: frontend/
     environment:
-      API_URL: http://backend:9090
+      API_URL: http://backend:9090/api/
+      API_URL_BROWSER: /api/
   backend:
     ports:
       - 30004:9090
