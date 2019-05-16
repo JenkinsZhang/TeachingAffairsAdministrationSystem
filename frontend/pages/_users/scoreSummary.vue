@@ -34,14 +34,14 @@
       const p2 = app.$axios({
         url: apiRoot + '/student/scoreSummary'
       }).then((res) => {
-        const { cid, cname, credit, score, tid, tname } = res.data
+        const { cid, cname, credit, score, tid, tname, term } = res.data
         for (let i = 0; i < cid.length; i++) {
           data1.push({
             kh: cid[i],
             km: cname[i],
             xf: credit[i],
             cj: score[i],
-            xq: '不知道什么学期',
+            xq: term[i],
             bz: ''
           })
           sumxf += Number(credit[i])

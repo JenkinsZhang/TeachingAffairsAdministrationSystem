@@ -49,7 +49,8 @@ module.exports = {
     '@/plugins/iview',
     '@/plugins/vcharts.client',
     '@/plugins/cookies.client',
-    '@/plugins/axios'
+    '@/plugins/axios',
+    '@/plugins/dayjs'
   ],
 
   /*
