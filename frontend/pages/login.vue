@@ -44,7 +44,7 @@
     methods: {
       login() {
         this.$axios({
-          url: apiRoot + '/login',
+          url: '/login',
           method: 'post',
           data: {
             id: this.username,

@@ -72,7 +72,7 @@
                       loading: true,
                       onOk: () => {
                         that.$axios({
-                          url: apiRoot + '/student/courseQuery',
+                          url: '/student/courseQuery',
                           method: 'post',
                           data: {
                             cid: params.row.kh,
@@ -113,7 +113,7 @@
       handleSearch() {
         this.data1.length = 0
         this.$axios({
-          url: apiRoot + '/student/courseQuery',
+          url: '/student/courseQuery',
           method: 'post',
           data: {
             cid: this.cid.trim(),

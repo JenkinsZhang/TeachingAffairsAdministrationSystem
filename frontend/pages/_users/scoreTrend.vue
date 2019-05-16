@@ -15,7 +15,7 @@
     async asyncData({ app }) {
       const rows = []
       await app.$axios({
-        url: apiRoot + '/student/scoreTrend'
+        url: '/student/scoreTrend'
       }).then((res) => {
         const { score, term } = res.data
         if (!term) {

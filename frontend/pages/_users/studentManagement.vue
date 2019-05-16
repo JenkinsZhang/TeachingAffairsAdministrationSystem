@@ -74,7 +74,7 @@
     async asyncData({ app }) {
       const data1 = []
       await app.$axios({
-        url: apiRoot + '/admin/studentManagement'
+        url: '/admin/studentManagement'
       }).then((res) => {
         const {
           birthday,
@@ -225,7 +225,7 @@
                       loading: true,
                       onOk: () => {
                         that.$axios({
-                          url: apiRoot + '/admin/teacherManagement',
+                          url: '/admin/teacherManagement',
                           method: 'post',
                           data: {
                             tid: params.row.id,
@@ -259,7 +259,7 @@
         }
         this.showModal = true
         this.$axios({
-          url: apiRoot + '/getDepartment'
+          url: '/getDepartment'
         }).then((res) => {
           this.deps = res.data.dname
         })
@@ -284,7 +284,7 @@
         } = this.form
         birthday = this.$dayjs(birthday).format('YYYYMMDD')
         this.$axios({
-          url: apiRoot + '/admin/studentManagement',
+          url: '/admin/studentManagement',
           method: 'post',
           data: {
             id,

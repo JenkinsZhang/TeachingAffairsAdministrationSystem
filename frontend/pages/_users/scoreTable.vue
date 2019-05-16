@@ -31,12 +31,12 @@
       let terms = null
       let selectedClassId = ''
       await app.$axios({
-        url: apiRoot + '/student/scoreTable'
+        url: '/student/scoreTable'
       }).then(async (res) => {
         terms = res.data.term
         selectedClassId = terms[0]
         await app.$axios({
-          url: apiRoot + '/student/scoreTable',
+          url: '/student/scoreTable',
           method: 'post',
           data: {
             term: terms[0]
@@ -105,7 +105,7 @@
       handleSelectChange(term) {
         this.data1.length = 0
         this.$axios({
-          url: apiRoot + '/student/scoreTable',
+          url: '/student/scoreTable',
           method: 'post',
           data: {
             term

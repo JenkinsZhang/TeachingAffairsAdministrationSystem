@@ -66,7 +66,8 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: ''
+    baseURL: 'teachingaffairsadministrationsystem_backend:9090',
+    browserBaseURL: ''
   },
 
   /*

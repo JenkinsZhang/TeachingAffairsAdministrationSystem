@@ -32,7 +32,7 @@
         profile = res.data
       })
       const p2 = app.$axios({
-        url: apiRoot + '/student/scoreSummary'
+        url: '/student/scoreSummary'
       }).then((res) => {
         const { cid, cname, credit, score, tid, tname, term } = res.data
         for (let i = 0; i < cid.length; i++) {
