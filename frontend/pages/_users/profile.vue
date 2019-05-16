@@ -4,11 +4,11 @@
       我的信息
       <p slot="content">
         <Tag color="blue">{{idLabel}}</Tag>
-        {{profile.id}}
+        {{profile.id||profile.tid}}
       </p>
       <p slot="content">
         <Tag color="orange">姓　名</Tag>
-        {{profile.name}}
+        {{profile.name||profile.tname}}
       </p>
       <p slot="content">
         <Tag color="green">性　别</Tag>
@@ -18,15 +18,15 @@
         <Tag color="cyan">院　系</Tag>
         {{profile.dname}}
       </p>
-      <p slot="content">
+      <p slot="content" v-if="profile.grade">
         <Tag color="geekblue">年　级</Tag>
         {{profile.grade}}
       </p>
-      <p slot="content">
+      <p slot="content" v-if="profile.birthplace">
         <Tag color="magenta">籍　贯</Tag>
         {{profile.birthplace}}
       </p>
-      <p slot="content">
+      <p slot="content" v-if="profile.phone">
         <Tag color="purple">手机号</Tag>
         {{profile.phone}}
       </p>

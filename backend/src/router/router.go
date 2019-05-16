@@ -28,5 +28,5 @@ func Build() {
 
 	http.HandleFunc("/api/admin/profile", admin.Profile)
 	http.HandleFunc("/api/admin/teacherManagement", admin.TeacherManagement)
-	http.HandleFunc("/api/admin/studenManagement", admin.StudentManagement)
+	http.HandleFunc("/api/admin/studentManagement", admin.StudentManagement)
 }

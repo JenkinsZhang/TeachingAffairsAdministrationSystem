@@ -6,8 +6,9 @@
           v-model="selectedClassId"
           style="width:200px"
           placeholder="请选择学期"
+          @on-change="handleSelectChange"
         >
-          <Option v-for="term of terms" :value="term.name" :key="term.name">{{term.name}}</Option>
+          <Option v-for="term of terms" :value="term" :key="term">{{term}}</Option>
         </Select>
       </FormItem>
     </Form>
@@ -39,8 +40,7 @@
 </template>
 
 <script>
-  import mock from '~/assets/js/scoreManagementMock'
-  import calendarColumnsMock from '~/assets/js/calendarColumnsMock'
+  import calendarColumns from 'assets/js/calendarColumnsMock'
 
   let that
   const tiptopMap = {
@@ -56,14 +56,48 @@
   const colorArray = ['#d50000', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#FF5722', '#795548', '#607D8B']
   export default {
     name: 'courseCalender',
-    mixins: [mock, calendarColumnsMock],
-    asyncData({ params }) {
+    mixins: [calendarColumns],
+    async asyncData({ params, app }) {
       let isStudent = false
       if (params.users === 'student') {
         isStudent = true
       }
+      const data1 = []
+      let terms = null
+      let selectedClassId = ''
+      await app.$axios({
+        url: apiRoot + '/student/courseCalendar'
+      }).then(async (res) => {
+        terms = res.data.term
+        selectedClassId = terms[0]
+        await app.$axios({
+          url: apiRoot + '/student/courseCalendar',
+          method: 'post',
+          data: {
+            term: terms[0]
+          }
+        }).then((res) => {
+          const { cid, cname, credit, classTime, tid, tname } = res.data
+          if (!cid) {
+            return
+          }
+          for (let i = 0; i < cid.length; i++) {
+            data1.push({
+              kh: cid[i],
+              km: cname[i],
+              gh: tid[i],
+              xm: tname[i],
+              xf: credit[i],
+              sksj: classTime[i]
+            })
+          }
+        })
+      })
       return {
-        isStudent
+        isStudent,
+        data1,
+        terms,
+        selectedClassId
       }
     },
     data() {
@@ -100,43 +134,38 @@
             'align': 'center'
           }
         ],
-        data1: [{
-          kh: '01015045',
-          km: '数据结构与算法',
-          gh: '1000',
-          xm: '朱明',
-          xf: '4',
-          sksj: '星期三11-13'
-        }, {
-          kh: '08305013',
-          km: '编译原理',
-          gh: '1004',
-          xm: '滕中梅',
-          xf: '5',
-          sksj: '星期二7-9'
-        }, {
-          kh: '08305015',
-          km: '数据库原理(2)',
-          gh: '1005',
-          xm: '叶飞跃',
-          xf: '4',
-          sksj: '星期三1-2'
-        }, {
-          kh: '08305124',
-          km: '计算机系统结构',
-          gh: '1004',
-          xm: '刘方方',
-          xf: '4',
-          sksj: '星期三5-6'
-        }],
+        data1: [],
         selectedClassId: '',
         calendar: [{ time: '1' }, { time: '2' }, { time: '3' }, { time: '4' }, { time: '5' }, { time: '6' }, { time: '7' }, { time: '8' }, { time: '9' }, { time: '10' }, { time: '11' }, { time: '12' }, { time: '13' }],
         nodeMatrix: [],
         isStudent: false,
-        calendarHeight: null
+        calendarHeight: null,
+        terms: []
       }
     },
     methods: {
+      handleSelectChange(term) {
+        this.data1.length = 0
+        this.$axios({
+          url: apiRoot + '/student/courseCalendar',
+          method: 'post',
+          data: {
+            term
+          }
+        }).then((res) => {
+          const { cid, cname, credit, classTime, tid, tname } = res.data
+          for (let i = 0; i < cid.length; i++) {
+            this.data1.push({
+              kh: cid[i],
+              km: cname[i],
+              gh: tid[i],
+              xm: tname[i],
+              xf: credit[i],
+              sksj: classTime[i]
+            })
+          }
+        })
+      },
       renderCalendar({
                        raw = this.data1,
                        hoverKh
@@ -254,7 +283,29 @@
                 },
                 on: {
                   click: () => {
-                    console.log('点了退课')
+                    that.$Modal.confirm({
+                      title: '确认',
+                      content: `确定要退课《${params.row.km}》吗？`,
+                      loading: true,
+                      onOk: () => {
+                        that.$axios({
+                          url: apiRoot + '/student/courseCalendar',
+                          method: 'post',
+                          data: {
+                            cid: params.row.kh,
+                            term: that.selectedClassId,
+                            op: 'delete'
+                          }
+                        }).then(() => {
+                          that.$Modal.remove()
+                          that.$Message.info('退课成功')
+                          that.data1.splice(params.index, 1)
+                          that.renderCalendar()
+                        })
+                      },
+                      onCancel: () => {
+                      }
+                    })
                   }
                 }
               }, '退课')
