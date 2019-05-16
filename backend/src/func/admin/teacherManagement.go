@@ -73,7 +73,7 @@ func TeacherManagement(w http.ResponseWriter, r *http.Request) {
 				utils.Response(&ret, &w, "fail")
 				return
 			}
-			err = utils.DeleteStudent(info.Tid)
+			err = utils.DeleteTeacher(info.Tid)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
