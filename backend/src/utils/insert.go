@@ -11,11 +11,11 @@ func InsertCourse(info map[string]string) error {
 }
 
 func InsertStudent(info map[string]string) error {
-	stmt, err := Db.Prepare("insert into Student(id,did,name,gender,birthday,birthplace,phone,grade) values(?,?,?,?,?,?,?,?)")
+	stmt, err := Db.Prepare("insert into Student(id,did,name,gender,birthday,birthplace,phone) values(?,?,?,?,?,?,?)")
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(info["Id"], info["Did"], info["Name"], info["Gender"], info["Birthday"], info["Birthplace"], info["Phone"], info["Grade"])
+	_, err = stmt.Exec(info["Id"], info["Did"], info["Name"], info["Gender"], info["Birthday"], info["Birthplace"], info["Phone"])
 	if err != nil {
 		return err
 	}

@@ -53,7 +53,6 @@ json
     "gender",   // string 性别
     "name",     // string 姓名
     "dname",    // string 院系名
-    "grade"     // string 年级
 }
 ```
 
@@ -511,7 +510,6 @@ json
     "message",
     "id",			// []string	
     "name",			// []string
-    "grade",		// []string
     "gender",		// []string
     "birthplace",	// []string
     "phone",		// []string
@@ -658,7 +656,6 @@ json
     "birthplace",
     "phone",
     "dname",
-    "grade",
     "op": "add"
 }
 ```
@@ -691,7 +688,6 @@ json
     "birthplace",
     "phone",
     "dname",
-    "grade",
     "op": "modify"
 }
 ```

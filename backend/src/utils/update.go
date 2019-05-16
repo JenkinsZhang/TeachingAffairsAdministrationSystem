@@ -30,7 +30,7 @@ func UpdateInfo(id, itemName, itemVal, table, idName string) error {
 }
 func Update(info map[string]string) error {
 	if _, ok := info["Id"]; ok {
-		items := []string{"Name", "Gender", "Birthday", "Birthplace", "Phone", "Grade"}
+		items := []string{"Name", "Gender", "Birthday", "Birthplace", "Phone"}
 		id := info["Id"]
 		stu := "Student"
 		for _, itemName := range items {

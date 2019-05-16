@@ -22,7 +22,6 @@ func Profile(w http.ResponseWriter, r *http.Request) {
 			"name":   "-1",
 			"gender": "-1",
 			"dname":  "-1",
-			"grade":  "-1",
 		}
 		var res = make(map[string]string)
 		res, err = utils.GetStudentProfile(id)

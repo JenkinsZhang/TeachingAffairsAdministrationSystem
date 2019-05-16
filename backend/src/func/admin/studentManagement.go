@@ -29,7 +29,6 @@ func StudentManagement(w http.ResponseWriter, r *http.Request) {
 			Gender     string `json:"gender"`
 			Birthday   string `json:"birthday"`
 			Birthplace string `json:"birthplace"`
-			Grade      string `json:"grade"`
 			Phone      string `json:"phone"`
 		}
 		arr, err := ioutil.ReadAll(r.Body)

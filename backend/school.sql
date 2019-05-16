@@ -16,7 +16,6 @@ create table Student(
     birthplace varchar(50),
     phone varchar(20),
     did varchar(10),
-    grade varchar(20),
     primary key(id)
     foreign key (did) references Department(did)
 );
@@ -59,9 +58,6 @@ create table CourseSelect(
     tid varchar(20) not null,
     term varchar(20) not null,
     classTime varchar(20) not null,
-    regularGrade varchar(20),    
-    testGrade varchar(20),
-    finalGrade varchar(20),
     primary key(id,cid,tid,term)
 );
     foreign key (studentId) references Student(id),

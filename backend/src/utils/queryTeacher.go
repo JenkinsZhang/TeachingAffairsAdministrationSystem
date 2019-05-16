@@ -138,7 +138,6 @@ func QueryTeaName(tid string) (string, error) {
 
 func GetAllTeacherProfile() (map[string][]string, error) {
 	ret := make(map[string][]string)
-	// var id, name, gender, did, dname, grade, phone, birthplace, birthday string
 	rows, err := Db.Query("select tid, tname, gender, did, wage,education,birthday from Teacher")
 	defer rows.Close()
 	if err != nil {
@@ -148,7 +147,6 @@ func GetAllTeacherProfile() (map[string][]string, error) {
 	val := make([]string, 10)
 	for rows.Next() {
 		err = rows.Scan(&val[0], &val[1], &val[2], &val[3], &val[4], &val[5], &val[6])
-		// err = rows.Scan(&id, &name, &gender, &did, &grade, &phone, &birthplace, &birthday)
 		if err != nil {
 			return nil, err
 		}
