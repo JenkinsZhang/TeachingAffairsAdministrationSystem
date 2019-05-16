@@ -51,11 +51,6 @@ func TeacherManagement(w http.ResponseWriter, r *http.Request) {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
-			err = utils.CheckId(info.Tid)
-			if err != nil {
-				utils.Response(&ret, &w, err.Error())
-				return
-			}
 			info.Did = did
 			err = utils.InsertTeacher(utils.Struct2Map(info))
 			if err != nil {

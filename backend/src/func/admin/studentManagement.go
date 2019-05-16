@@ -52,11 +52,6 @@ func StudentManagement(w http.ResponseWriter, r *http.Request) {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
-			err = utils.CheckId(info.Id)
-			if err != nil {
-				utils.Response(&ret, &w, err.Error())
-				return
-			}
 
 			info.Did = did
 			err = utils.InsertStudent(utils.Struct2Map(info))
