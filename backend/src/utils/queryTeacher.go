@@ -135,3 +135,31 @@ func QueryTeaName(tid string) (string, error) {
 	err := Db.QueryRow("select tname from Teacher where tid = ?", tid).Scan(&tname)
 	return tname, err
 }
+
+func GetAllTeacherProfile() (map[string][]string, error) {
+	ret := make(map[string][]string)
+	// var id, name, gender, did, dname, grade, phone, birthplace, birthday string
+	rows, err := Db.Query("select tid, tname, gender, did, wage,education,birthday from Teacher")
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	info := [...]string{"tid", "tname", "gender", "did", "wage", "education", "birthday"}
+	val := make([]string, 10)
+	for rows.Next() {
+		err = rows.Scan(&val[0], &val[1], &val[2], &val[3], &val[4], &val[5], &val[6])
+		// err = rows.Scan(&id, &name, &gender, &did, &grade, &phone, &birthplace, &birthday)
+		if err != nil {
+			return nil, err
+		}
+		for i, v := range info {
+			ret[v] = append(ret[v], val[i])
+		}
+		dname, err := QueryDepartmentName(val[3])
+		if err != nil {
+			return nil, err
+		}
+		ret["dname"] = append(ret["dname"], dname)
+	}
+	return ret, nil
+}

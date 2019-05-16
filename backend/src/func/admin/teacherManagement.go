@@ -88,6 +88,15 @@ func TeacherManagement(w http.ResponseWriter, r *http.Request) {
 			utils.Response(&ret, &w, "invalid op")
 			return
 		}
+	} else if r.Method == "GET" {
+		c, err := utils.GetAllTeacherProfile()
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
+		for key, val := range c {
+			ret[key] = val
+		}
 	}
 	utils.Response(&ret, &w, "ok")
 }

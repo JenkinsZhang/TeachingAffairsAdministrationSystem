@@ -30,8 +30,8 @@ func QueryStuCourses(id, term string) (map[string][]string, error) {
 
 func GetStudentProfile(id string) (map[string]string, error) {
 
-	var name, gender, did, dname, grade, phone, birthplace string
-	err := Db.QueryRow("select name, gender, did, grade,phone,birthplace from Student where id = ?", id).Scan(&name, &gender, &did, &grade, &phone, &birthplace)
+	var name, gender, did, dname, grade, phone, birthplace, birthday string
+	err := Db.QueryRow("select name, gender, did, grade,phone,birthplace,birthday from Student where id = ?", id).Scan(&name, &gender, &did, &grade, &phone, &birthplace, &birthday)
 	if err != nil {
 		return nil, err
 	}
@@ -47,6 +47,35 @@ func GetStudentProfile(id string) (map[string]string, error) {
 		"id":         id,
 		"phone":      phone,
 		"birthplace": birthplace,
+		"birthday":   birthday,
+	}
+	return ret, nil
+}
+
+func GetAllStudentProfile() (map[string][]string, error) {
+	ret := make(map[string][]string)
+	// var id, name, gender, did, dname, grade, phone, birthplace, birthday string
+	rows, err := Db.Query("select id, name, gender, did, grade,phone,birthplace,birthday from Student")
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	info := [...]string{"id", "name", "gender", "did", "grade", "phone", "birthplace", "birthday"}
+	val := make([]string, 10)
+	for rows.Next() {
+		err = rows.Scan(&val[0], &val[1], &val[2], &val[3], &val[4], &val[5], &val[6], &val[7])
+		// err = rows.Scan(&id, &name, &gender, &did, &grade, &phone, &birthplace, &birthday)
+		if err != nil {
+			return nil, err
+		}
+		for i, v := range info {
+			ret[v] = append(ret[v], val[i])
+		}
+		dname, err := QueryDepartmentName(val[3])
+		if err != nil {
+			return nil, err
+		}
+		ret["dname"] = append(ret["dname"], dname)
 	}
 	return ret, nil
 }
