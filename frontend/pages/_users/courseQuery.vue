@@ -1,34 +1,16 @@
 <template>
   <div class="wrapper">
-    <Row>
-      <Col span="17">
-        <div class="operation" style="width:600px">
-          <span class="label">课程号：</span><Input enter-button style="width: 160px" v-model="cid" @on-enter="handleSearch"/>
-          <span class="label">课程名：</span><Input enter-button style="width: 160px" v-model="cname"
-                                                @on-enter="handleSearch"/>
-        </div>
-        <div class="operation" style="width:600px">
-          <span class="label">教师名：</span><Input enter-button style="width: 160px" v-model="tname"
-                                                @on-enter="handleSearch"/>
-          <span class="label">教师号：</span><Input enter-button style="width: 160px" v-model="tid" @on-enter="handleSearch"/>
-        </div>
-      </Col>
-      <Col span="7">
-        <Form class="operation">
-          <FormItem label="学期">
-            <Select
-              v-model="selectedClassId"
-              style="width:200px"
-              placeholder="请选择学期"
-              @on-change="handleSelectChange"
-            >
-              <Option v-for="term of terms" :value="term" :key="term">{{term}}</Option>
-            </Select>
-          </FormItem>
-        </Form>
-      </Col>
-    </Row>
-    <Table class="operation" stripe border :columns="columns" :data="data1" size="large"></Table>
+    <div class="operation" style="width:600px">
+      <span class="label">课程号：</span><Input enter-button style="width: 160px" v-model="cid" @on-enter="handleSearch"/>
+      <span class="label">课程名：</span><Input enter-button style="width: 160px" v-model="cname"
+                                            @on-enter="handleSearch"/>
+    </div>
+    <div class="operation" style="width:600px">
+      <span class="label">教师名：</span><Input enter-button style="width: 160px" v-model="tname"
+                                            @on-enter="handleSearch"/>
+      <span class="label">教师号：</span><Input enter-button style="width: 160px" v-model="tid" @on-enter="handleSearch"/>
+    </div>
+    <Table class="operation" stripe border :columns="columns" :data="data1" size="large" placeholder="请按条件搜索"></Table>
   </div>
 </template>
 
@@ -36,6 +18,9 @@
   var that = null
   export default {
     name: 'courseQuery',
+    asyncData() {
+
+    },
     data() {
       return {
         columns: [{
@@ -87,7 +72,7 @@
                       loading: true,
                       onOk: () => {
                         that.$axios({
-                          url: apiRoot + '/student/courseQuery',
+                          url: '/student/courseQuery',
                           method: 'post',
                           data: {
                             cid: params.row.kh,
@@ -128,7 +113,7 @@
       handleSearch() {
         this.data1.length = 0
         this.$axios({
-          url: apiRoot + '/student/courseQuery',
+          url: '/student/courseQuery',
           method: 'post',
           data: {
             cid: this.cid.trim(),

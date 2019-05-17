@@ -184,7 +184,7 @@
       //获取用户信息
       initInfoProfile() {
         // this.$axios({
-        //   url: apiRoot + '/user/info/16122131',
+        //   url: '/user/info/16122131',
         //   headers: {
         //     Authorization: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNjEyMjEzMSIsImV4cCI6MTg1NjM3MDkzMSwidXNlck5hbWUiOiLpg63lrZ_nhLYiLCJpYXQiOjE1NDUzMzA5MzF9.xmeHnjdFMj6sTDl9qJoJnRwUu-I1iUX2VXznQal9DL6kAw8CyGWoKsNDgIAejqPriOksy9Faee96tZkCeZ5W5w'
         //   }

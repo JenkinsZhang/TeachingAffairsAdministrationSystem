@@ -47,7 +47,7 @@
       }
       ret.idLabel = idLabel
       await app.$axios({
-        url: apiRoot + `/${params.users}/profile`
+        url: `/${params.users}/profile`
       }).then((res) => {
         console.log(res.data)
         ret.profile = { ...res.data }

@@ -16,7 +16,7 @@
     async asyncData({ app }) {
       let data1 = []
       await app.$axios({
-        url: apiRoot + '/student/scoreCollege'
+        url: '/student/scoreCollege'
       }).then((res) => {
         const data = res.data
         data1.push({

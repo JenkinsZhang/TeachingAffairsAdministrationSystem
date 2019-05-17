@@ -93,7 +93,8 @@
               h('Button', {
                 props: {
                   type: 'info',
-                  icon: 'md-checkmark'
+                  icon: 'md-checkmark',
+                  disabled: params.row.grade
                 },
                 on: {
                   click: () => {
@@ -101,7 +102,7 @@
                     that.thisRow = params.row
                   }
                 }
-              }, '修改成绩')
+              }, '录入成绩')
             ])
           }
         }

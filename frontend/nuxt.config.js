@@ -49,7 +49,8 @@ module.exports = {
     '@/plugins/iview',
     '@/plugins/vcharts.client',
     '@/plugins/cookies.client',
-    '@/plugins/axios'
+    '@/plugins/axios',
+    '@/plugins/dayjs'
   ],
 
   /*
@@ -65,7 +66,7 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: ''
+    baseURL: '/api/',
   },
 
   /*
