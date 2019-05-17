@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"taas/utils"
+	"taas/models"
 )
 
 func CourseQuery(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +67,16 @@ func CourseQuery(w http.ResponseWriter, r *http.Request) {
 				ret[key] = val
 			}
 		} else if info.Op == "select" {
+			if models.OpenSelectCourse == 0 {
+				utils.Response(&ret, &w, "can not select courses now")
+				return
+			}
 			tmp := utils.Struct2Map(info)
+			tmp["term"], err = utils.GetCurrentTerm()
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
 			tmp["Id"] = id
 			err = utils.InsertCourse(tmp)
 			if err != nil {

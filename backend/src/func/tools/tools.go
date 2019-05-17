@@ -17,3 +17,14 @@ func GetDepartment(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.Response(&ret, &w, "ok")
 }
+
+func GetCurrentTerm(w http.ResponseWriter, r *http.Request) {
+	term, err := utils.GetCurrentTerm()
+	ret := make(map[string]interface{})
+	ret["term"] = term
+	if err != nil {
+		utils.Response(&ret, &w, err.Error())
+		return
+	}
+	utils.Response(&ret, &w, "ok")
+}

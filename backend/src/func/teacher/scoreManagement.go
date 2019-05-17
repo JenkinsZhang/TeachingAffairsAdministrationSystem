@@ -59,7 +59,15 @@ func ScoreManagement(w http.ResponseWriter, r *http.Request) {
 				ret[key] = val
 			}
 		} else if info.Op == "change" {
-
+			term, err := utils.GetCurrentTerm()
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+			if term != info.Term { // 不是当前学期
+				utils.Response(&ret, &w, "not current term")
+				return
+			}
 			err = utils.UpdateStuScore(info.Id, info.Cid, info.Score, info.Term)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())

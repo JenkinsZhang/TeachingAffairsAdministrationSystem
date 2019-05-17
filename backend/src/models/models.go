@@ -2,6 +2,8 @@ package models
 
 const SECRET = "halou"
 
+var OpenSelectCourse int
+
 type Teacher struct {
 	Tid       string `json:"tid"`
 	Did       string `json:"did"`

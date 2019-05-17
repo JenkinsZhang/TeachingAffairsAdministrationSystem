@@ -1,8 +1,17 @@
 package utils
 
+func GetCurrentTerm() (string, error) {
+	var term string
+	err := Db.QueryRow("select term from Term where isCurrent = 1").Scan(&term)
+	return term, err
+}
 func QueryCourseWithCid(cid string) (map[string][]string, error) {
+	term, err := GetCurrentTerm()
+	if err != nil {
+		return nil, err
+	}
 	ret := make(map[string][]string)
-	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Course.cid = ?", cid)
+	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Course.cid = ? and term = ?", cid, term)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
@@ -24,8 +33,12 @@ func QueryCourseWithCid(cid string) (map[string][]string, error) {
 }
 
 func QueryCourseWithCname(cname string) (map[string][]string, error) {
+	term, err := GetCurrentTerm()
+	if err != nil {
+		return nil, err
+	}
 	ret := make(map[string][]string)
-	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Course.cname = ?", cname)
+	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Course.cname = ? and term = ?", cname, term)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
@@ -47,15 +60,19 @@ func QueryCourseWithCname(cname string) (map[string][]string, error) {
 }
 
 func QueryCourseWithTid(tid string) (map[string][]string, error) {
+	term, err := GetCurrentTerm()
+	if err != nil {
+		return nil, err
+	}
 	ret := make(map[string][]string)
-	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime,term from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Teacher.tid = ?", tid)
+	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Teacher.tid = ? and term = ?", tid, term)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
-	var cid, tname, cname, classTime, credit, term string
+	var cid, tname, cname, classTime, credit string
 	for rows.Next() {
-		err := rows.Scan(&cid, &cname, &tid, &tname, &credit, &classTime, &term)
+		err := rows.Scan(&cid, &cname, &tid, &tname, &credit, &classTime)
 		if err != nil {
 			return nil, err
 		}
@@ -65,13 +82,16 @@ func QueryCourseWithTid(tid string) (map[string][]string, error) {
 		ret["cname"] = append(ret["cname"], cname)
 		ret["classTime"] = append(ret["classTime"], classTime)
 		ret["credit"] = append(ret["credit"], credit)
-		ret["term"] = append(ret["term"], term)
 	}
 	return ret, nil
 }
 func QueryCourseWithTname(tname string) (map[string][]string, error) {
+	term, err := GetCurrentTerm()
+	if err != nil {
+		return nil, err
+	}
 	ret := make(map[string][]string)
-	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Teacher.tname = ?", tname)
+	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and Teacher.tname = ? and term = ?", tname, term)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
@@ -92,8 +112,12 @@ func QueryCourseWithTname(tname string) (map[string][]string, error) {
 	return ret, nil
 }
 func QueryAllCourses() (map[string][]string, error) {
+	term, err := GetCurrentTerm()
+	if err != nil {
+		return nil, err
+	}
 	ret := make(map[string][]string)
-	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid")
+	rows, err := Db.Query("select Course.cid, cname, Teacher.tid, tname, credit, classTime from Course, CourseSchedule, Teacher where CourseSchedule.cid = Course.cid and CourseSchedule.tid = Teacher.tid and term = ?", term)
 	defer rows.Close()
 	if err != nil {
 		return nil, err

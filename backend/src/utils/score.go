@@ -46,6 +46,7 @@ func QueryStuAllCourseScore(id string) (map[string][]string, error) {
 		ret["credit"] = append(ret["credit"], credit)
 		ret["term"] = append(ret["term"], term)
 	}
+	
 	return ret, nil
 }
 

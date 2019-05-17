@@ -31,4 +31,5 @@ func Build() {
 	http.HandleFunc("/api/admin/studentManagement", admin.StudentManagement)
 
 	http.HandleFunc("/api/getDepartment", tools.GetDepartment)
+	http.HandleFunc("/api/getCurrentTerm", tools.GetCurrentTerm)
 }

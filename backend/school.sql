@@ -70,3 +70,9 @@ create table User(
     id varchar(20) not null,
     primary key(id)
 );
+
+create table Term(
+    term varchar(20) not null,
+    isCurrent int not null,
+    primary key(term)
+);
