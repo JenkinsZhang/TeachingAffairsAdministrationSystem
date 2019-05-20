@@ -1,5 +1,13 @@
 package utils
 
+func InsertTerm(term string) error {
+	stmt, err := Db.Prepare("insert into Term(term,isCurrent) values(term = ?, isCurrent = ?)")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(term, "no")
+	return err
+}
 func InsertCourse(info map[string]string) error {
 	// isCourseCollision()
 	stmt, err := Db.Prepare("insert into CourseCalendar(id,cid,tid,term,classTime) values(id = ?, cid = ?,tid = ?, term = ?, classTime=?")

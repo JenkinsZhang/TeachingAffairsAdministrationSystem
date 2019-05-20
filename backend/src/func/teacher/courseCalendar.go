@@ -19,7 +19,7 @@ func CourseCalendar(w http.ResponseWriter, r *http.Request) {
 	tid := claims["id"].(string)
 
 	if r.Method == "GET" {
-		ret["term"], err = utils.QueryTerm()
+		ret["term"], err = utils.GetAllTerms()
 		if err != nil {
 			utils.Response(&ret, &w, err.Error())
 			return

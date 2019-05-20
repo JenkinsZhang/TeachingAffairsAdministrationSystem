@@ -8,6 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+
 func PreCheck(r *http.Request) (jwt.MapClaims, error) {
 	r.ParseForm()
 	if len(r.Header["Authorization"]) == 0 {

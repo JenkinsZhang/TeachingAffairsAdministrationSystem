@@ -18,14 +18,14 @@ func ScoreTrend(w http.ResponseWriter, r *http.Request) {
 
 	// ---
 	if r.Method == "GET" {
-		term, err := utils.QueryTerm()
+		term, err := utils.GetAllTerms()
 		if err != nil {
 			utils.Response(&ret, &w, err.Error())
 			return
 		}
 		score := make([]string, 0)
-		for _, v := range term {
-			tmp, err := utils.QueryTermAveScore(id, v)
+		for _, v := range term["term"] {
+			tmp, err := utils.QueryTermAveScore(id,v)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return

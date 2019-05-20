@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"taas/utils"
 	"taas/models"
+	"taas/utils"
 )
 
 func CourseQuery(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +68,7 @@ func CourseQuery(w http.ResponseWriter, r *http.Request) {
 			}
 		} else if info.Op == "select" {
 			if models.OpenSelectCourse == 0 {
-				utils.Response(&ret, &w, "can not select courses now")
+				utils.Response(&ret, &w, "Lesson selection time is not yet available.")
 				return
 			}
 			tmp := utils.Struct2Map(info)

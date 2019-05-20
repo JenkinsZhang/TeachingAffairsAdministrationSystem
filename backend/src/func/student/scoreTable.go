@@ -20,7 +20,7 @@ func ScoreTable(w http.ResponseWriter, r *http.Request) {
 
 	// ---
 	if r.Method == "GET" {
-		ret["term"],err = utils.QueryTerm()
+		ret["term"],err = utils.GetAllTerms()
 		if err != nil {
 			utils.Response(&ret, &w, err.Error())
 			return

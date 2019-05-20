@@ -1,10 +1,6 @@
 package utils
 
-func GetCurrentTerm() (string, error) {
-	var term string
-	err := Db.QueryRow("select term from Term where isCurrent = 1").Scan(&term)
-	return term, err
-}
+
 func QueryCourseWithCid(cid string) (map[string][]string, error) {
 	term, err := GetCurrentTerm()
 	if err != nil {
@@ -155,23 +151,6 @@ func QueryCourseCredit(cid string) (string, error) {
 	return credit, err
 }
 
-func QueryTerm() ([]string, error) {
-	rows, err := Db.Query("select distinct(term) from CourseSchedule")
-	defer rows.Close()
-	if err != nil {
-		return nil, err
-	}
-	term := make([]string, 0)
-	var tmp string
-	for rows.Next() {
-		err = rows.Scan(&tmp)
-		if err != nil {
-			return nil, err
-		}
-		term = append(term, tmp)
-	}
-	return term, nil
-}
 
 func QueryCourseWithTerm(term string) (map[string][]string, error) {
 	ret := make(map[string][]string)

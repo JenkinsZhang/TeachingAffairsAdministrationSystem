@@ -1,4 +1,4 @@
-package student
+package admin
 
 import (
 	"encoding/json"
@@ -7,29 +7,29 @@ import (
 	"taas/utils"
 )
 
-func CourseCalendar(w http.ResponseWriter, r *http.Request) {
+func TermManagement(w http.ResponseWriter, r *http.Request) {
 	ret := make(map[string]interface{})
 
 	// --- token 检查
-	claims, err := utils.PreCheck(r)
+	_, err := utils.PreCheck(r)
 	if err != nil {
 		utils.Response(&ret, &w, err.Error())
 		return
 	}
-	id := claims["id"].(string)
 
-	// ---
 	if r.Method == "GET" {
-		ret["term"], err = utils.GetAllTerms()
+		c, err := utils.GetAllTerms()
 		if err != nil {
 			utils.Response(&ret, &w, err.Error())
 			return
 		}
+		for key, val := range c {
+			ret[key] = val
+		}
 	} else if r.Method == "POST" {
 		type Info struct {
-			Term string `json:"term"`
-			Cid  string `json:"cid"`
 			Op   string `json:"op"`
+			Term string `json:"term"`
 		}
 		arr, err := ioutil.ReadAll(r.Body)
 		defer r.Body.Close()
@@ -45,28 +45,33 @@ func CourseCalendar(w http.ResponseWriter, r *http.Request) {
 		}
 		// --- get json
 
-		c := make(map[string][]string)
-		tmp := make(map[string][]string)
-		// 先删后查
-		if info.Op == "delete" {
-			err = utils.DeleteCourse(id, info.Cid, info.Term)
+		if info.Op == "add" {
+			err = utils.InsertTerm(info.Term)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
-		}
-		tmp, err = utils.QueryStuCourses(id, info.Term)
-		if err != nil {
-			utils.Response(&ret, &w, err.Error())
-			return
-		}
-		for key, val := range tmp {
-			for _, v := range val {
-				c[key] = append(c[key], v)
+		} else if info.Op == "delete" {
+			err = utils.DeleteTerm(info.Term)
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
 			}
-		}
-		for key, val := range c {
-			ret[key] = val
+		} else if info.Op == "end" {
+			err = utils.EndTerm(info.Term)
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+		} else if info.Op == "set" {
+			err = utils.SetCurrentTerm(info.Term)
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+		} else {
+			utils.Response(&ret, &w, "invalid op")
+			return
 		}
 	}
 	utils.Response(&ret, &w, "ok")

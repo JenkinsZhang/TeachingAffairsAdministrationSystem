@@ -1,5 +1,14 @@
 package utils
 
+func RemoveCourse(cid, tid, term string) error {
+	stmt, err := Db.Prepare("delete from CourseSchedule where cid = ? and tid = ? and  term = ?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(cid, tid, term)
+	return err
+}
+
 // delete course with id, cid and term
 func DeleteCourse(id, cid, term string) error {
 	stmt, err := Db.Prepare("delete from CourseCalendar where id = ? and cid = ? and  term = ?")

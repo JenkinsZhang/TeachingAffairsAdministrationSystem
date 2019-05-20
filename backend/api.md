@@ -729,7 +729,16 @@ json
 }
 ```
 
-## Course Management(!)
+## Course Management
+
+课程管理
+GET：返回所有学期，并且标注出当前学期
+POST：
+1. 选择学期：返回这学期所有课程
+2. 新增课程：条件是当前学期存在，且还未开始选课（后端判了）（新增和删除操作只对当前学期有效）。
+3. 删除课程：条件是当前学期存在，且还未开始选课（后端判了）。
+4. 开启选课
+5. 关闭选课
 
 ### 默认
 
@@ -749,7 +758,7 @@ Header
 json
 {
     "message",
-    "term"	// []string
+    "term"	// map[string]string, term["term"], term["isCurrent"]
 }
 ```
 
@@ -804,7 +813,6 @@ json
  	"credit",
  	"classTime",
  	"did",
-    "term",
     "op":"add"
 }
 ```
@@ -817,43 +825,6 @@ json
     "message"	// string "ok" / "fail"
 }
 ```
-
-
-
-### 修改
-
-#### 接收
-
-```json
-POST
-Header
-{
-    "Authorization"
-}
-json
-{
-    // 可以不传，也可以为空值
-    "message",
- 	"cid",			// 不为空，且不能修改
- 	"cname",
- 	"tid",
- 	"credit",
- 	"classTime",
- 	"did",
-    "term",
-    "op":"modify"
-}
-```
-
-#### 返回
-
-```json
-json
-{
-    "message"	// string "ok" / "fail"
-}
-```
-
 
 
 ### 删除
@@ -870,12 +841,9 @@ json
 {
  	"cid",			
     "tid",
-    "term",
     "op":"delete"
 }
 ```
-
-
 
 #### 返回
 
@@ -886,3 +854,186 @@ json
 }
 ```
 
+### 开启选课
+
+#### 接收
+
+```json
+POST
+Header
+{
+    "Authorization"
+}
+json
+{
+    "op":"open"
+}
+```
+
+#### 返回
+
+```json
+json
+{
+    "message"	// string "ok" / "fail"
+}
+```
+
+### 关闭选课
+
+#### 接收
+
+```json
+POST
+Header
+{
+    "Authorization"
+}
+json
+{
+    "op":"close"
+}
+```
+
+#### 返回
+
+```json
+json
+{
+    "message"	// string "ok" / "fail"
+}
+```
+
+## Term Management
+
+学期管理：
+GET：返回所有学期，并且标注出当前学期
+POST：1. 新增学期
+      2. 删除学期（没有开课的情况下）
+      3. 结束学期（所有老师都打完分的情况下）
+      4. 设置当前学期（结束学期的前提下） 
+
+### 默认
+
+#### 接收
+
+```json
+GET
+Header
+{
+    "Authorization"
+}
+```
+
+#### 返回
+
+```json
+json
+{
+    "message",
+    "term"	// map[string]string, term["term"], term["isCurrent"]
+}
+```
+
+### 新增
+
+#### 接收
+
+```json
+POST
+Header
+{
+    "Authorization"
+}
+json
+{	
+ 	"term",
+    "op":"add"
+}
+```
+
+#### 返回
+
+```json
+json
+{
+    "message"	// string "ok" / "fail"
+}
+```
+
+### 删除
+
+#### 接收
+
+```json
+POST
+Header
+{
+    "Authorization"
+}
+json
+{	
+ 	"term",
+    "op":"delete"
+}
+```
+
+#### 返回
+
+```json
+json
+{
+    "message"	// string "ok" / "fail"
+}
+```
+### 结束当前学期
+
+#### 接收
+
+```json
+POST
+Header
+{
+    "Authorization"
+}
+json
+{	
+ 	"term",
+    "op":"end"
+}
+```
+
+#### 返回
+
+```json
+json
+{
+    "message"	// string "ok" / "fail"
+}
+```
+
+### 设置当前学期
+
+#### 接收
+
+```json
+POST
+Header
+{
+    "Authorization"
+}
+json
+{	
+ 	"term",
+    "op":"set"
+}
+```
+
+#### 返回
+
+```json
+json
+{
+    "message"	// string "ok" / "fail"
+}
+```
