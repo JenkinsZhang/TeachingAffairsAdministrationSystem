@@ -27,6 +27,7 @@ func ClassTable(w http.ResponseWriter, r *http.Request) {
 		ret["term"] = c["term"]
 		ret["cid"] = c["cid"]
 		ret["cname"] = c["cname"]
+		ret["classTime"] = c["classTime"]
 	} else if r.Method == "POST" {
 		type Info struct {
 			Term string `json:"term"`

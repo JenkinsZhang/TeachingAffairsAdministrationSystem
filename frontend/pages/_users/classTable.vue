@@ -6,9 +6,11 @@
         style="width:400px"
         placeholder="请选择课程"
         class="operation"
+        @on-change="onSelectChange"
       >
         <OptionGroup :label="term.name" v-for="term of terms" :key="term.name">
-          <Option v-for="cla of term.classes" :value="cla.kh" :key="cla.kh">{{ cla.km }} | {{cla.kh}} | {{cla.sksj}}
+          <Option v-for="cla of term.classes" :value="cla.kh+'|'+term.name" :key="cla.kh">{{ cla.km }} | {{cla.kh}} |
+            {{cla.sksj}}
           </Option>
         </OptionGroup>
       </Select>
@@ -16,34 +18,89 @@
     <div class="operation">
       <Table stripe border :columns="columns" :data="data1" size="large"></Table>
     </div>
-    <Modal
-      title="录入成绩"
-      v-model="showModal"
-      @on-ok="editScore"
-      @on-cancel="scoreValue=''"
-      width="400px"
-    >
-      <Input
-        v-model="scoreValue"
-        autofocus
-        placeholder="键入成绩"
-        type="number"
-        :maxlength=3
-        @on-enter="editScore"
-      />
-    </Modal>
   </div>
 </template>
 
 <script>
-  // import columns from '~/assets/json/classColumns.json'
-  import mock from '~/assets/js/scoreManagementMock'
+  //cid,term
+  function requestData(requestBody, axios) {
+    return axios({
+      url: '/teacher/classTable',
+      method: 'post',
+      data: {
+        ...requestBody,
+        op: 'query'
+      }
+    }).then((res) => {
+      const data = res.data
+      const arr = []
+      if (!data.id) {
+        return arr
+      }
+      for (let i = 0; i < data.id.length; i++) {
+        arr.push({
+          id: data.id[i],
+          name: data.name[i],
+          gender: data.gender[i],
+          dname: data.dname[i],
+          birthplace: data.birthplace[i],
+          phone: data.phone[i],
+        })
+      }
+      return arr
+    })
+  }
 
   let that
 
   export default {
     name: 'courseTable',
-    mixins: [mock],
+    async asyncData({ app }) {
+      const terms = []
+      let selected = null
+      let selectedCid = null
+      let selectedTerm = null
+      await app.$axios({
+        url: '/teacher/classTable'
+      }).then((res) => {
+        const m = {}
+        let cnt = 0
+        const data = res.data
+        if (!data.cid) {
+          return
+        }
+        for (let i = 0; i < data.cid.length; i++) {
+          if (!selected) {
+            selected = data.cid[i] + '|' + data.term[i]
+            selectedCid = data.cid[i]
+            selectedTerm = data.term[i]
+          }
+          if (m[data.term[i]] == null) {
+            m[data.term[i]] = cnt++
+            terms.push({
+              name: data.term[i],
+              classes: [{
+                km: data.cname[i],
+                kh: data.cid[i],
+                sksj: data.classTime[i]
+              }]
+            })
+          } else {
+            terms[m[data.term[i]]].classes.push({
+              km: data.cname[i],
+              kh: data.cid[i],
+              sksj: data.classTime[i]
+            })
+          }
+        }
+      })
+      const data1 = await requestData({ cid: selectedCid, term: selectedTerm }, app.$axios)
+      return {
+        terms,
+        selected,
+        data1
+      }
+    },
     data: () => ({
       columns: [
         {
@@ -51,11 +108,6 @@
           'key': 'id',
           'align': 'center',
           'sortable': true
-        },
-        {
-          'title': '类型',
-          'key': 'type',
-          'align': 'center'
         },
         {
           'title': '姓名',
@@ -69,39 +121,23 @@
         },
         {
           'title': '籍贯',
-          'key': 'jg',
+          'key': 'birthplace',
           'align': 'center'
         },
         {
           'title': '手机号码',
-          'key': 'sjhm',
+          'key': 'phone',
           'align': 'center'
         },
         {
           'title': '院系',
-          'key': 'dep',
+          'key': 'dname',
           'align': 'center',
           'sortable': true
         }
       ],
       loading: false,
-      data1: [{
-        id: '16121663',
-        type: '本科生',
-        name: '莫之章',
-        gender: '男',
-        jg: '四川',
-        sjhm: '189xxxx9181',
-        dep: '计算机工程与科学学院'
-      }, {
-        id: '16121670',
-        type: '本科生',
-        name: 'ybmj',
-        gender: '男',
-        jg: '河北',
-        sjhm: '166xxxx0694',
-        dep: '计算机工程与科学学院'
-      }],
+      data1: [],
       selected: '',
       scoreValue: '',
       showModal: false,
@@ -121,10 +157,11 @@
       }
     },
     methods: {
-      editScore(score) {
-        this.thisRow.score = typeof score == 'number' ? score : parseInt(this.scoreValue)
-        this.showModal = false
-        this.scoreValue = ''
+      async onSelectChange(val) {
+        const arr = val.split('|')
+        requestData({ cid: arr[0], term: arr[1]}, this.$axios).then((val) => {
+          this.data1 = val
+        })
       }
     }
   }

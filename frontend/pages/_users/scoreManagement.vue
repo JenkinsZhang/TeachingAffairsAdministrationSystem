@@ -6,6 +6,7 @@
         style="width:400px"
         placeholder="请选择课程"
         class="operation"
+        @on-change="onSelectChange"
       >
         <OptionGroup :label="term.name" v-for="term of terms" :key="term.name">
           <Option v-for="cla of term.classes" :value="cla.kh+'|'+term.name" :key="cla.kh">{{ cla.km }} | {{cla.kh}} |
@@ -37,7 +38,7 @@
 </template>
 
 <script>
-  //cid,cname,term
+  //cid,term
   function requestData(requestBody, axios) {
     return axios({
       url: '/teacher/scoreManagement',
@@ -222,6 +223,12 @@
         })
         this.showModal = false
         this.scoreValue = ''
+      },
+      async onSelectChange(val) {
+        const arr = val.split('|')
+        requestData({ cid: arr[0], term: arr[1]}, this.$axios).then((val) => {
+          this.data1 = val
+        })
       }
     }
   }
