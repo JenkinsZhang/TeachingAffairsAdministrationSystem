@@ -2,13 +2,14 @@
   <div class="wrapper">
     <no-ssr placeholder="Loading...">
       <Select
-        v-model="selectedClassId"
+        v-model="selected"
         style="width:400px"
         placeholder="请选择课程"
         class="operation"
       >
         <OptionGroup :label="term.name" v-for="term of terms" :key="term.name">
-          <Option v-for="cla of term.classes" :value="cla.kh" :key="cla.kh">{{ cla.km }} | {{cla.kh}} | {{cla.sksj}}
+          <Option v-for="cla of term.classes" :value="cla.kh+'|'+term.name" :key="cla.kh">{{ cla.km }} | {{cla.kh}} |
+            {{cla.sksj}}
           </Option>
         </OptionGroup>
       </Select>
@@ -36,14 +37,80 @@
 </template>
 
 <script>
-  // import columns from '~/assets/json/classColumns.json'
-  import mock from '~/assets/js/scoreManagementMock'
+  //cid,cname,term
+  function requestData(requestBody, axios) {
+    return axios({
+      url: '/teacher/scoreManagement',
+      method: 'post',
+      data: {
+        ...requestBody,
+        op: 'query'
+      }
+    }).then((res) => {
+      const data = res.data
+      const arr = []
+      if (!data.id) {
+        return arr
+      }
+      for (let i = 0; i < data.id.length; i++) {
+        arr.push({
+          id: data.id[i],
+          dname: data.dname[i],
+          name: data.name[i],
+          score: data.score[i]
+        })
+      }
+      return arr
+    })
+  }
 
   let that
 
   export default {
     name: 'scoreManagement',
-    mixins: [mock],
+    async asyncData({ app }) {
+      const terms = []
+      let selected = null
+      let selectedCid = null
+      let selectedTerm = null
+      await app.$axios({
+        url: '/teacher/scoreManagement'
+      }).then((res) => {
+        const m = {}
+        let cnt = 0
+        const data = res.data
+        if (!data.cid) {
+          return
+        }
+        for (let i = 0; i < data.cid.length; i++) {
+          if (!selected) {
+            selected = data.cid[i] + '|' + data.term[i]
+            selectedCid = data.cid[i]
+            selectedTerm = data.term[i]
+          }
+          if (m[data.term[i]] == null) {
+            m[data.term[i]] = cnt++
+            terms.push({
+              name: data.term[i],
+              classes: [{
+                km: data.cname[i],
+                kh: data.cid[i],
+                sksj: data.classTime[i]
+              }]
+            })
+          } else {
+            terms[m[data.term[i]]].classes.push({
+              km: data.cname[i],
+              kh: data.cid[i],
+              sksj: data.classTime[i]
+            })
+          }
+        }
+      })
+      let data1 = await requestData({ cid: selectedCid, term: selectedTerm }, app.$axios)
+      console.log(data1)
+      return { terms, selected, data1 }
+    },
     data: () => ({
       columns: [
         {
@@ -59,7 +126,7 @@
         },
         {
           'title': '院系',
-          'key': 'dep',
+          'key': 'dname',
           'align': 'center',
           'sortable': true
         },
@@ -108,23 +175,12 @@
         }
       ],
       loading: false,
-      data1: [{
-        id: '16121663',
-        type: '本科生',
-        name: '莫之章',
-        dep: '计算机工程与科学学院',
-        score: 100
-      }, {
-        id: '16121670',
-        type: '本科生',
-        name: 'ybmj',
-        dep: '计算机工程与科学学院',
-        score: null
-      }],
-      selectedClassId: '',
+      data1: [],
+      selected: '',
       scoreValue: '',
       showModal: false,
-      thisRow: null
+      thisRow: null,
+      terms: []
     }),
     mounted() {
       that = this
@@ -140,8 +196,30 @@
       }
     },
     methods: {
-      editScore(score) {
-        this.thisRow.score = typeof score == 'number' ? score : parseInt(this.scoreValue)
+      editScore() {
+        const score = this.scoreValue
+        if (parseInt(score) < 0 || parseInt(score) > 100) {
+          this.$Message.warning('成绩必须是0~100的整数')
+          return
+        }
+        const arr = this.selected.split('|')
+        this.$axios({
+          url: '/teacher/scoreManagement',
+          method: 'post',
+          data: {
+            'id': this.thisRow.id,
+            'cid': arr[0],
+            'term': arr[1],
+            'score': this.scoreValue,
+            'op': 'change'
+          }
+        }).then((res) => {
+          if (res.data.message === 'ok') {
+            this.thisRow.score = score
+          } else {
+            this.$Message.warning(res.data.message)
+          }
+        })
         this.showModal = false
         this.scoreValue = ''
       }

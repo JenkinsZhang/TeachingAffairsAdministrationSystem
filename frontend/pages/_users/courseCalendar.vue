@@ -3,7 +3,7 @@
     <Form class="operation">
       <FormItem label="学期">
         <Select
-          v-model="selectedClassId"
+          v-model="selected"
           style="width:200px"
           placeholder="请选择学期"
           @on-change="handleSelectChange"
@@ -64,12 +64,12 @@
       }
       const data1 = []
       let terms = null
-      let selectedClassId = ''
+      let selected = ''
       await app.$axios({
         url: '/student/courseCalendar'
       }).then(async (res) => {
         terms = res.data.term
-        selectedClassId = terms[0]
+        selected = terms[0]
         await app.$axios({
           url: '/student/courseCalendar',
           method: 'post',
@@ -97,7 +97,7 @@
         isStudent,
         data1,
         terms,
-        selectedClassId
+        selected: selected
       }
     },
     data() {
@@ -135,7 +135,7 @@
           }
         ],
         data1: [],
-        selectedClassId: '',
+        selected: '',
         calendar: [{ time: '1' }, { time: '2' }, { time: '3' }, { time: '4' }, { time: '5' }, { time: '6' }, { time: '7' }, { time: '8' }, { time: '9' }, { time: '10' }, { time: '11' }, { time: '12' }, { time: '13' }],
         nodeMatrix: [],
         isStudent: false,
@@ -293,7 +293,7 @@
                           method: 'post',
                           data: {
                             cid: params.row.kh,
-                            term: that.selectedClassId,
+                            term: that.selected,
                             op: 'delete'
                           }
                         }).then(() => {

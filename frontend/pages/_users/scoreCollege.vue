@@ -33,7 +33,7 @@
     },
     data() {
       return {
-        selectedClassId: '',
+        selected: '',
         columns: [{
           'title': '学号',
           'key': 'xh',

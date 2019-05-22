@@ -2,7 +2,7 @@
   <div class="wrapper">
     <no-ssr placeholder="Loading...">
       <Select
-        v-model="selectedClassId"
+        v-model="selected"
         style="width:400px"
         placeholder="请选择课程"
         class="operation"
@@ -102,7 +102,7 @@
         sjhm: '166xxxx0694',
         dep: '计算机工程与科学学院'
       }],
-      selectedClassId: '',
+      selected: '',
       scoreValue: '',
       showModal: false,
       thisRow: null
