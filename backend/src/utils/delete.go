@@ -1,6 +1,25 @@
 package utils
 
-func RemoveCourse(cid, tid, term string) error {
+import "errors"
+
+func DeleteCourse(cid string) error {
+	var cnt int
+	err := Db.QueryRow("select count(id) from CourseCalendr where cid = ?", cid).Scan(&cnt)
+	if err != nil {
+		return err
+	}
+	if cnt != 0 {
+		return errors.New("student have selected this course. so you can't delete it.")
+	}
+	stmt, err := Db.Prepare("delete from Course where cid = ?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(cid)
+	return err
+}
+
+func DeleteCourseSchedule(cid, tid, term string) error {
 	stmt, err := Db.Prepare("delete from CourseSchedule where cid = ? and tid = ? and  term = ?")
 	if err != nil {
 		return err
@@ -10,7 +29,7 @@ func RemoveCourse(cid, tid, term string) error {
 }
 
 // delete course with id, cid and term
-func DeleteCourse(id, cid, term string) error {
+func DeleteCourseCalendar(id, cid, term string) error {
 	stmt, err := Db.Prepare("delete from CourseCalendar where id = ? and cid = ? and  term = ?")
 	if err != nil {
 		return err

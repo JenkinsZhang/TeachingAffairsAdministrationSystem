@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"taas/models"
 	"taas/utils"
 )
 
@@ -67,7 +66,12 @@ func CourseQuery(w http.ResponseWriter, r *http.Request) {
 				ret[key] = val
 			}
 		} else if info.Op == "select" {
-			if models.OpenSelectCourse == 0 {
+			osc, err := utils.IfOpenSelectCourse()
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+			if osc == "close" {
 				utils.Response(&ret, &w, "Lesson selection time is not yet available.")
 				return
 			}
@@ -78,7 +82,7 @@ func CourseQuery(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			tmp["Id"] = id
-			err = utils.InsertCourse(tmp)
+			err = utils.InsertCourseCalendar(tmp)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return

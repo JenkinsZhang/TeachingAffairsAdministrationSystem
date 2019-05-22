@@ -49,7 +49,16 @@ func CourseCalendar(w http.ResponseWriter, r *http.Request) {
 		tmp := make(map[string][]string)
 		// 先删后查
 		if info.Op == "delete" {
-			err = utils.DeleteCourse(id, info.Cid, info.Term)
+			osc, err := utils.IfOpenSelectCourse()
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+			if osc == "close" {
+				utils.Response(&ret, &w, "Lesson selection time is not yet available.")
+				return
+			}
+			err = utils.DeleteCourseCalendar(id, info.Cid, info.Term)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return

@@ -1,5 +1,74 @@
 package utils
 
+func QueryCourseWithTermAndCid(term, cid string) (map[string][]string, error) {
+	ret := make(map[string][]string)
+	rows, err := Db.Query("select Teacher.tid,tname,classTime from CourseSchedule, Teacher where CourseSchedule.tid = Teacher.tid and term = ? and cid = ?", term, cid)
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	var tid, tname, classTime string
+	for rows.Next() {
+		err := rows.Scan(&tid, &tname, &classTime)
+		if err != nil {
+			return nil, err
+		}
+		ret["tid"] = append(ret["tid"], tid)
+		ret["tname"] = append(ret["tname"], tname)
+		ret["classTime"] = append(ret["classTime"], classTime)
+	}
+	return ret, nil
+}
+func QueryCourseNumberWithTerm(term string) (map[string][]interface{}, error) {
+	ret := make(map[string][]interface{})
+	rows, err := Db.Query("select cid, count(cid) from CourseSchedule where term = ? group by cid", term)
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	var cid string
+	var cnt int
+	ret["count"] = make([]interface{}, 0)
+	for rows.Next() {
+		err := rows.Scan(&cid, &cnt)
+		if err != nil {
+			return nil, err
+		}
+		ret["cid"] = append(ret["cid"], cid)
+		ret["count"] = append(ret["count"], cnt)
+	}
+	return ret, nil
+}
+func GetCourse() (map[string][]string, error) {
+	ret := make(map[string][]string)
+	rows, err := Db.Query("select cid, cname, credit, did from Course")
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	var cid, cname, credit, did, dname string
+	for rows.Next() {
+		err := rows.Scan(&cid, &cname, &credit, &did)
+		if err != nil {
+			return nil, err
+		}
+		dname, err = QueryDepartmentName(did)
+		if err != nil {
+			return nil, err
+		}
+		ret["cid"] = append(ret["cid"], cid)
+		ret["cname"] = append(ret["cname"], cname)
+		ret["credit"] = append(ret["credit"], credit)
+		ret["dname"] = append(ret["dname"], dname)
+	}
+	return ret, nil
+}
+
+func IfOpenSelectCourse() (string, error) {
+	var msg string
+	err := Db.QueryRow("select msg from Other where name = ?", "OpenCourseSelect").Scan(&msg)
+	return msg, err
+}
 
 func QueryCourseWithCid(cid string) (map[string][]string, error) {
 	term, err := GetCurrentTerm()
@@ -139,6 +208,11 @@ func QueryDepartmentName(did string) (string, error) {
 	err := Db.QueryRow("select dname from Department where did = ?", did).Scan(&dname)
 	return dname, err
 }
+func QueryDepartmentId(dname string) (string, error) {
+	var did string
+	err := Db.QueryRow("select did from Department where dname = ?", dname).Scan(&did)
+	return did, err
+}
 
 func QueryCourseName(cid string) (string, error) {
 	var cname string
@@ -150,7 +224,6 @@ func QueryCourseCredit(cid string) (string, error) {
 	err := Db.QueryRow("select credit from Course where cid = ?", cid).Scan(&credit)
 	return credit, err
 }
-
 
 func QueryCourseWithTerm(term string) (map[string][]string, error) {
 	ret := make(map[string][]string)

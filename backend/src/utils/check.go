@@ -8,6 +8,18 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+func CheckTidInTeacher(tid string) error {
+	err := Db.QueryRow("select tid from Teacher where tid = ?", tid).Scan(&tid)
+	return err
+}
+func CheckCidInCourse(cid string) error {
+	err := Db.QueryRow("select cid from Course where cid = ?", cid).Scan(&cid)
+	return err
+}
+func CheckCnameInCourse(cname string) error {
+	err := Db.QueryRow("select cname from Course where cname = ?", cname).Scan(&cname)
+	return err
+}
 
 func PreCheck(r *http.Request) (jwt.MapClaims, error) {
 	r.ParseForm()

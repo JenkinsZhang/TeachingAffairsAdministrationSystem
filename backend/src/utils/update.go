@@ -6,6 +6,15 @@ import (
 	"strings"
 )
 
+func SetOpenCourseSelect(stat string) error {
+	stmt, err := Db.Prepare("update Other set msg = ? where name = ?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec("OpenCourseSelect", stat)
+	return err
+}
+
 func UpdateStuScore(id, cid, score, term string) error {
 	stmt, err := Db.Prepare("update CourseCalendar set score = ? where id = ? and cid = ? and term = ?")
 	if err != nil {

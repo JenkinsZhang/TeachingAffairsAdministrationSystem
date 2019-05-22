@@ -758,7 +758,8 @@ Header
 json
 {
     "message",
-    "term"	// map[string]string, term["term"], term["isCurrent"]
+    "term",	// map[string]string, term["term"], term["isCurrent"]
+    "course"    //map[string][]string: "cid", "cname", "credit", "dname"
 }
 ```
 
@@ -773,7 +774,7 @@ Header
     "Authorization"
 }
 json
-{	"message",
+{	
     "term",		// string
  	"op":"select"
 }
@@ -784,18 +785,71 @@ json
 ```json
 json
 {
+
     "message",	// string
     "cid",		// []string
-    "cname",	// []string
-    "credit", 	// []string
-    "dname",	// []string
-    "tid",		// []string
-    "tname",	// []string
-    "classTime"	// []string
+    "count",    // []int
 }
 ```
 
-### 新增
+### 开课安排
+#### 接收
+```json
+POST
+Header
+{
+    "Authorization"
+}
+json
+{	
+    "term",		// string
+    "cid",
+ 	"op":"calendar"
+}
+```
+#### 返回
+```json
+json
+{
+    "tid",      // []stirng
+    "tname",    // []stirng
+    "classTime" // []stirng
+}
+```
+
+### 新增课程
+#### 接收
+```json
+{
+    "cid",
+    "cname",
+    "credit",
+    "dname".
+    "op": "addCourse"
+}
+```
+#### 返回
+```json
+{
+    "message"
+}
+```
+### 删除课程
+#### 接收
+```json
+{
+    "cid",
+    "op": "deleteCourse"
+}
+```
+#### 返回
+```json
+{
+    "message"
+}
+```
+
+### 新增开课安排
 
 #### 接收
 
@@ -806,14 +860,10 @@ Header
     "Authorization"
 }
 json
-{	
- 	"cid",
- 	"cname",
- 	"tid",
- 	"credit",
+{	"cid",
+    "tid",
  	"classTime",
- 	"did",
-    "op":"add"
+    "op":"addCourseSchedule"
 }
 ```
 
@@ -827,7 +877,7 @@ json
 ```
 
 
-### 删除
+### 删除开课安排
 
 #### 接收
 
@@ -841,7 +891,7 @@ json
 {
  	"cid",			
     "tid",
-    "op":"delete"
+    "op":"deleteCourseSchedule"
 }
 ```
 

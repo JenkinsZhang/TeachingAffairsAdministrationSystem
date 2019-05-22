@@ -25,14 +25,15 @@ func ScoreTrend(w http.ResponseWriter, r *http.Request) {
 		}
 		score := make([]string, 0)
 		for _, v := range term["term"] {
-			tmp, err := utils.QueryTermAveScore(id,v)
+			// fmt.Println("sd")
+			tmp, err := utils.QueryTermAveScore(id, v)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
 			score = append(score, tmp)
 		}
-		ret["term"] = term
+		ret["term"] = term["term"]
 		ret["score"] = score
 	}
 	utils.Response(&ret, &w, "ok")

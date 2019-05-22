@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"taas/models"
 	"taas/utils"
 )
 
@@ -25,15 +24,22 @@ func CourseManagement(w http.ResponseWriter, r *http.Request) {
 			utils.Response(&ret, &w, err.Error())
 			return
 		}
+		ret["course"], err = utils.GetCourse()
+		if err != nil {
+			utils.Response(&ret, &w, err.Error())
+			return
+		}
 	} else if r.Method == "POST" {
 		type Info struct {
-			Op     string `json:"op"`
-			Did    string `json:"did"`
-			Tid    string `json:"tid"`
-			Cid    string `json:"cid"`
-			Credit string `json:"credit"`
-			Term   string `json:"term"`
-			Cname  string `json:"cname"`
+			Op        string `json:"op"`
+			Did       string `json:"did"`
+			Tid       string `json:"tid"`
+			Cid       string `json:"cid"`
+			Credit    string `json:"credit"`
+			Term      string `json:"term"`
+			Cname     string `json:"cname"`
+			Dname     string `json:"dname"`
+			ClassTime string `json:"classTime"`
 		}
 		arr, err := ioutil.ReadAll(r.Body)
 		defer r.Body.Close()
@@ -49,7 +55,7 @@ func CourseManagement(w http.ResponseWriter, r *http.Request) {
 		}
 		// getjson ---------------------
 		if info.Op == "select" {
-			c, err := utils.QueryCourseWithTerm(info.Term)
+			c, err := utils.QueryCourseNumberWithTerm(info.Term)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
@@ -57,40 +63,79 @@ func CourseManagement(w http.ResponseWriter, r *http.Request) {
 			for key, val := range c {
 				ret[key] = val
 			}
-		} else if info.Op == "add" {
+		} else if info.Op == "calendar" {
+			c, err := utils.QueryCourseWithTermAndCid(info.Term, info.Cid)
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+			for key, val := range c {
+				ret[key] = val
+			}
+		} else if info.Op == "addCourse" {
+			err = utils.InsertCourse(utils.Struct2Map(info))
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+		} else if info.Op == "deleteCourse" {
+			err = utils.DeleteCourse(info.Cid)
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+		} else if info.Op == "addCourseSchedule" {
 			info.Term, err = utils.GetCurrentTerm()
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
-			if models.OpenSelectCourse == 0 {
-				utils.Response(&ret, &w, "Lesson selection time is not yet available.")
-				return
-			}
-			err := utils.InsertCourse(utils.Struct2Map(info))
+			osc, err := utils.IfOpenSelectCourse()
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
-		} else if info.Op == "delete" {
+			if osc == "close" {
+				utils.Response(&ret, &w, "Lesson selection time is not yet available.")
+				return
+			}
+			err = utils.InsertCourseSchedule(utils.Struct2Map(info))
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+		} else if info.Op == "deleteCourseSchedule" {
 			info.Term, err = utils.GetCurrentTerm()
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
-			if models.OpenSelectCourse == 0 {
+			osc, err := utils.IfOpenSelectCourse()
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
+			if osc == "close" {
 				utils.Response(&ret, &w, "Lesson selection time is not yet available.")
 				return
 			}
-			err := utils.RemoveCourse(info.Cid, info.Tid, info.Term)
+			err = utils.DeleteCourseSchedule(info.Cid, info.Tid, info.Term)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
 		} else if info.Op == "open" {
-			models.OpenSelectCourse = 1
+			err := utils.SetOpenCourseSelect(info.Op)
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
 		} else if info.Op == "close" {
-			models.OpenSelectCourse = 0
+			err := utils.SetOpenCourseSelect(info.Op)
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
 		} else {
 			utils.Response(&ret, &w, "fail")
 			return
