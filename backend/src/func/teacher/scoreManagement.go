@@ -19,7 +19,7 @@ func ScoreManagement(w http.ResponseWriter, r *http.Request) {
 	}
 	tid := claims["id"].(string)
 	if r.Method == "GET" {
-		c, err := utils.QueryCourseWithTid(tid)
+		c, err := utils.QueryCourseWithTid(tid, true)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -27,6 +27,7 @@ func ScoreManagement(w http.ResponseWriter, r *http.Request) {
 		ret["term"] = c["term"]
 		ret["cid"] = c["cid"]
 		ret["cname"] = c["cname"]
+		ret["classTime"] = c["classTime"]
 	} else if r.Method == "POST" {
 		type Info struct {
 			Cid   string `json:"cid"`

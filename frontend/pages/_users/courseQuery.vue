@@ -78,7 +78,7 @@
                             cid: params.row.kh,
                             classTime: params.row.sksj,
                             tid: params.row.gh,
-                            term: that.selectedClassId,
+                            term: that.selected,
                             op: 'select'
                           }
                         }).then((res) => {

@@ -4,7 +4,7 @@
       <FormItem label="学期">
         <Row type="flex" justify="space-between">
           <Select
-            v-model="selectedClassId"
+            v-model="selected"
             style="width:200px"
             placeholder="请选择学期"
           >
@@ -278,7 +278,7 @@
         }],
         calendar: [{ time: '1' }, { time: '2' }, { time: '3' }, { time: '4' }, { time: '5' }, { time: '6' }, { time: '7' }, { time: '8' }, { time: '9' }, { time: '10' }, { time: '11' }, { time: '12' }, { time: '13' }],
         nodeMatrix: [],
-        selectedClassId: '',
+        selected: '',
         showModal: false,
         drawerContentHeight: ''
       }

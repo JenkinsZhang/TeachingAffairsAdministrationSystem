@@ -52,7 +52,7 @@ func CourseQuery(w http.ResponseWriter, r *http.Request) {
 			} else if info.Cname != "" {
 				c, err = utils.QueryCourseWithCname(info.Cname)
 			} else if info.Tid != "" {
-				c, err = utils.QueryCourseWithTid(info.Tid)
+				c, err = utils.QueryCourseWithTid(info.Tid, true)
 			} else if info.Tname != "" {
 				c, err = utils.QueryCourseWithTname(info.Tname)
 			} else {

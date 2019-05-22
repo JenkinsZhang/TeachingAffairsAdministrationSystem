@@ -3,7 +3,7 @@
     <Form class="operation">
       <FormItem label="学期">
         <Select
-          v-model="selectedClassId"
+          v-model="selected"
           style="width:200px"
           placeholder="请选择学期"
           @on-change="handleSelectChange"
@@ -29,12 +29,12 @@
     async asyncData({ app }) {
       const data1 = []
       let terms = null
-      let selectedClassId = ''
+      let selected = ''
       await app.$axios({
         url: '/student/scoreTable'
       }).then(async (res) => {
         terms = res.data.term
-        selectedClassId = terms[0]
+        selected = terms[0]
         await app.$axios({
           url: '/student/scoreTable',
           method: 'post',
@@ -61,12 +61,12 @@
       return {
         data1,
         terms,
-        selectedClassId
+        selected: selected
       }
     },
     data() {
       return {
-        selectedClassId: '',
+        selected: '',
         columns: [{
           'title': '课程号',
           'key': 'kh',

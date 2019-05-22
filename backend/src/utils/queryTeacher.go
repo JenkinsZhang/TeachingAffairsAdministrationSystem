@@ -77,8 +77,8 @@ func QueryCourseScore(tid, cid, term string) ([]string, error) {
 }
 
 func QueryTeaCourse(tid, term string) (map[string][]string, error) {
-	var cid, classTime, cname, credit string
-	rows, err := Db.Query("select cid,classTime from CourseCalendar where tid = ? and term = ?", tid, term)
+	var cid, classTime, cname, credit, tname string
+	rows, err := Db.Query("select cid,classTime from CourseSchedule where tid = ? and term = ?", tid, term)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
@@ -98,7 +98,13 @@ func QueryTeaCourse(tid, term string) (map[string][]string, error) {
 		if err != nil {
 			return nil, err
 		}
+		tname, err = QueryTeaName(tid)
+		if err != nil {
+			return nil, err
+		}
 		ret["cid"] = append(ret["cid"], cid)
+		ret["tid"] = append(ret["tid"], tid)
+		ret["tname"] = append(ret["tname"], tname)
 		ret["cname"] = append(ret["cname"], cname)
 		ret["credit"] = append(ret["credit"], credit)
 		ret["classTime"] = append(ret["classTime"], classTime)

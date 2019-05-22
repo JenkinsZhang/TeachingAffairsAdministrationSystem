@@ -3,7 +3,7 @@
     <Form class="operation">
       <FormItem label="学期">
         <Select
-          v-model="selectedClassId"
+          v-model="selected"
           style="width:200px"
           placeholder="请选择学期"
           @on-change="handleSelectChange"
@@ -64,17 +64,26 @@
       }
       const data1 = []
       let terms = null
-      let selectedClassId = ''
+      let selected = ''
       await app.$axios({
-        url: '/student/courseCalendar'
+        url: `/${params.users}/courseCalendar`
       }).then(async (res) => {
-        terms = res.data.term
-        selectedClassId = terms[0]
+        terms = res.data.term.term
+        if (!terms) {
+          return
+        }
+        res.data.term.isCurrent.some((x, index) => {
+          if (x === 'yes') {
+            selected = terms[index]
+            return true
+          }
+          return false
+        })
         await app.$axios({
-          url: '/student/courseCalendar',
+          url: `/${params.users}/courseCalendar`,
           method: 'post',
           data: {
-            term: terms[0]
+            term: selected
           }
         }).then((res) => {
           const { cid, cname, credit, classTime, tid, tname } = res.data
@@ -97,7 +106,7 @@
         isStudent,
         data1,
         terms,
-        selectedClassId
+        selected: selected
       }
     },
     data() {
@@ -135,7 +144,7 @@
           }
         ],
         data1: [],
-        selectedClassId: '',
+        selected: '',
         calendar: [{ time: '1' }, { time: '2' }, { time: '3' }, { time: '4' }, { time: '5' }, { time: '6' }, { time: '7' }, { time: '8' }, { time: '9' }, { time: '10' }, { time: '11' }, { time: '12' }, { time: '13' }],
         nodeMatrix: [],
         isStudent: false,
@@ -145,15 +154,19 @@
     },
     methods: {
       handleSelectChange(term) {
-        this.data1.length = 0
+        this.data1 = []
+        this.renderCalendar()
         this.$axios({
-          url: '/student/courseCalendar',
+          url: `/${this.isStudent ? 'student' : 'teacher'}/courseCalendar`,
           method: 'post',
           data: {
             term
           }
         }).then((res) => {
           const { cid, cname, credit, classTime, tid, tname } = res.data
+          if (!cid) {
+            return
+          }
           for (let i = 0; i < cid.length; i++) {
             this.data1.push({
               kh: cid[i],
@@ -164,6 +177,8 @@
               sksj: classTime[i]
             })
           }
+        }).finally(() => {
+          this.renderCalendar()
         })
       },
       renderCalendar({
@@ -216,20 +231,19 @@
           }
         })
         //开始渲染
-        if (!this.nodeMatrix.length) {
-          let tr = document.querySelectorAll('.calendar .ivu-table-tbody tr')
-          for (let i = 0; i < tr.length; i++) {
-            const tds = tr[i].querySelectorAll('td:not(:first-child)')
-            this.nodeMatrix.push(tds)
-          }
-          const rawTbody = document.querySelector('.calendarRaw .ivu-table-tbody')
-          //在.calendarRaw上挂特效函数
-          rawTbody.onmouseleave = this.mouseLeaveTbody
-          tr = rawTbody.querySelectorAll('tr')
-          for (let i = 0; i < tr.length; i++) {
-            tr[i].onmouseenter = () => (this.mouseEnterTr(i))
-          }
+        let tr = document.querySelectorAll('.calendar .ivu-table-tbody tr')
+        for (let i = 0; i < tr.length; i++) {
+          const tds = tr[i].querySelectorAll('td:not(:first-child)')
+          this.nodeMatrix.push(tds)
         }
+        const rawTbody = document.querySelector('.calendarRaw .ivu-table-tbody')
+        //在.calendarRaw上挂特效函数
+        rawTbody.onmouseleave = this.mouseLeaveTbody
+        tr = rawTbody.querySelectorAll('tr')
+        for (let i = 0; i < tr.length; i++) {
+          tr[i].onmouseenter = () => (this.mouseEnterTr(i))
+        }
+
         for (let i = 0; i < matrix.length; i++) {
           for (let j = 0; j < matrix[i].length; j++) {
             if (!matrix[i][j]) {
@@ -293,7 +307,7 @@
                           method: 'post',
                           data: {
                             cid: params.row.kh,
-                            term: that.selectedClassId,
+                            term: that.selected,
                             op: 'delete'
                           }
                         }).then(() => {
