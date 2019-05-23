@@ -33,4 +33,8 @@ func Build() {
 
 	http.HandleFunc("/api/getDepartment", tools.GetDepartment)
 	http.HandleFunc("/api/getCurrentTerm", tools.GetCurrentTerm)
+	http.HandleFunc("/api/getTidTname", tools.GetTidTname)
+	http.HandleFunc("/api/getTeacherCourseInfo", tools.GetTeacherCourseInfo)
 }
+// tid, term
+// cid, cname, classTime

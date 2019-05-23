@@ -2,6 +2,43 @@ package utils
 
 import "database/sql"
 
+func QueryTeacherCourseInfo(term, tid string)(map[string][]string, error){
+	ret := make(map[string][]string)
+	rows, err := Db.Query("select Course.cid, cname, classTime from Course, CourseSchedule where Course.cid = CourseSchedule.cid and term = ? and tid = ?",term, tid)
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	var cid, cname, classTime string
+	for rows.Next() {
+		err := rows.Scan(&cid, &cname, &classTime)
+		if err != nil {
+			return nil, err
+		}
+		ret["cid"] = append(ret["cid"], cid)
+		ret["cname"] = append(ret["cname"], cname)
+		ret["classTime"] = append(ret["classTime"], classTime)		
+	}
+	return ret, nil
+}
+func QueryTidTname() (map[string][]string, error) {
+	ret := make(map[string][]string)
+	rows, err := Db.Query("select tid, tname from Teacher")
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	var tid, tname string
+	for rows.Next() {
+		err := rows.Scan(&tid, &tname)
+		if err != nil {
+			return nil, err
+		}
+		ret["tid"] = append(ret["tid"], tid)
+		ret["tname"] = append(ret["tname"], tname)
+	}
+	return ret, nil
+}
 func QueryCourseWithTermAndCid(term, cid string) (map[string][]string, error) {
 	ret := make(map[string][]string)
 	rows, err := Db.Query("select Teacher.tid,tname,classTime from CourseSchedule, Teacher where CourseSchedule.tid = Teacher.tid and term = ? and cid = ?", term, cid)

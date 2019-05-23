@@ -76,3 +76,88 @@ create table Term(
     isCurrent int not null,
     primary key(term)
 );
+
+create table Other (
+    name  varchar(20) not null primary key,
+    msg varchar(20) not null
+);
+
+create table Log(
+    type varchar(20),
+    table varchar(20),
+    time date
+);
+
+
+DELIMITER $
+create trigger log_trigger_insert_department after insert 
+on Department
+for each row
+begin
+insert into Log values("insert", "department", now());
+end $
+
+DELIMITER $
+create trigger log_trigger_insert_course after insert 
+on Course
+for each row
+begin
+insert into Log values("insert", "course", now());
+end $
+
+DELIMITER $
+create trigger log_trigger_insert_teacher after insert 
+on Teacher
+for each row
+begin
+insert into Log values("insert", "teacher", now());
+end $
+
+DELIMITER $
+create trigger log_trigger_insert_student after insert 
+on Student
+for each row
+begin
+insert into Log values("insert", "student", now());
+end $
+
+DELIMITER $
+create trigger log_trigger_insert_courseCalendar after insert 
+on CourseCalendar
+for each row
+begin
+insert into Log values("insert", "courseCalendar", now());
+end $
+
+
+DELIMITER $
+create trigger log_trigger_insert_courseSchedule after insert 
+on CourseSchedule
+for each row
+begin
+insert into Log values("insert", "courseSchedule", now());
+end $
+
+DELIMITER $
+create trigger log_trigger_insert_user after insert 
+on User
+for each row
+begin
+insert into Log values("insert", "user", now());
+end $
+
+DELIMITER $
+create trigger log_trigger_insert_term after insert 
+on Term
+for each row
+begin
+insert into Log values("insert", "term", now());
+end $
+
+DELIMITER $
+create trigger log_trigger_insert_other after insert 
+on Other
+for each row
+begin
+insert into Log values("insert", "other", now());
+end $
