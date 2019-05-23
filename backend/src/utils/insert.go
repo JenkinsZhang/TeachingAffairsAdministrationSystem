@@ -7,7 +7,7 @@ func InsertCourseSchedule(info map[string]string) error {
 	if err != nil {
 		return errors.New("invalid tid")
 	}
-	stmt, err := Db.Prepare("insert into CourserSchedule(tid,cid,term,classTime) values(tid = ?, cid = ?, term = ?,classTime = ?")
+	stmt, err := Db.Prepare("insert into CourseSchedule(tid,cid,term,classTime) values(?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}
@@ -20,15 +20,15 @@ func InsertCourse(info map[string]string) error {
 		return errors.New("invalid dname")
 	}
 	err = CheckCidInCourse(info["Cid"])
-	if err != nil {
-		return errors.New("invalid cid")
+	if err == nil {
+		return errors.New("exists cid")
 	}
 	err = CheckCnameInCourse(info["Cname"])
-	if err != nil {
-		return errors.New("invalid cname")
+	if err == nil {
+		return errors.New("exists cname")
 	}
 
-	stmt, err := Db.Prepare("insert into Courser(cid,cname,credit,did) values(cid = ?, cname = ?,credit = ?, did = ?")
+	stmt, err := Db.Prepare("insert into Course(cid,cname,credit,did) values(?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func InsertCourse(info map[string]string) error {
 }
 
 func InsertTerm(term string) error {
-	stmt, err := Db.Prepare("insert into Term(term,isCurrent) values(term = ?, isCurrent = ?)")
+	stmt, err := Db.Prepare("insert into Term(term,isCurrent) values(?, ?)")
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func InsertTerm(term string) error {
 }
 func InsertCourseCalendar(info map[string]string) error {
 	// isCourseCollision()
-	stmt, err := Db.Prepare("insert into CourseCalendar(id,cid,tid,term,classTime) values(id = ?, cid = ?,tid = ?, term = ?, classTime=?")
+	stmt, err := Db.Prepare("insert into CourseCalendar(id,cid,tid,term,classTime) values(?, ?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}

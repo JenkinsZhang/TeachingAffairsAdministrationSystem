@@ -60,20 +60,23 @@ func QueryCourseWithTermAndCid(term, cid string) (map[string][]string, error) {
 }
 func QueryCourseNumberWithTerm(term string) (map[string][]interface{}, error) {
 	ret := make(map[string][]interface{})
-	rows, err := Db.Query("select cid, count(cid) from CourseSchedule where term = ? group by cid", term)
+	rows, err := Db.Query("select c.cid, cname, dname, credit, count(cs.cid) from Course c left join CourseSchedule cs on cs.cid=c.cid and term = ? inner join Department d on c.did=d.did group by c.cid", term)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
-	var cid string
+	var cid, cname, credit, dname string
 	var cnt int
 	ret["count"] = make([]interface{}, 0)
 	for rows.Next() {
-		err := rows.Scan(&cid, &cnt)
+		err := rows.Scan(&cid, &cname, &dname, &credit, &cnt)
 		if err != nil {
 			return nil, err
 		}
 		ret["cid"] = append(ret["cid"], cid)
+		ret["cname"] = append(ret["cname"], cname)
+		ret["dname"] = append(ret["dname"], dname)
+		ret["credit"] = append(ret["credit"], credit)
 		ret["count"] = append(ret["count"], cnt)
 	}
 	return ret, nil
@@ -105,7 +108,7 @@ func GetCourse() (map[string][]string, error) {
 
 func IfOpenSelectCourse() (string, error) {
 	var msg string
-	err := Db.QueryRow("select msg from Other where name = ?", "OpenCourseSelect").Scan(&msg)
+	err := Db.QueryRow("select msg from Other where name = ?", "OpenSelectCourse").Scan(&msg)
 	return msg, err
 }
 

@@ -70,7 +70,7 @@
 
 <script>
   export default {
-    name: 'teacherManagement',
+    name: 'studentManagement',
     async asyncData({ app }) {
       const data1 = []
       await app.$axios({
@@ -225,10 +225,10 @@
                       loading: true,
                       onOk: () => {
                         that.$axios({
-                          url: '/admin/teacherManagement',
+                          url: '/admin/studentManagement',
                           method: 'post',
                           data: {
-                            tid: params.row.id,
+                            id: params.row.id,
                             op: 'delete'
                           }
                         }).then(() => {
@@ -297,7 +297,6 @@
             'op': this.isAdding ? 'add' : 'modify'
           }
         }).then((res) => {
-          console.log('handleAddStudent', res.data)
           if (res.data.message === 'ok') {
             this.$Message.info(`${this.isAdding ? '新增' : '修改'}成功`)
             this.showModal = false

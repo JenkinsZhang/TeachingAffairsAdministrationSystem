@@ -4,17 +4,17 @@
       我的信息
       <p slot="content">
         <Tag color="blue">{{idLabel}}</Tag>
-        {{profile.id||profile.tid}}
+        {{profile.id||profile.tid||profile.aid}}
       </p>
-      <p slot="content">
+      <p slot="content" v-if="profile.name||profile.tname">
         <Tag color="orange">姓　名</Tag>
         {{profile.name||profile.tname}}
       </p>
-      <p slot="content">
+      <p slot="content" v-if="profile.gender">
         <Tag color="green">性　别</Tag>
         {{profile.gender}}
       </p>
-      <p slot="content">
+      <p slot="content" v-if="profile.dname">
         <Tag color="cyan">院　系</Tag>
         {{profile.dname}}
       </p>

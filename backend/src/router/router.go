@@ -29,7 +29,8 @@ func Build() {
 	http.HandleFunc("/api/admin/profile", admin.Profile)
 	http.HandleFunc("/api/admin/teacherManagement", admin.TeacherManagement)
 	http.HandleFunc("/api/admin/studentManagement", admin.StudentManagement)
-	http.HandleFunc("/api/admin/courseManagenment", admin.CourseManagement)
+	http.HandleFunc("/api/admin/courseManagement", admin.CourseManagement)
+	http.HandleFunc("/api/admin/termManagement", admin.TermManagement)
 
 	http.HandleFunc("/api/getDepartment", tools.GetDepartment)
 	http.HandleFunc("/api/getCurrentTerm", tools.GetCurrentTerm)

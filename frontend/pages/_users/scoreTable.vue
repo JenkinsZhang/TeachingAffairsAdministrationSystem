@@ -33,8 +33,17 @@
       await app.$axios({
         url: '/student/scoreTable'
       }).then(async (res) => {
-        terms = res.data.term
-        selected = terms[0]
+        terms = res.data.term.term
+        if (!terms) {
+          return
+        }
+        res.data.term.isCurrent.some((x, index) => {
+          if (x === 'yes') {
+            selected = terms[index]
+            return true
+          }
+          return false
+        })
         await app.$axios({
           url: '/student/scoreTable',
           method: 'post',

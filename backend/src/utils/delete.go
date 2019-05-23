@@ -4,7 +4,7 @@ import "errors"
 
 func DeleteCourse(cid string) error {
 	var cnt int
-	err := Db.QueryRow("select count(id) from CourseCalendr where cid = ?", cid).Scan(&cnt)
+	err := Db.QueryRow("select count(id) from CourseCalendar where cid = ?", cid).Scan(&cnt)
 	if err != nil {
 		return err
 	}

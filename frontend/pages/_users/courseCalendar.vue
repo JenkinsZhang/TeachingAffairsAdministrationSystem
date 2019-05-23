@@ -51,6 +51,7 @@
     '五': 5,
     '六': 6,
     '七': 7,
+    '天': 7,
     '日': 7
   }
   const colorArray = ['#d50000', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#FF5722', '#795548', '#607D8B']
@@ -140,6 +141,7 @@
           {
             'title': '上课时间',
             'key': 'sksj',
+            'width': 150,
             'align': 'center'
           }
         ],
@@ -183,7 +185,9 @@
       },
       renderCalendar({
                        raw = this.data1,
-                       hoverKh
+                       hover: {
+                         kh, sksj
+                       } = {}
                      } = {}) {
         //raw是课程数组
         //clear
@@ -209,25 +213,35 @@
         let cnt = 0
         raw.forEach((obj, index) => {
           const x = Object.assign({}, obj)
-          if (x.sksj.indexOf('星期') === 0) {
-            x.sksj = x.sksj.substring(2)
+          let ct = x.sksj.split(' ')
+          //每个不同的时间段
+          if (!ct) {
+            ct = [x.sksj]
           }
-          const day = tiptopMap[x.sksj[0]]
-          const arr = x.sksj.substring(1).split('-')
-          let begin = parseInt(arr[0]),
-            end = parseInt(arr[1])
-          //给课程初始化一个颜色
-          let color
-          if (hoverKh === undefined || obj.kh === hoverKh) {//没有hover的元素，或hover的就是这个课程
-            swap(colorArrayBak, cnt, Math.floor(Math.random() * (colorArrayBak.length - cnt) + cnt))
-            raw[index]._color = color = raw[index]._color || colorArrayBak[cnt++]
-          } else {
-            color = 'rgba(0,0,0,.2)'//灰色
-          }
-          matrix[begin - 1][day - 1] = {
-            ...obj,
-            color,
-            _length: end - begin + 1
+          for (let j = 0; j < ct.length; j++) {
+            if (ct[j].indexOf('星期') === 0) {
+              ct[j] = ct[j].substring(2)
+            }
+            const day = tiptopMap[ct[j][0]]
+            const arr = ct[j].substring(1).split('-')
+            let begin = parseInt(arr[0]),
+              end = parseInt(arr[1])
+            //给课程初始化一个颜色
+            let color
+            if ((kh === undefined || sksj === undefined) || (obj.kh === kh && obj.sksj === sksj)) {//没有hover的元素，或hover的就是这个课程
+              if (!raw[index]._color) {
+                swap(colorArrayBak, cnt, Math.floor(Math.random() * (colorArrayBak.length - cnt) + cnt))
+                raw[index]._color = colorArrayBak[cnt++]
+              }
+              color = raw[index]._color
+            } else {
+              color = 'rgba(0,0,0,.2)'//灰色
+            }
+            matrix[begin - 1][day - 1] = {
+              ...obj,
+              color,
+              _length: end - begin + 1
+            }
           }
         })
         //开始渲染
@@ -267,7 +281,12 @@
       },
       mouseEnterTr(line) {
         // console.log(line)
-        this.renderCalendar({ hoverKh: this.$refs.calendarRaw.data[line].kh })
+        this.renderCalendar({
+          hover: {
+            kh: this.$refs.calendarRaw.data[line].kh,
+            sksj: this.$refs.calendarRaw.data[line].sksj
+          }
+        })
       },
       mouseLeaveTbody() {
         // console.log('out')

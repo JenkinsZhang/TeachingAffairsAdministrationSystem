@@ -6,7 +6,7 @@
         style="width:400px"
         placeholder="请选择课程"
         class="operation"
-        @on-change="onSelectChange"
+        @on-change="handleSwitchTerm"
       >
         <OptionGroup :label="term.name" v-for="term of terms" :key="term.name">
           <Option v-for="cla of term.classes" :value="cla.kh+'|'+term.name" :key="cla.kh">
@@ -132,7 +132,7 @@
       }
     },
     methods: {
-      async onSelectChange(val) {
+      async handleSwitchTerm(val) {
         const arr = val.split('|')
         requestData({ cid: arr[0], term: arr[1] }, this.$axios).then((val) => {
           this.chartData.rows = val

@@ -157,7 +157,7 @@
       }
     },
     methods: {
-      async onSelectChange(val) {
+      async handleSwitchTerm(val) {
         const arr = val.split('|')
         requestData({ cid: arr[0], term: arr[1]}, this.$axios).then((val) => {
           this.data1 = val
