@@ -35,9 +35,25 @@ export const actions = {
     commit('setToken', token)
   },
   xhrIncWithSpin({ commit, state }, { app }) {
-
+    if (state.xhrCount === 0 && process.client) {
+      clearTimeout(state.spinShowDelayTimer)
+      commit('setSpinShowDelayTimer', setTimeout(() => {
+        commit('setSpinShowDelayTimer', null)
+        app.$Spin.show()
+      }, 300))
+      commit('xhrInc')
+    }
   },
   xhrDecWithSpin({ commit, state }, { app }) {
-
+    if (state.xhrCount === 1 && process.client) {
+      clearTimeout(state.spinHideDelayTimer)
+      clearTimeout(state.spinShowDelayTimer)
+      commit('setSpinShowDelayTimer', null)
+      commit('setSpinHideDelayTimer', setTimeout(() => {
+        commit('setSpinHideDelayTimer', null)
+        app.$Spin.hide()
+      }, 100))
+      commit('xhrDec')
+    }
   }
 }

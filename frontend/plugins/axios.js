@@ -5,31 +5,14 @@ export default function({ $axios, app, store, nuxtState }) {
     } else {
       console.warn('无法在headers添加Authorization', config.url)
     }
-    const { state, commit } = store
-    if (state.xhrCount === 0 && process.client) {
-      clearTimeout(state.spinShowDelayTimer)
-      commit('setSpinShowDelayTimer', setTimeout(() => {
-        commit('setSpinShowDelayTimer', null)
-        app.$Spin.show()
-      }, 300))
-      commit('xhrInc')
-    }
+    store.dispatch('xhrIncWithSpin', { app })
   })
   $axios.onResponse(config => {
-    const { state, commit } = store
-    if (state.xhrCount === 1 && process.client) {
-      clearTimeout(state.spinHideDelayTimer)
-      clearTimeout(state.spinShowDelayTimer)
-      commit('setSpinShowDelayTimer', null)
-      commit('setSpinHideDelayTimer', setTimeout(() => {
-        commit('setSpinHideDelayTimer', null)
-        app.$Spin.hide()
-      }, 100))
-      commit('xhrDec')
-    }
+    store.dispatch('xhrDecWithSpin', { app })
   })
 
   $axios.onError(error => {
+    store.dispatch('xhrDecWithSpin', { app })
     // const code = parseInt(error.response && error.response.status)
     console.error(error)
   })
