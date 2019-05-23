@@ -6,11 +6,11 @@
         style="width:400px"
         placeholder="请选择课程"
         class="operation"
-        @on-change="onSelectChange"
+        @on-change="handleSwitchTerm"
       >
         <OptionGroup :label="term.name" v-for="term of terms" :key="term.name">
-          <Option v-for="cla of term.classes" :value="cla.kh+'|'+term.name" :key="cla.kh">{{ cla.km }} | {{cla.kh}} |
-            {{cla.sksj}}
+          <Option v-for="cla of term.classes" :value="cla.kh+'|'+term.name+'|'+cla.sksj" :key="cla.kh+cla.sksj">
+            {{ cla.km }} | {{cla.kh}} | {{cla.sksj}}
           </Option>
         </OptionGroup>
       </Select>
@@ -85,7 +85,7 @@
         }
         for (let i = 0; i < data.cid.length; i++) {
           if (!selected) {
-            selected = data.cid[i] + '|' + data.term[i]
+            selected = data.cid[i] + '|' + data.term[i] + '|' + data.classTime[i]
             selectedCid = data.cid[i]
             selectedTerm = data.term[i]
           }
@@ -226,7 +226,7 @@
       },
       async handleSwitchTerm(val) {
         const arr = val.split('|')
-        requestData({ cid: arr[0], term: arr[1]}, this.$axios).then((val) => {
+        requestData({ cid: arr[0], term: arr[1] }, this.$axios).then((val) => {
           this.data1 = val
         })
       }

@@ -9,7 +9,7 @@
         @on-change="handleSwitchTerm"
       >
         <OptionGroup :label="term.name" v-for="term of terms" :key="term.name">
-          <Option v-for="cla of term.classes" :value="cla.kh+'|'+term.name" :key="cla.kh">
+          <Option v-for="cla of term.classes" :value="cla.kh+'|'+term.name+'|'+cla.sksj" :key="cla.kh+cla.sksj">
             {{ cla.km }} | {{cla.kh}} | {{cla.sksj}}
           </Option>
         </OptionGroup>
@@ -86,7 +86,7 @@
         }
         for (let i = 0; i < data.cid.length; i++) {
           if (!selected) {
-            selected = data.cid[i] + '|' + data.term[i]
+            selected = data.cid[i] + '|' + data.term[i] + '|' + data.classTime[i]
             selectedCid = data.cid[i]
             selectedTerm = data.term[i]
           }

@@ -1,14 +1,27 @@
-import Vuex from 'vuex'
-
 const cookieparser = process.server ? require('cookieparser') : undefined
 
 export const state = () => ({
-  token: null
+  token: null,
+  xhrCount: 0,
+  spinHideDelayTimer: null,
+  spinShowDelayTimer: null
 })
 
 export const mutations = {
   setToken(state, auth) {
     state.token = auth
+  },
+  xhrInc(state) {
+    state.xhrCount++
+  },
+  xhrDec(state) {
+    state.xhrCount--
+  },
+  setSpinHideDelayTimer(state, val) {
+    state.spinHideDelayTimer = val
+  },
+  setSpinShowDelayTimer(state, val) {
+    state.spinShowDelayTimer = val
   }
 }
 
@@ -20,5 +33,11 @@ export const actions = {
       token = parsed.token
     }
     commit('setToken', token)
+  },
+  xhrIncWithSpin({ commit, state }, { app }) {
+
+  },
+  xhrDecWithSpin({ commit, state }, { app }) {
+
   }
 }

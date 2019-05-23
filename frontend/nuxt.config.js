@@ -29,7 +29,7 @@ module.exports = {
   */
   loading: {
     color: '#359bff',
-    height: '3px'
+    height: '3px',
   },
 
   /*
@@ -66,7 +66,7 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: '/api/',
+    baseURL: '/api/'
   },
 
   /*
