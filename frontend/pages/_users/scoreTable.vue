@@ -48,7 +48,7 @@
           url: '/student/scoreTable',
           method: 'post',
           data: {
-            term: terms[0]
+            term: selected
           }
         }).then((res) => {
           const { cid, cname, credit, score, tid, tname } = res.data
@@ -70,7 +70,7 @@
       return {
         data1,
         terms,
-        selected: selected
+        selected
       }
     },
     data() {

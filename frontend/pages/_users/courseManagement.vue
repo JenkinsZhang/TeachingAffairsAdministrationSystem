@@ -155,7 +155,7 @@
     '天': 7,
     '日': 7
   }
-  const colorArray = ['#d50000', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#FF5722', '#795548', '#607D8B']
+  const colorArray = ['#d50000', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#FF5722', '#795548', '#607D8B']
   export default {
     name: 'courseManagement',
     mixins: [calendarColumnsMock],
@@ -462,9 +462,6 @@
             {
               required: true,
               validator(rule, value, callback) {
-                if (!value) {
-                  return callback(new Error('上课时间不能为空'))
-                }
                 if (!that.form2.tid) {
                   return callback(new Error('请先选择任课教师'))
                 }
@@ -491,7 +488,7 @@
                         ct = [classTime[i]]
                       }
                       for (let j = 0; j < ct.length; j++) {
-                        const g = ct[j].match(/星期[一二三四五六七日](\d+)-(\d+)/)
+                        const g = ct[j].match(/星期[一二三四五六七日天](\d+)-(\d+)/)
                         console.log(g)
                         if (!(g && g.length > 0 && g[1] >= 1 && g[1] <= 13 && g[2] >= 1 && g[2] <= 13 && parseInt(g[1]) <= g[2])) {
                           throw new Error('上课时间格式不规范，示例：星期一11-13 星期五3-4')
@@ -594,7 +591,7 @@
               this.renderCalendar({ raw: [] })
             })
           } else {
-            this.$Message.info(res.data.message)
+            this.$Message.warning(res.data.message)
             this.modalLoading2 = false
             this.$nextTick(() => {
               that.modalLoading2 = true
@@ -668,7 +665,7 @@
             this.data1.push(Object.assign({}, this.form, { count: 0 }))
             this.$refs.form.resetFields()
           } else {
-            this.$Message.info(res.data.message)
+            this.$Message.warning(res.data.message)
             this.modalLoading = false
             this.$nextTick(() => {
               that.modalLoading = true

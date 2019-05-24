@@ -76,7 +76,7 @@ func CourseQuery(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			tmp := utils.Struct2Map(info)
-			tmp["term"], err = utils.GetCurrentTerm()
+			tmp["Term"], err = utils.GetCurrentTerm()
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return

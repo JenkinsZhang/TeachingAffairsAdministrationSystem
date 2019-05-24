@@ -126,11 +126,6 @@
           "name": "courseManagement",
           "icon": "icon-filedone",
           "title": "课程管理"
-        },
-        {
-          "name": "courseAnalysis",
-          "icon": "icon-pointmap",
-          "title": "课程报表"
         }
       ]
     },

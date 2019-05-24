@@ -2,9 +2,9 @@ package utils
 
 import "database/sql"
 
-func QueryTeacherCourseInfo(term, tid string)(map[string][]string, error){
+func QueryTeacherCourseInfo(term, tid string) (map[string][]string, error) {
 	ret := make(map[string][]string)
-	rows, err := Db.Query("select Course.cid, cname, classTime from Course, CourseSchedule where Course.cid = CourseSchedule.cid and term = ? and tid = ?",term, tid)
+	rows, err := Db.Query("select Course.cid, cname, classTime from Course, CourseSchedule where Course.cid = CourseSchedule.cid and term = ? and tid = ?", term, tid)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
@@ -17,7 +17,7 @@ func QueryTeacherCourseInfo(term, tid string)(map[string][]string, error){
 		}
 		ret["cid"] = append(ret["cid"], cid)
 		ret["cname"] = append(ret["cname"], cname)
-		ret["classTime"] = append(ret["classTime"], classTime)		
+		ret["classTime"] = append(ret["classTime"], classTime)
 	}
 	return ret, nil
 }
@@ -60,7 +60,7 @@ func QueryCourseWithTermAndCid(term, cid string) (map[string][]string, error) {
 }
 func QueryCourseNumberWithTerm(term string) (map[string][]interface{}, error) {
 	ret := make(map[string][]interface{})
-	rows, err := Db.Query("select c.cid, cname, dname, credit, count(cs.cid) from Course c left join CourseSchedule cs on cs.cid=c.cid and term = ? inner join Department d on c.did=d.did group by c.cid", term)
+	rows, err := Db.Query("select c.cid, cname, dname, credit, count(cs.cid) from Course c left join CourseSchedule cs on cs.cid=c.cid and term = ? inner join Department d on c.did=d.did where exists(select * from Term where term = ?) group by c.cid", term, term)
 	defer rows.Close()
 	if err != nil {
 		return nil, err

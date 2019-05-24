@@ -312,7 +312,7 @@
             }
             this.$refs.form.resetFields()
           } else {
-            this.$Message.info(res.data.message)
+            this.$Message.warning(res.data.message)
             this.modalLoading = false
             this.$nextTick(() => {
               that.modalLoading = true

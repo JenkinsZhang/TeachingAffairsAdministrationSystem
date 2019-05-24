@@ -12,10 +12,10 @@ func setTerm(term string, isCurrent string) error {
 }
 func SetCurrentTerm(term string) error {
 	_, err := GetCurrentTerm()
-	if err != nil {
-		return setTerm("yes", term)
+	if err == nil {
+		return errors.New("Already have current term.")
 	}
-	return errors.New("Already have current term.")
+	return setTerm(term, "yes")
 }
 func EndTerm(term string) error {
 	ok, err := DoesAllTeaHaveMarked(term)
@@ -25,7 +25,7 @@ func EndTerm(term string) error {
 	if ok == true {
 		return errors.New("This term still has teachers who don't finish marking.")
 	}
-	return setTerm("no", term)
+	return setTerm(term, "no")
 }
 
 func DeleteTerm(term string) error {

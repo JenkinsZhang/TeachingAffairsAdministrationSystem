@@ -40,7 +40,7 @@ export const actions = {
       commit('setSpinShowDelayTimer', setTimeout(() => {
         commit('setSpinShowDelayTimer', null)
         app.$Spin.show()
-      }, 300))
+      }, 500))
       commit('xhrInc')
     }
   },

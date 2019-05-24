@@ -66,6 +66,7 @@
                 },
                 on: {
                   click: () => {
+                    //TODO:判cid重复, 判时间冲突
                     that.$Modal.confirm({
                       title: '确认',
                       content: `确定要选课《${params.row.km}》吗？`,
@@ -82,7 +83,7 @@
                             op: 'select'
                           }
                         }).then((res) => {
-                          if (res.data.message === 'success') {
+                          if (res.data.message === 'ok') {
                             that.$Message.info('选课成功')
                           } else {
                             that.$Message.warning(res.data.message)

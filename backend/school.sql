@@ -42,14 +42,23 @@ create table Teacher(
     foreign key (departmentId) references Department(id)
 );
 
-create table CourseCalendar(
-    tid varchar(20) not null,
-    cid varchar(20) not null,
-    term varchar(20) not null,
+create table CourseCalendar
+(
+    id        varchar(20) not null,
+    cid       varchar(20) not null,
+    tid       varchar(20) not null,
+    term      varchar(20) not null,
     classTime varchar(20) not null,
-    primary key(tid,cid,term,classTime),
-    foreign key (cid) references Course(cid),
-    foreign key (tid) references Teacher(tid)
+    score     float default -1,
+    primary key (id, cid, tid, term),
+    constraint CC_TERM
+        foreign key (term) references Term (term),
+    constraint FK_CID
+        foreign key (cid) references Course (cid),
+    constraint FK_ID
+        foreign key (id) references Student (id),
+    constraint FK_TID
+        foreign key (tid) references Teacher (tid)
 );
 
 create table CourseSelect(
