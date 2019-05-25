@@ -43,6 +43,9 @@ func CourseCalendar(w http.ResponseWriter, r *http.Request) {
 			utils.Response(&ret, &w, err.Error())
 			return
 		}
+		if info.Term == "" {
+			info.Term, _ = utils.GetCurrentTerm()
+		}
 		// --- get json
 
 		c := make(map[string][]string)
