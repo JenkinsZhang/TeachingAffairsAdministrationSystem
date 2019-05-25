@@ -14,14 +14,12 @@ yarn run dev
 # run backend
 go run main.go
 
-# then you can visit http://localhost:3000
-# but we suggest that you should configure your webserver e.g. nginx to prevent cross-origin problems due to our idleness ☺️.
+# then you can visit frontend on http://localhost:3000, but there remains some troubles. To avoid it, you should use webservers like nginx to proxy :3000 and :9090 to the same port to visit.
 ```
 
 ### release
 ```bash
 # run frontend and backend together
 docker-compose up --build
-# then you can visit http://localhost:30003
-# by the way, don't forget configure your webserver to make the service work.
+# then you should use webservers like nginx to proxy :30003 and :30004 to the same port to visit.
 ```
