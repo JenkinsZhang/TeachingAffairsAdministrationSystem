@@ -136,6 +136,12 @@ func CourseManagement(w http.ResponseWriter, r *http.Request) {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
+		} else if info.Op == "queryOpen" {
+			ret["open"], err = utils.IfOpenSelectCourse()
+			if err != nil {
+				utils.Response(&ret, &w, err.Error())
+				return
+			}
 		} else {
 			utils.Response(&ret, &w, "fail")
 			return

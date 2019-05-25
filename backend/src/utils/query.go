@@ -108,7 +108,7 @@ func GetCourse() (map[string][]string, error) {
 
 func IfOpenSelectCourse() (string, error) {
 	var msg string
-	err := Db.QueryRow("select msg from Other where name = ?", "OpenSelectCourse").Scan(&msg)
+	err := Db.QueryRow("select msg from Other where name = ?", "OpenCourseSelect").Scan(&msg)
 	return msg, err
 }
 

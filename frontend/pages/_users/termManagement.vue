@@ -2,7 +2,15 @@
   <div class="wrapper">
     <ButtonGroup class="operation">
       <Button type="primary" icon="md-add" size="large" @click="handleClickAddButton">
-        新增
+        新增学期
+      </Button>
+      <Button type="warning" icon="md-close-circle" size="large" @click="handleClickOpenButton"
+              v-if="openCourse">
+        关闭选课
+      </Button>
+      <Button type="info" icon="md-checkmark-circle-outline" size="large" @click="handleClickOpenButton"
+              v-else>
+        开放选课
       </Button>
     </ButtonGroup>
     <Table
@@ -55,8 +63,17 @@
           })
         }
       })
+      let openCourse = false
+      await app.$axios({
+        url: '/admin/courseManagement',
+        method: 'post',
+        data: { op: 'queryOpen' }
+      }).then((res) => {
+        openCourse = res.data.open === 'yes'
+      })
       return {
-        data1
+        data1,
+        openCourse
       }
     },
     data() {
@@ -177,10 +194,41 @@
         },
         showModal: false,
         isAdding: false,
-        thisRow: null
+        thisRow: null,
+        openCourse: false
       }
     },
     methods: {
+      handleClickOpenButton() {
+        if (this.openCourse) {
+          this.$axios({
+            url: '/admin/courseManagement',
+            method: 'post',
+            data: { op: 'close' }
+          }).then((res) => {
+            if (res.data.message === 'ok') {
+              this.openCourse = false
+              this.$Message.info('操作成功')
+            } else {
+              this.$Message.warning(res.data.message)
+            }
+          })
+        } else {
+          this.$axios({
+            url: '/admin/courseManagement',
+            method: 'post',
+            data: { op: 'open' }
+          }).then((res) => {
+            if (res.data.message === 'ok') {
+              this.openCourse = true
+              this.$Message.info('操作成功')
+            } else {
+              this.$Message.warning(res.data.message)
+            }
+          })
+        }
+
+      },
       handleClickAddButton() {
         if (!this.isAdding) {
           this.$refs.form.resetFields()
