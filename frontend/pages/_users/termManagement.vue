@@ -148,7 +148,8 @@
               h('Button', {
                 props: {
                   type: 'error',
-                  icon: 'md-trash'
+                  icon: 'md-trash',
+                  disabled: params.row.isCurrent === 'yes'
                 },
                 on: {
                   click: () => {
@@ -172,6 +173,12 @@
                           } else {
                             that.$Message.warning(res.data.message)
                           }
+                        }).catch((err) => {
+                          that.$Modal.remove()
+                          that.$Notice.warning({
+                            title: '提示',
+                            desc: err.toString()
+                          })
                         })
                       },
                       onCancel: () => {

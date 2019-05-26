@@ -191,10 +191,23 @@
                             tid: params.row.tid,
                             op: 'delete'
                           }
-                        }).then(() => {
+                        }).then((res) => {
                           that.$Modal.remove()
-                          that.$Message.info('删除成功')
-                          that.data1.splice(params.index, 1)
+                          if (res.data.message === 'ok') {
+                            that.$Message.info('删除成功')
+                            that.data1.splice(params.index, 1)
+                          } else {
+                            that.$Notice.warning({
+                              title: '提示',
+                              desc: res.data.message
+                            })
+                          }
+                        }).catch((err) => {
+                          that.$Modal.remove()
+                          that.$Notice.warning({
+                            title: '提示',
+                            desc: err.toString()
+                          })
                         })
                       },
                       onCancel: () => {

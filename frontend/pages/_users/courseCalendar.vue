@@ -336,8 +336,17 @@
                             that.data1.splice(params.index, 1)
                             that.renderCalendar()
                           } else {
-                            that.$Message.info(res.data.message)
+                            that.$Notice.warning({
+                              title: '提示',
+                              desc: res.data.message
+                            })
                           }
+                        }).catch((err) => {
+                          that.$Modal.remove()
+                          that.$Notice.warning({
+                            title: '提示',
+                            desc: err.toString()
+                          })
                         })
                       },
                       onCancel: () => {
