@@ -47,7 +47,15 @@ func DeleteUser(id string) error {
 	return err
 }
 func DeleteTeacher(tid string) error {
-	stmt, err := Db.Prepare("delete from Teacher where tid = ?")
+	stmt, err := Db.Prepare("delete from CourseSchedule where tid = ?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(tid)
+	if err != nil {
+		return err
+	}
+	stmt, err = Db.Prepare("delete from Teacher where tid = ?")
 	if err != nil {
 		return err
 	}

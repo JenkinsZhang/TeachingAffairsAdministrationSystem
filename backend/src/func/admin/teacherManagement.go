@@ -64,13 +64,13 @@ func TeacherManagement(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		} else if info.Op == "delete" {
-			ok, err := utils.CheckConnection(info.Tid)
+			ok, err := utils.CheckTeaConnection(info.Tid)
 			if err != nil {
-				utils.Response(&ret, &w, "still have lessons")
+				utils.Response(&ret, &w, err.Error())
 				return
 			}
 			if ok {
-				utils.Response(&ret, &w, "fail")
+				utils.Response(&ret, &w, "some students have selected this teacher,so you can't delete it.")
 				return
 			}
 			err = utils.DeleteTeacher(info.Tid)

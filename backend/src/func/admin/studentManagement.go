@@ -65,13 +65,13 @@ func StudentManagement(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		} else if info.Op == "delete" {
-			ok, err := utils.CheckConnection(info.Id)
+			ok, err := utils.CheckStuConnection(info.Id)
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
 			if ok {
-				utils.Response(&ret, &w, "fail")
+				utils.Response(&ret, &w, "this student have selected classes, so you can't delete it.")
 				return
 			}
 			err = utils.DeleteStudent(info.Id)

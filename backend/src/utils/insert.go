@@ -55,6 +55,10 @@ func InsertCourseCalendar(info map[string]string) error {
 }
 
 func InsertStudent(info map[string]string) error {
+	err := InsertUser(info["Id"], "student", info["Id"])
+	if err != nil {
+		return err
+	}
 	stmt, err := Db.Prepare("insert into Student(id,did,name,gender,birthday,birthplace,phone) values(?,?,?,?,?,?,?)")
 	if err != nil {
 		return err
@@ -63,7 +67,7 @@ func InsertStudent(info map[string]string) error {
 	if err != nil {
 		return err
 	}
-	return InsertUser(info["Id"], "student", info["Id"])
+	return err
 }
 
 func InsertUser(id, identity, password string) error {
@@ -76,6 +80,10 @@ func InsertUser(id, identity, password string) error {
 }
 
 func InsertTeacher(info map[string]string) error {
+	err := InsertUser(info["Tid"], "teacher", info["Tid"])
+	if err != nil {
+		return err
+	}
 	stmt, err := Db.Prepare("insert into Teacher(tid,did,tname,gender,birthday,education,wage) values(?,?,?,?,?,?,?)")
 	if err != nil {
 		return err
@@ -84,8 +92,7 @@ func InsertTeacher(info map[string]string) error {
 	if err != nil {
 		return err
 	}
-	return InsertUser(info["Tid"], "teacher", info["Tid"])
-
+	return err
 }
 
 // ----------------------------------------------------

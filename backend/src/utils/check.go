@@ -44,9 +44,17 @@ func CheckDname(dname string) (string, error) {
 }
 
 // true: 有联系
-func CheckConnection(tid string) (bool, error) {
+func CheckTeaConnection(tid string) (bool, error) {
 	var cnt int
 	err := Db.QueryRow("select count(id) from CourseCalendar where tid = ?", tid).Scan(&cnt)
+	if err != nil {
+		return false, err
+	}
+	return cnt != 0, nil
+}
+func CheckStuConnection(id string) (bool, error) {
+	var cnt int
+	err := Db.QueryRow("select count(cid) from CourseCalendar where id = ?", id).Scan(&cnt)
 	if err != nil {
 		return false, err
 	}
