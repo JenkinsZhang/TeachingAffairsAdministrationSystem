@@ -17,6 +17,9 @@ func QueryStuCourseScore(id, term string) (map[string][]string, error) {
 		if err != nil {
 			return nil, err
 		}
+		if score == "-1" {
+			score = ""
+		}
 		ret["cid"] = append(ret["cid"], cid)
 		ret["tid"] = append(ret["tid"], tid)
 		ret["tname"] = append(ret["tname"], tname)
@@ -28,8 +31,10 @@ func QueryStuCourseScore(id, term string) (map[string][]string, error) {
 }
 
 func QueryStuAllCourseScore(id string) (map[string][]string, error) {
+	cterm,_ := GetCurrentTerm()
+
 	ret := make(map[string][]string)
-	rows, err := Db.Query("select CourseCalendar.cid, cname,term, credit, score from CourseCalendar, Course where CourseCalendar.id = ? and CourseCalendar.cid = Course.cid", id)
+	rows, err := Db.Query("select CourseCalendar.cid, cname,term, credit, score from CourseCalendar, Course where CourseCalendar.id = ? and CourseCalendar.cid = Course.cid and term != ?", id, cterm)
 	defer rows.Close()
 	if err != nil {
 		return nil, err

@@ -50,6 +50,9 @@ func QueryStuWithTidCid(tid, cid, term string) (map[string][]string, error) {
 		if err != nil {
 			return nil, err
 		}
+		if score == "-1" {
+			score = ""
+		}
 		ret["id"] = append(ret["id"], id)
 		ret["name"] = append(ret["name"], name)
 		ret["dname"] = append(ret["dname"], dname)

@@ -11,11 +11,6 @@ func SetOpenCourseSelect(stat string) error {
 	if err != nil {
 		return err
 	}
-	if stat == "open" {
-		stat = "yes"
-	} else {
-		stat = "no"
-	}
 	_, err = stmt.Exec(stat, "OpenCourseSelect")
 	return err
 }
