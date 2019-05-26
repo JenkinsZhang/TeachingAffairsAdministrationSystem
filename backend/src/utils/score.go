@@ -2,6 +2,8 @@ package utils
 
 import (
 	"fmt"
+	"math"
+	"strconv"
 )
 
 func QueryStuCourseScore(id, term string) (map[string][]string, error) {
@@ -31,7 +33,7 @@ func QueryStuCourseScore(id, term string) (map[string][]string, error) {
 }
 
 func QueryStuAllCourseScore(id string) (map[string][]string, error) {
-	cterm,_ := GetCurrentTerm()
+	cterm, _ := GetCurrentTerm()
 
 	ret := make(map[string][]string)
 	rows, err := Db.Query("select CourseCalendar.cid, cname,term, credit, score from CourseCalendar, Course where CourseCalendar.id = ? and CourseCalendar.cid = Course.cid and term != ?", id, cterm)
@@ -74,19 +76,32 @@ func QueryTermAveScore(id, term string) (string, error) {
 }
 
 func QueryStuAveScore(id string) (string, error) {
-	rows, err := Db.Query("select avg(score) from CourseCalendar where id = ?", id)
+	cterm, _ := GetCurrentTerm()
+	var score float64
+	rows, err := Db.Query("select score,credit from CourseCalendar,Course where Course.cid = CourseCalendar.cid and id = ? and term = ?", id, cterm)
 	if err != nil {
 		return "", err
 	}
 	defer rows.Close()
-	var score float32
+	sum := 0.0
+	sumcre := 0.0
+	var cre string
 	for rows.Next() {
-		err := rows.Scan(&score)
+		err := rows.Scan(&score, &cre)
 		if err != nil {
 			return "", err
 		}
+		if score >= 0 {
+			credit, _ := strconv.ParseFloat(cre, 64)
+			sumcre += credit
+			sum += score * credit
+		}
 	}
-	return fmt.Sprintf("%f", score), nil
+	eps := 1e-6
+	if math.Abs(sumcre) < eps {
+		return "0", nil
+	}
+	return fmt.Sprintf("%f", sum/sumcre), nil
 }
 
 func QueryStuRank(id string, did string) (string, error) {
