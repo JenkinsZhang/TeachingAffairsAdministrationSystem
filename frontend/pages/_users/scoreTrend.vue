@@ -22,6 +22,9 @@
           return
         }
         for (let i = 0; i < term.length; i++) {
+          if (parseInt(score[i]) === -1) {
+            continue
+          }
           rows.push({
             date: term[i],
             val: score[i]
@@ -45,7 +48,7 @@
         chartData: {
           columns: ['date', 'val'],
           rows: []
-        },
+        }
       }
     }
   }

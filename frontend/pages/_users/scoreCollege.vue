@@ -19,6 +19,9 @@
         url: '/student/scoreCollege'
       }).then((res) => {
         const data = res.data
+        if (data.message !== 'ok') {
+          return
+        }
         data1.push({
           xh: data.id,
           xm: data.name,
@@ -26,7 +29,7 @@
           yx: data.did,
           zs: data.totalStudents,
           pm: data.rank,
-          bfb: (Number(data.percentage)*100).toFixed(1) + '%'
+          bfb: (Number(data.percentage) * 100).toFixed(1) + '%'
         })
       })
       return { data1 }

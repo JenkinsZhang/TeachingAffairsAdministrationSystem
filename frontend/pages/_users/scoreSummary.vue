@@ -35,6 +35,9 @@
         url: '/student/scoreSummary'
       }).then((res) => {
         const { cid, cname, credit, score, tid, tname, term } = res.data
+        if (!cid) {
+          return
+        }
         for (let i = 0; i < cid.length; i++) {
           data1.push({
             kh: cid[i],

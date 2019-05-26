@@ -36,6 +36,9 @@
     }).then((res) => {
       let dis = [0, 0, 0, 0, 0]
       let cntNoGrade = 0
+      if (!res.data.score) {
+        return []
+      }
       res.data.score.forEach((score) => {
         if (parseInt(score) === -1) {
           cntNoGrade++

@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie'
+
 export default function({ $axios, app, store, nuxtState }) {
   $axios.onRequest(config => {
     if (store.state.token) {
@@ -9,6 +11,12 @@ export default function({ $axios, app, store, nuxtState }) {
   })
   $axios.onResponse(config => {
     store.dispatch('xhrDecWithSpin', { app })
+    if (config.data.message && config.data.message === 'invalid token') {
+      if (process.client) {
+        app.$cookies.remove('token')
+      }
+      store.commit('setToken', null)
+    }
   })
 
   $axios.onError(error => {
