@@ -57,7 +57,7 @@ func DoesAllTeaHaveMarked(term string) (bool, error) {
 }
 func GetAllTerms() (map[string][]string, error) {
 	ret := make(map[string][]string)
-	rows, err := Db.Query("select term, isCurrent from Term")
+	rows, err := Db.Query("select term, isCurrent from Term order by id")
 	if err != nil {
 		return nil, err
 	}

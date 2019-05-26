@@ -2,6 +2,7 @@ package models
 
 const SECRET = "halou"
 
+var TermId int
 var OpenSelectCourse int
 
 type Teacher struct {
