@@ -78,7 +78,7 @@ func QueryTermAveScore(id, term string) (string, error) {
 func QueryStuAveScore(id string) (string, error) {
 	cterm, _ := GetCurrentTerm()
 	var score float64
-	rows, err := Db.Query("select score,credit from CourseCalendar,Course where Course.cid = CourseCalendar.cid and id = ? and term = ?", id, cterm)
+	rows, err := Db.Query("select score,credit from CourseCalendar,Course where Course.cid = CourseCalendar.cid and id = ? and term != ?", id, cterm)
 	if err != nil {
 		return "", err
 	}
