@@ -35,8 +35,11 @@
       data: requestBody
     }).then((res) => {
       let dis = [0, 0, 0, 0, 0]
+      let cntNoGrade = 0
       res.data.score.forEach((score) => {
-        if (score >= 90) {
+        if (score === -1) {
+          cntNoGrade++
+        } else if (score >= 90) {
           dis[4]++
         } else if (score >= 80) {
           dis[3]++
@@ -63,6 +66,9 @@
       }
       if (dis[4]) {
         ret.push({ 'date': '90~100', 'val': dis[4] })
+      }
+      if (cntNoGrade) {
+        ret.push({ 'date': '未登分', 'val': cntNoGrade })
       }
       return ret
     })

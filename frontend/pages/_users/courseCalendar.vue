@@ -329,11 +329,15 @@
                             term: that.selected,
                             op: 'delete'
                           }
-                        }).then(() => {
+                        }).then((res) => {
                           that.$Modal.remove()
-                          that.$Message.info('退课成功')
-                          that.data1.splice(params.index, 1)
-                          that.renderCalendar()
+                          if (res.data.message === 'ok') {
+                            that.$Message.info('退课成功')
+                            that.data1.splice(params.index, 1)
+                            that.renderCalendar()
+                          } else {
+                            that.$Message.info(res.data.message)
+                          }
                         })
                       },
                       onCancel: () => {
