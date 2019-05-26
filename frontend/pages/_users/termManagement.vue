@@ -69,7 +69,7 @@
         method: 'post',
         data: { op: 'queryOpen' }
       }).then((res) => {
-        openCourse = res.data.open === 'yes'
+        openCourse = res.data.open === 'open'
       })
       return {
         data1,
