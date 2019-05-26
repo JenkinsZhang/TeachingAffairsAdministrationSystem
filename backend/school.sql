@@ -86,7 +86,6 @@ create table Term(
     primary key(term)
 );
 
-<<<<<<< Updated upstream
 create table Other (
     name  varchar(20) not null primary key,
     msg varchar(20) not null
@@ -171,29 +170,6 @@ for each row
 begin
 insert into Log values("insert", "other", now());
 end $
-=======
-create table CourseSchedule
-(
-    tid       varchar(20) not null,
-    cid       varchar(20) not null,
-    term      varchar(20) not null,
-    classTime varchar(50) not null,
-    primary key (tid, cid, term, classTime),
-    constraint CS_CID
-        foreign key (cid) references Course (cid),
-    constraint CS_TERM
-        foreign key (term) references Term (term),
-    constraint CS_TID
-        foreign key (tid) references Teacher (tid)
-);
 
 
-
-create table Log
-(
-    action varchar(20) not null,
-    target varchar(20) not null,
-    time datetime default NOW()
-);
-
->>>>>>> Stashed changes
+insert into  CourseSchedule values()

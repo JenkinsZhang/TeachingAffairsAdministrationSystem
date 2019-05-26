@@ -63,17 +63,13 @@ func QueryTermAveScore(id, term string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(id, term)
 	score := 0.0
 	for rows.Next() {
-		_ = rows.Scan(&score)
-		/*
-			if err != nil {
-				return "", err
-			}
-		*/
+		err = rows.Scan(&score)
+		if err != nil {
+			return "-1", nil
+		}
 	}
-	fmt.Println(score)
 	return fmt.Sprintf("%f", score), nil
 }
 
