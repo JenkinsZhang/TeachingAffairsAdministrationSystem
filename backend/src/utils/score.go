@@ -58,20 +58,22 @@ func QueryStuAllCourseScore(id string) (map[string][]string, error) {
 }
 
 func QueryTermAveScore(id, term string) (string, error) {
-	fmt.Println(id, term)
 	rows, err := Db.Query("select avg(score) from CourseCalendar where id = ? and term = ?", id, term)
 	defer rows.Close()
 	if err != nil {
 		return "", err
 	}
-	var score float32
+	fmt.Println(id, term)
+	score := 0.0
 	for rows.Next() {
-		err := rows.Scan(&score)
-		fmt.Println(score)
-		if err != nil {
-			return "", err
-		}
+		_ = rows.Scan(&score)
+		/*
+			if err != nil {
+				return "", err
+			}
+		*/
 	}
+	fmt.Println(score)
 	return fmt.Sprintf("%f", score), nil
 }
 
