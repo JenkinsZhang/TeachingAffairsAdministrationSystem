@@ -317,11 +317,24 @@
                                             tid: params.row.tid,
                                             op: 'deleteCourseSchedule'
                                           }
-                                        }).then(() => {
+                                        }).then((res) => {
                                           that.$Modal.remove()
-                                          that.$Message.info('删除成功')
-                                          that.data2.splice(params.index, 1)
-                                          that.thisRow.count--
+                                          if (res.data.message === 'ok') {
+                                            that.$Message.info('删除成功')
+                                            that.data2.splice(params.index, 1)
+                                            that.thisRow.count--
+                                          } else {
+                                            that.$Notice.warning({
+                                              title: '提示',
+                                              desc: res.data.message
+                                            })
+                                          }
+                                        }).catch((err) => {
+                                          that.$Modal.remove()
+                                          that.$Notice.warning({
+                                            title: '提示',
+                                            desc: err.toString()
+                                          })
                                         })
                                       },
                                       onCancel: () => {
@@ -365,10 +378,23 @@
                             cid: params.row.cid,
                             op: 'deleteCourse'
                           }
-                        }).then(() => {
+                        }).then((res) => {
                           that.$Modal.remove()
-                          that.$Message.info('删除成功')
-                          that.data1.splice(params.index, 1)
+                          if (res.data.message === 'ok') {
+                            that.$Message.info('删除成功')
+                            that.data1.splice(params.index, 1)
+                          } else {
+                            that.$Notice.warning({
+                              title: '提示',
+                              desc: res.data.message
+                            })
+                          }
+                        }).catch((err) => {
+                          that.$Modal.remove()
+                          that.$Notice.warning({
+                            title: '提示',
+                            desc: err.toString()
+                          })
                         })
                       },
                       onCancel: () => {

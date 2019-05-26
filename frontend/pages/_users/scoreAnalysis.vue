@@ -37,7 +37,7 @@
       let dis = [0, 0, 0, 0, 0]
       let cntNoGrade = 0
       res.data.score.forEach((score) => {
-        if (score === -1) {
+        if (parseInt(score) === -1) {
           cntNoGrade++
         } else if (score >= 90) {
           dis[4]++

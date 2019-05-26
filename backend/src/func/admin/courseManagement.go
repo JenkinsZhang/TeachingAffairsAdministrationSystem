@@ -90,15 +90,6 @@ func CourseManagement(w http.ResponseWriter, r *http.Request) {
 				utils.Response(&ret, &w, err.Error())
 				return
 			}
-			osc, err := utils.IfOpenSelectCourse()
-			if err != nil {
-				utils.Response(&ret, &w, err.Error())
-				return
-			}
-			if osc == "close" {
-				utils.Response(&ret, &w, "Lesson selection time is not yet available.")
-				return
-			}
 			err = utils.InsertCourseSchedule(utils.Struct2Map(info))
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
@@ -108,15 +99,6 @@ func CourseManagement(w http.ResponseWriter, r *http.Request) {
 			info.Term, err = utils.GetCurrentTerm()
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())
-				return
-			}
-			osc, err := utils.IfOpenSelectCourse()
-			if err != nil {
-				utils.Response(&ret, &w, err.Error())
-				return
-			}
-			if osc == "close" {
-				utils.Response(&ret, &w, "Lesson selection time is not yet available.")
 				return
 			}
 			err = utils.DeleteCourseSchedule(info.Cid, info.Tid, info.Term)

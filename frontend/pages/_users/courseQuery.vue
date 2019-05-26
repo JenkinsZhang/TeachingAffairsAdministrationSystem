@@ -193,27 +193,27 @@
                             })
                           } catch (e) {
                             console.log(e)
-                            that.$Notice.open({
+                            that.$Notice.warning({
                               title: '提示',
                               desc: e.toString()
                             })
                           }
                         }).catch((err) => {
                           console.log(err)
-                          that.$Notice.open({
+                          that.$Notice.warning({
                             title: '提示',
                             desc: err.toString()
                           })
                         })
                       } else {
-                        that.$Notice.open({
+                        that.$Notice.warning({
                           title: '提示',
                           desc: '当前时间选课尚未开放'
                         })
                       }
                     }).catch((err) => {
                       console.log(err)
-                      that.$Notice.open({
+                      that.$Notice.warning({
                         title: '提示',
                         desc: err.toString()
                       })
