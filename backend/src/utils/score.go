@@ -13,6 +13,10 @@ func QueryStuCourseScore(id, term string) (map[string][]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	cterm, err := GetCurrentTerm()
+	if err != nil {
+		cterm = ""
+	}
 	var cid, tid, tname, cname, score, credit string
 	for rows.Next() {
 		err := rows.Scan(&cid, &cname, &tid, &tname, &credit, &score)
@@ -26,6 +30,9 @@ func QueryStuCourseScore(id, term string) (map[string][]string, error) {
 		ret["tid"] = append(ret["tid"], tid)
 		ret["tname"] = append(ret["tname"], tname)
 		ret["cname"] = append(ret["cname"], cname)
+		if term != cterm {
+			score = ""
+		}
 		ret["score"] = append(ret["score"], score)
 		ret["credit"] = append(ret["credit"], credit)
 	}
@@ -58,6 +65,13 @@ func QueryStuAllCourseScore(id string) (map[string][]string, error) {
 }
 
 func QueryTermAveScore(id, term string) (string, error) {
+	cterm, err := GetCurrentTerm()
+	if err != nil {
+		cterm = ""
+	}
+	if cterm == term {
+		return "", nil
+	}
 	rows, err := Db.Query("select avg(score) from CourseCalendar where id = ? and term = ?", id, term)
 	defer rows.Close()
 	if err != nil {
