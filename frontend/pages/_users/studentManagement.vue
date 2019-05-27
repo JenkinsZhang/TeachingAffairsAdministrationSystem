@@ -14,7 +14,7 @@
     ></Table>
     <Modal
       v-model="showModal"
-      title="新增学生"
+      :title="isAdding?'新增学生':'修改学生信息'"
       @on-ok="handleAddStudent"
       :loading="modalLoading"
       :mask-closable="false"
