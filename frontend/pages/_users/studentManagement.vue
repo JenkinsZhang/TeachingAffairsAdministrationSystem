@@ -37,7 +37,7 @@
         style="padding:20px 30px 20px 15px"
         ref="form"
       >
-        <FormItem label="学号" prop="id">
+        <FormItem label="学号" prop="id" :disabled="!isAdding">
           <Input v-model="form.id"></Input>
         </FormItem>
         <FormItem label="姓名" prop="name">
