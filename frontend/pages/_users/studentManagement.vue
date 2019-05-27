@@ -14,7 +14,7 @@
     ></Table>
     <Modal
       v-model="showModal"
-      title="新增学生"
+      :title="isAdding?'新增学生':'修改学生信息'"
       @on-ok="handleAddStudent"
       :loading="modalLoading"
       :mask-closable="false"
@@ -37,7 +37,7 @@
         style="padding:20px 30px 20px 15px"
         ref="form"
       >
-        <FormItem label="学号" prop="id">
+        <FormItem label="学号" prop="id" :disabled="!isAdding">
           <Input v-model="form.id"></Input>
         </FormItem>
         <FormItem label="姓名" prop="name">
@@ -208,6 +208,11 @@
                     that.form.phone = parseInt(that.form.phone)
                     that.form.birthday = that.$dayjs(that.form.birthday, 'YYYYMMDD').toDate()
                     that.showModal = true
+                    that.$axios({
+                      url: '/getDepartment'
+                    }).then((res) => {
+                      that.deps = res.data.dname
+                    })
                     console.log(that.form)
                   }
                 }

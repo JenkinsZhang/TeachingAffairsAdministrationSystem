@@ -14,7 +14,7 @@
     ></Table>
     <Modal
       v-model="showModal"
-      title="新增教师"
+      :title="isAdding?'新增教师':'修改学生信息'"
       @on-ok="handleAddTeacher"
       :loading="modalLoading"
       :mask-closable="false"
@@ -168,6 +168,11 @@
                     that.form.wage = parseInt(that.form.wage)
                     that.form.birthday = that.$dayjs(that.form.birthday, 'YYYYMMDD').toDate()
                     that.showModal = true
+                    that.$axios({
+                      url: '/getDepartment'
+                    }).then((res) => {
+                      that.deps = res.data.dname
+                    })
                     console.log(that.form)
                   }
                 }
