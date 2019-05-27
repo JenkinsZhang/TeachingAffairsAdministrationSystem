@@ -66,10 +66,10 @@ func CheckUser(id string, pwd string) (string, error) {
 	var retpwd string
 	err := Db.QueryRow("select password,identity from User where id = ? ", id).Scan(&retpwd, &t)
 	if err != nil {
-		return t, err
+		return t, errors.New("wrong user name or password")
 	}
 	if strings.Compare(retpwd, pwd) != 0 {
-		return t, errors.New("wrong password")
+		return t, errors.New("wrong user name or password")
 	}
 	return t, nil
 }

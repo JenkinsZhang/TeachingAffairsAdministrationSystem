@@ -52,6 +52,15 @@ func CourseCalendar(w http.ResponseWriter, r *http.Request) {
 		tmp := make(map[string][]string)
 		// 先删后查
 		if info.Op == "delete" {
+			term, err := utils.GetCurrentTerm()
+			if err != nil {
+				utils.Response(&ret, &w, "please set current term first.")
+				return
+			}
+			if term != info.Term {
+				utils.Response(&ret, &w, "you can't modify the courses of past terms.")
+				return
+			}
 			osc, err := utils.IfOpenSelectCourse()
 			if err != nil {
 				utils.Response(&ret, &w, err.Error())

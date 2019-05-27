@@ -172,4 +172,12 @@ insert into Log values("insert", "other", now());
 end $
 
 
-insert into  CourseSchedule values()
+insert into CourseSchedule values("0103","08305001","2012-2013秋季","星期三5-6");
+insert into CourseSchedule values("0101","08305002","2012-2013冬季","星期三1-4");
+insert into CourseSchedule values("0102","08305002","2012-2013冬季","星期三1-4");
+insert into CourseSchedule values("0103","08305002","2012-2013冬季","星期三1-4");
+insert into CourseSchedule values("0102","08305003","2012-2013冬季","星期五5-6");
+insert into CourseSchedule values("0101","08305004","2013-2014秋季","星期二1-4");
+insert into CourseSchedule values("0102","08305001","2013-2014秋季","星期一5-6");
+
+insert into CourseCalendar values("1101","08305001","0103","2012-2013秋季","星期三5-6","-1");
