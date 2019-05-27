@@ -30,7 +30,7 @@ func QueryStuCourseScore(id, term string) (map[string][]string, error) {
 		ret["tid"] = append(ret["tid"], tid)
 		ret["tname"] = append(ret["tname"], tname)
 		ret["cname"] = append(ret["cname"], cname)
-		if term != cterm {
+		if term == cterm {
 			score = ""
 		}
 		ret["score"] = append(ret["score"], score)
