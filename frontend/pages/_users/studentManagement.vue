@@ -208,6 +208,11 @@
                     that.form.phone = parseInt(that.form.phone)
                     that.form.birthday = that.$dayjs(that.form.birthday, 'YYYYMMDD').toDate()
                     that.showModal = true
+                    that.$axios({
+                      url: '/getDepartment'
+                    }).then((res) => {
+                      that.deps = res.data.dname
+                    })
                     console.log(that.form)
                   }
                 }
